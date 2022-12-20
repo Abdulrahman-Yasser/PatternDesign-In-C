@@ -1,0 +1,15 @@
+/*
+ * Queue_cfg.h
+ *
+ *  Created on: Dec 20, 2022
+ *      Author: abduy
+ */
+
+#ifndef COMMON_DATASTRUCTURE_QUEUE_DYNAMIC_INC_QUEUE_CFG_H_
+#define COMMON_DATASTRUCTURE_QUEUE_DYNAMIC_INC_QUEUE_CFG_H_
+
+#define BUFFER_SIZE     8
+
+
+
+#endif /* COMMON_DATASTRUCTURE_QUEUE_DYNAMIC_INC_QUEUE_CFG_H_ */
