@@ -155,45 +155,45 @@ volatile uint32* GetTimerAddress(Gpt_ChannelType TimerAddress){
 * \Return value:   : None
 *                                                                     
 *******************************************************************************/
-void Gpt_Init(const Gpt_ConfigType* ConfigPtr){
+void Gpt_Init(void){
     volatile uint32* TimerPtr;
     uint8 i;
     uint32 frequency = 0;
     *(volatile uint32*)(SYSCTL_RCGCTIMER_REG) |= (1 << 0);
 
     for(i = 0; i < TIMERS_NUMBERS; i++){
-        if(ConfigPtr[i].ChannelMode == Gpt_Mode_NotUsed){
+        if(GPT_ConfigPtr_Container[i].ChannelMode == Gpt_Mode_NotUsed){
             continue;
         }
-        TimerPtr = GetTimerAddress(ConfigPtr[i].GptChannelId);
+        TimerPtr = GetTimerAddress(GPT_ConfigPtr_Container[i].GptChannelId);
 
-        if( (RCG_clock & (1 << ConfigPtr[i].GptChannelId) )== 0){
-            REG_WRITE_32_BIT(SYSCTL_RCGCTIMER_REG, 1 << (ConfigPtr[i].GptChannelId % 6));
-            RCG_clock |= 1 <<  1 << (ConfigPtr[i].GptChannelId % 6);
+        if( (RCG_clock & (1 << GPT_ConfigPtr_Container[i].GptChannelId) )== 0){
+            REG_WRITE_32_BIT(SYSCTL_RCGCTIMER_REG, 1 << (GPT_ConfigPtr_Container[i].GptChannelId % 6));
+            RCG_clock |= 1 <<  1 << (GPT_ConfigPtr_Container[i].GptChannelId % 6);
         }
 
-        G_BitUsedGuarding[ConfigPtr[i].GptChannelId] = calculate_BitGuarding( Gpt_ConfigPtr[i].GptChannelTickValueMax );
+        G_BitUsedGuarding[GPT_ConfigPtr_Container[i].GptChannelId] = calculate_BitGuarding( GPT_ConfigPtr_Container[i].GptChannelTickValueMax );
 
-        if(ConfigPtr[i].PreScalingType != Gpt_Prescale_NotUsed){
+        if(GPT_ConfigPtr_Container[i].PreScalingType != Gpt_Prescale_NotUsed){
             /* in case we are using any type of preScaling we will save those values. */
-            frequency = (uint16)((CPU_CLOCK * ConfigPtr[i].GptChannelTickFrequency ));
-            G_BitShiftingGuarding[ConfigPtr[i].GptChannelId] = calculate_BitGuarding(frequency);
-            G_BitShifting[ConfigPtr[i].GptChannelId] = calculate_MaxBits(frequency);
+            frequency = (uint16)((CPU_CLOCK * GPT_ConfigPtr_Container[i].GptChannelTickFrequency ));
+            G_BitShiftingGuarding[GPT_ConfigPtr_Container[i].GptChannelId] = calculate_BitGuarding(frequency);
+            G_BitShifting[GPT_ConfigPtr_Container[i].GptChannelId] = calculate_MaxBits(frequency);
 
-            if(ConfigPtr[i].PreScalingType == Gpt_Prescale_Software){
-                G_SW_PreScaling[ConfigPtr[i].GptChannelId] = (uint16)frequency ;
+            if(GPT_ConfigPtr_Container[i].PreScalingType == Gpt_Prescale_Software){
+                G_SW_PreScaling[GPT_ConfigPtr_Container[i].GptChannelId] = (uint16)frequency ;
             }else{
-                G_SW_PreScaling[ConfigPtr[i].GptChannelId] = 1;
+                G_SW_PreScaling[GPT_ConfigPtr_Container[i].GptChannelId] = 1;
             }
         }else{
             /* in case we are NOT using any type of preScaling. */
-            G_SW_PreScaling[ConfigPtr[i].GptChannelId] = 1;
-            G_BitShiftingGuarding[ConfigPtr[i].GptChannelId] = 0;
-            G_BitShifting[ConfigPtr[i].GptChannelId] = 0;
+            G_SW_PreScaling[GPT_ConfigPtr_Container[i].GptChannelId] = 1;
+            G_BitShiftingGuarding[GPT_ConfigPtr_Container[i].GptChannelId] = 0;
+            G_BitShifting[GPT_ConfigPtr_Container[i].GptChannelId] = 0;
         }
 
 
-        switch(ConfigPtr[i].ChannelMode){
+        switch(GPT_ConfigPtr_Container[i].ChannelMode){
         case Gpt_Mode_OneShot_A:
             REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_CFG_REG_OFFSET),2);
             /* Work as OneShot Mode */
@@ -201,11 +201,11 @@ void Gpt_Init(const Gpt_ConfigType* ConfigPtr){
             /* Counting Up */
             REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_TAMR_REG_OFFSET),4);
             /* Write the PreScale value */
-            if(ConfigPtr[i].PreScalingType == Gpt_Prescale_Hardware){
+            if(GPT_ConfigPtr_Container[i].PreScalingType == Gpt_Prescale_Hardware){
                 WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAPR_REG_OFFSET),(uint8)frequency);
             }
             /* Write the Loading value */
-            WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAILR_REG_OFFSET), ConfigPtr[i].GptChannelTickValueMax - 1);
+            WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAILR_REG_OFFSET), GPT_ConfigPtr_Container[i].GptChannelTickValueMax - 1);
             break;
 
         case Gpt_Mode_Periodic_A:
@@ -215,11 +215,11 @@ void Gpt_Init(const Gpt_ConfigType* ConfigPtr){
             /* Counting Up */
             REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_TAMR_REG_OFFSET),4);
             /* Write the PreScale value */
-            if(ConfigPtr[i].PreScalingType == Gpt_Prescale_Hardware){
+            if(GPT_ConfigPtr_Container[i].PreScalingType == Gpt_Prescale_Hardware){
                 WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAPR_REG_OFFSET),(uint8)frequency);
             }
             /* Enable Match Interrupt */
-            WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAILR_REG_OFFSET), ConfigPtr[i].GptChannelTickValueMax - 1);
+            WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAILR_REG_OFFSET), GPT_ConfigPtr_Container[i].GptChannelTickValueMax - 1);
             break;
 
         case Gpt_Mode_OneShot_B:
@@ -229,11 +229,11 @@ void Gpt_Init(const Gpt_ConfigType* ConfigPtr){
             /* Counting Up */
             REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_TBMR_REG_OFFSET),4);
             /* Write the PreScale value */
-            if(ConfigPtr[i].PreScalingType == Gpt_Prescale_Hardware){
+            if(GPT_ConfigPtr_Container[i].PreScalingType == Gpt_Prescale_Hardware){
                 WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TBPR_REG_OFFSET),(uint8)frequency);
             }
             /* Write the Loading value */
-            WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TBILR_REG_OFFSET),  ConfigPtr[i].GptChannelTickValueMax - 1);
+            WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TBILR_REG_OFFSET),  GPT_ConfigPtr_Container[i].GptChannelTickValueMax - 1);
             break;
 
         case Gpt_Mode_Periodic_B:
@@ -245,11 +245,11 @@ void Gpt_Init(const Gpt_ConfigType* ConfigPtr){
             /* Enable Match Interrupt */
             REG_WRITE_BIT_PTR((uint32)TimerPtr + (uint32)GPTM_TBMR_REG_OFFSET, 5);
             /* Write the PreScale value */
-            if(ConfigPtr[i].PreScalingType == Gpt_Prescale_Hardware){
+            if(GPT_ConfigPtr_Container[i].PreScalingType == Gpt_Prescale_Hardware){
                 WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TBPR_REG_OFFSET),(uint8)frequency);
             }
             /* Write the Loading value */
-            WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TBILR_REG_OFFSET), ConfigPtr[i].GptChannelTickValueMax - 1);
+            WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TBILR_REG_OFFSET), GPT_ConfigPtr_Container[i].GptChannelTickValueMax - 1);
             break;
 
         case Gpt_Mode_OneShot_Concatenate:
@@ -259,11 +259,11 @@ void Gpt_Init(const Gpt_ConfigType* ConfigPtr){
             /* Counting Up */
             REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_TAMR_REG_OFFSET),4);
             /* Write the PreScale value */
-            if(ConfigPtr[i].PreScalingType == Gpt_Prescale_Hardware){
+            if(GPT_ConfigPtr_Container[i].PreScalingType == Gpt_Prescale_Hardware){
                 WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAPR_REG_OFFSET),(uint8)frequency);
             }
             /* Write the Loading value */
-            WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAILR_REG_OFFSET), ConfigPtr[i].GptChannelTickValueMax - 1);
+            WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAILR_REG_OFFSET), GPT_ConfigPtr_Container[i].GptChannelTickValueMax - 1);
             break;
 
         case Gpt_Mode_Periodic_Concatenate:
@@ -272,11 +272,11 @@ void Gpt_Init(const Gpt_ConfigType* ConfigPtr){
             REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_TAMR_REG_OFFSET),1);
             /* Counting Up */
             REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_TAMR_REG_OFFSET),4);
-            if(ConfigPtr[i].PreScalingType == Gpt_Prescale_Hardware){
+            if(GPT_ConfigPtr_Container[i].PreScalingType == Gpt_Prescale_Hardware){
                 WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAPR_REG_OFFSET),(uint8)frequency);
             }
             /* Write the Loading value */
-            WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAILR_REG_OFFSET), ConfigPtr[i].GptChannelTickValueMax - 1);
+            WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAILR_REG_OFFSET), GPT_ConfigPtr_Container[i].GptChannelTickValueMax - 1);
             break;
 
         case Gpt_Mode_RTC:
@@ -410,16 +410,16 @@ void Gpt_DisableNotification(Gpt_ChannelType Channel){
     }
 
     volatile uint32* TimerPtr = GetTimerAddress(Channel);
-    if( (Gpt_ConfigPtr[Channel].Interrupt_Type & (1 << Gpt_Interrupt_NotUsed ))> 0){
+    if( (GPT_ConfigPtr_Container[Channel].Interrupt_Type & (1 << Gpt_Interrupt_NotUsed ))> 0){
 
     }else{
-        if(Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_A || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_Concatenate ){
+        if(GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_A || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_Concatenate ){
             for(i = 0; i < WIDE_TIMER_RANGE_PRIVATE; i++){
-                REG_CLR_PERIPH_BB_PTR(((uint8*)TimerPtr +GPTM_IMR_REG_OFFSET), Gpt_ConfigPtr[Channel].Interrupt_Type & 0x1F);
+                REG_CLR_PERIPH_BB_PTR(((uint8*)TimerPtr +GPTM_IMR_REG_OFFSET), GPT_ConfigPtr_Container[Channel].Interrupt_Type & 0x1F);
             }
-        }else if(Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_B){
             for(i = 8; i < 12; i++){
-                REG_CLR_PERIPH_BB_PTR(((uint8*)TimerPtr +GPTM_IMR_REG_OFFSET), Gpt_ConfigPtr[Channel].Interrupt_Type & 0xF00);
+                REG_CLR_PERIPH_BB_PTR(((uint8*)TimerPtr +GPTM_IMR_REG_OFFSET), GPT_ConfigPtr_Container[Channel].Interrupt_Type & 0xF00);
             }
         }
     }
@@ -448,10 +448,10 @@ void Gpt_EnableNotification(Gpt_ChannelType Channel){
 
     volatile uint32* TimerPtr = GetTimerAddress(Channel);
     WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_ICR_REG_OFFSET), 0xFFF);
-    if(Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_A || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_Concatenate){
-        WriteUsingBB((uint32*)((uint8*)TimerPtr +GPTM_IMR_REG_OFFSET), Gpt_ConfigPtr[Channel].Interrupt_Type & 0x1F);
-    }else if(Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_B){
-        WriteUsingBB((uint32*)((uint8*)TimerPtr +GPTM_IMR_REG_OFFSET), Gpt_ConfigPtr[Channel].Interrupt_Type & 0xF00);
+    if(GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_A || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_Concatenate){
+        WriteUsingBB((uint32*)((uint8*)TimerPtr +GPTM_IMR_REG_OFFSET), GPT_ConfigPtr_Container[Channel].Interrupt_Type & 0x1F);
+    }else if(GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_B){
+        WriteUsingBB((uint32*)((uint8*)TimerPtr +GPTM_IMR_REG_OFFSET), GPT_ConfigPtr_Container[Channel].Interrupt_Type & 0xF00);
     }
     Re_entrantSaver &= ~(1 << Channel);
 }
@@ -478,12 +478,12 @@ void Gpt_StartTimer(Gpt_ChannelType Channel, Gpt_ValueType Value){
     }
 
     volatile uint32* TimerPtr = GetTimerAddress(Channel);
-    if(Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_A || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_Concatenate ){
+    if(GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_A || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_Concatenate ){
         /* Write the Loading value */
         REG_CLR_PERIPH_BB_PTR(((uint8*)TimerPtr +GPTM_CTL_REG_OFFSET),0);
         WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAILR_REG_OFFSET), Value - 1);
         REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_CTL_REG_OFFSET),0);
-    }else if(Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_B ){
+    }else if(GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_B ){
         /* Write the Loading value */
         REG_CLR_PERIPH_BB_PTR(((uint8*)TimerPtr +GPTM_CTL_REG_OFFSET),8);
         WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TBILR_REG_OFFSET), Value - 1);
@@ -513,11 +513,11 @@ void Gpt_StopTimer(Gpt_ChannelType Channel){
     }
 
     volatile uint32* TimerPtr = GetTimerAddress(Channel);
-    if(Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_A || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_Concatenate ){
+    if(GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_A || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_Concatenate ){
         REG_CLR_PERIPH_BB_PTR(((uint8*)TimerPtr +GPTM_CTL_REG_OFFSET),0);
         WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAV_REG_OFFSET), 0);
         Re_entrantSaver &= ~(1 << Channel);
-    }else if(Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_B ){
+    }else if(GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_B ){
         REG_CLR_PERIPH_BB_PTR(((uint8*)TimerPtr +GPTM_CTL_REG_OFFSET),8);
         WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TBV_REG_OFFSET), 0);
         Re_entrantSaver &= ~(1 << Channel);
@@ -549,7 +549,7 @@ Gpt_ValueType Gpt_GetTimeElapsed(Gpt_ChannelType Channel){
     uint32 temp_RealCounter, temp_PreScale;
     Gpt_ValueType returnValue;
     /* Reading the real counter */
-    if(Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_B){
+    if(GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_B){
         temp_RealCounter = *(volatile uint32*)((uint8*)timePtr + GPTM_TBV_REG_OFFSET);
         temp_PreScale = *(volatile uint32*)((uint8*)timePtr + GPTM_TAPV_REG_OFFSET);
     }else{
@@ -557,10 +557,10 @@ Gpt_ValueType Gpt_GetTimeElapsed(Gpt_ChannelType Channel){
         temp_PreScale = (temp_RealCounter >> 16 ) & 0xFF;
     }
 
-    if(Gpt_ConfigPtr[Channel].PreScalingType == Gpt_Prescale_NotUsed){
+    if(GPT_ConfigPtr_Container[Channel].PreScalingType == Gpt_Prescale_NotUsed){
         returnValue = temp_RealCounter & G_BitUsedGuarding[Channel];
-    }else if(Gpt_ConfigPtr[Channel].PreScalingType == Gpt_Prescale_Hardware){
-        if( Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_Concatenate){
+    }else if(GPT_ConfigPtr_Container[Channel].PreScalingType == Gpt_Prescale_Hardware){
+        if( GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_Concatenate){
             temp_RealCounter = temp_RealCounter >> G_BitShifting[Channel];
             temp_PreScale = temp_PreScale & G_BitShiftingGuarding[Channel];
             temp_PreScale = temp_PreScale << ( 32 - G_BitShifting[Channel] );
@@ -604,7 +604,7 @@ Gpt_ValueType Gpt_GetTimeRemaining(Gpt_ChannelType Channel){
     uint32 temp_RealCounter, temp_PreScale, temp_bits;
     Gpt_ValueType returnValue;
     /* Reading the real counter */
-    if(Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_B){
+    if(GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_B){
         temp_RealCounter = *(volatile uint32*)((uint8*)timePtr + GPTM_TBV_REG_OFFSET);
         temp_PreScale = *(volatile uint32*)((uint8*)timePtr + GPTM_TAPV_REG_OFFSET);
     }else{
@@ -612,11 +612,11 @@ Gpt_ValueType Gpt_GetTimeRemaining(Gpt_ChannelType Channel){
         temp_PreScale = (temp_RealCounter >> 16 ) & 0xFF;
     }
 
-    if(Gpt_ConfigPtr[Channel].PreScalingType == Gpt_Prescale_NotUsed){
+    if(GPT_ConfigPtr_Container[Channel].PreScalingType == Gpt_Prescale_NotUsed){
         returnValue = temp_RealCounter & G_BitUsedGuarding[Channel];
         returnValue =( 0xFFFFFFFF - returnValue ) & G_BitUsedGuarding[Channel];
-    }else if(Gpt_ConfigPtr[Channel].PreScalingType == Gpt_Prescale_Hardware){
-        if( Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Channel].ChannelMode == Gpt_Mode_Periodic_Concatenate){
+    }else if(GPT_ConfigPtr_Container[Channel].PreScalingType == Gpt_Prescale_Hardware){
+        if( GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Channel].ChannelMode == Gpt_Mode_Periodic_Concatenate){
             temp_RealCounter = temp_RealCounter >> G_BitShifting[Channel];
             temp_PreScale = temp_PreScale & G_BitShiftingGuarding[Channel];
             temp_PreScale = temp_PreScale << ( 32 - G_BitShifting[Channel] );
@@ -677,27 +677,27 @@ Std_ReturnType Gpt_GetPredefTimerValue(Gpt_PredefTimerType PredefTimer, uint32* 
 void Gpt_Notification_channel_Normal_0(void){
     volatile uint32* timePtr = (uint32*)GPTM_0_16_32_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
-    if( temp & Gpt_ConfigPtr[Gpt_Channel_Normal_0].Interrupt_Type & ( (1 << Gpt_InterruptOverFlow) | (1 << Gpt_InterruptOverFlow << 8)) ){
+    if( temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].Interrupt_Type & ( (1 << Gpt_InterruptOverFlow) | (1 << Gpt_InterruptOverFlow << 8)) ){
         /* Individual Mode */
-        if(Gpt_ConfigPtr[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_Periodic_A){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),0);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),8);
         }
         /* if Software preScaler disabled, G_SW_PreScaling[Gpt_Channel_Normal_0] = 1 and will be UP
          * if it's enable it will just increment and go on                                          */
         G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_0] ++;
         if(G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_0] == G_SW_PreScaling[0]){
-            Gpt_ConfigPtr[Gpt_Channel_Normal_0].GptNotificationCallBack_OverFlowEvent();
+            GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].GptNotificationCallBack_OverFlowEvent();
             G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_0] = 0;
         }
-    }else if( temp & Gpt_ConfigPtr[Gpt_Channel_Normal_0].Interrupt_Type &( (1 << Gpt_InterruptMatch) | (1 << Gpt_InterruptMatch << 8)) ){
-        if(Gpt_ConfigPtr[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_OneShot_A ||Gpt_ConfigPtr[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_Periodic_A){
+    }else if( temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].Interrupt_Type &( (1 << Gpt_InterruptMatch) | (1 << Gpt_InterruptMatch << 8)) ){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_OneShot_A ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),4);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),11);
         }
-        Gpt_ConfigPtr[Gpt_Channel_Normal_0].GptNotificationCallBack_Match();
+        GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].GptNotificationCallBack_Match();
     }
 }
 
@@ -705,194 +705,194 @@ void Gpt_Notification_channel_Normal_0(void){
 void Gpt_Notification_channel_Normal_1(void){
     volatile uint32* timePtr = (uint32*)GPTM_1_16_32_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
-    if(temp & Gpt_ConfigPtr[Gpt_Channel_Normal_1].Interrupt_Type & ((1 << Gpt_InterruptOverFlow) | (1 << Gpt_InterruptOverFlow << 8)) ){
+    if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].Interrupt_Type & ((1 << Gpt_InterruptOverFlow) | (1 << Gpt_InterruptOverFlow << 8)) ){
         /* Individual Mode */
-        if(Gpt_ConfigPtr[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_Periodic_A){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),0);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),8);
         }
         /* if Software preScaler disabled, G_SW_PreScaling[Gpt_Channel_Normal_1] = 1 and will be UP
          * if it's enable it will just increment and go on                                          */
         G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_1] ++;
         if(G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_1] == G_SW_PreScaling[1]){
-            Gpt_ConfigPtr[Gpt_Channel_Normal_1].GptNotificationCallBack_OverFlowEvent();
+            GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].GptNotificationCallBack_OverFlowEvent();
             G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_1] = 0;
         }
-    }else if(temp & Gpt_ConfigPtr[Gpt_Channel_Normal_1].Interrupt_Type & ((1 << Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
-        if(Gpt_ConfigPtr[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_OneShot_A ||Gpt_ConfigPtr[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_Periodic_A){
+    }else if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].Interrupt_Type & ((1 << Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_OneShot_A ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),4);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),11);
         }
-        Gpt_ConfigPtr[Gpt_Channel_Normal_1].GptNotificationCallBack_Match();
+        GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].GptNotificationCallBack_Match();
     }
 }
 void Gpt_Notification_channel_Normal_2(void){
     volatile uint32* timePtr = (uint32*)GPTM_2_16_32_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
-    if(temp & Gpt_ConfigPtr[Gpt_Channel_Normal_2].Interrupt_Type & ( (1 << Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
+    if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].Interrupt_Type & ( (1 << Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
         /* Individual Mode */
-        if(Gpt_ConfigPtr[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_Periodic_A){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),0);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),8);
         }
         /* if Software preScaler disabled, G_SW_PreScaling[Gpt_Channel_Normal_2] = 1 and will be UP
          * if it's enable it will just increment and go on                                          */
         G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_2] ++;
         if(G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_2] == G_SW_PreScaling[2]){
-            Gpt_ConfigPtr[Gpt_Channel_Normal_2].GptNotificationCallBack_OverFlowEvent();
+            GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].GptNotificationCallBack_OverFlowEvent();
             G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_2] = 0;
         }
-    }else if(temp & Gpt_ConfigPtr[Gpt_Channel_Normal_2].Interrupt_Type &( (1 << Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
-        if(Gpt_ConfigPtr[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_OneShot_A ||Gpt_ConfigPtr[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_Periodic_A){
+    }else if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].Interrupt_Type &( (1 << Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_OneShot_A ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),4);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),11);
         }
-        Gpt_ConfigPtr[Gpt_Channel_Normal_2].GptNotificationCallBack_Match();
+        GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].GptNotificationCallBack_Match();
     }
 }
 void Gpt_Notification_channel_Normal_3(void){
     volatile uint32* timePtr = (uint32*)GPTM_3_16_32_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
-    if(temp & Gpt_ConfigPtr[Gpt_Channel_Normal_3].Interrupt_Type & ((1 << Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
+    if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].Interrupt_Type & ((1 << Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
         /* Individual Mode */
-        if(Gpt_ConfigPtr[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_Periodic_A){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),0);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),8);
         }
         /* if Software preScaler disabled, G_SW_PreScaling[Gpt_Channel_Normal_3] = 1 and will be UP
          * if it's enable it will just increment and go on                                          */
         G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_3] ++;
         if(G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_3] == G_SW_PreScaling[3]){
-            Gpt_ConfigPtr[Gpt_Channel_Normal_3].GptNotificationCallBack_OverFlowEvent();
+            GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].GptNotificationCallBack_OverFlowEvent();
             G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_3] = 0;
         }
-    }else if(temp & Gpt_ConfigPtr[Gpt_Channel_Normal_3].Interrupt_Type & ( (1 << Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
-        if(Gpt_ConfigPtr[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_OneShot_A ||Gpt_ConfigPtr[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_Periodic_A){
+    }else if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].Interrupt_Type & ( (1 << Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_OneShot_A ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),4);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),11);
         }
-        Gpt_ConfigPtr[Gpt_Channel_Normal_3].GptNotificationCallBack_Match();
+        GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].GptNotificationCallBack_Match();
     }
 }
 void Gpt_Notification_channel_Normal_4(void){
     volatile uint32* timePtr = (uint32*)GPTM_4_16_32_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
-    if(temp & Gpt_ConfigPtr[Gpt_Channel_Normal_4].Interrupt_Type & ( (1 << Gpt_InterruptOverFlow) | (1 << Gpt_InterruptOverFlow << 8)) ){
+    if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].Interrupt_Type & ( (1 << Gpt_InterruptOverFlow) | (1 << Gpt_InterruptOverFlow << 8)) ){
         /* Individual Mode */
-        if(Gpt_ConfigPtr[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_Periodic_A){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),0);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),8);
         }
         /* if Software preScaler disabled, G_SW_PreScaling[Gpt_Channel_Normal_4] = 1 and will be UP
          * if it's enable it will just increment and go on                                          */
         G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_4] ++;
         if(G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_4] == G_SW_PreScaling[4]){
-            Gpt_ConfigPtr[Gpt_Channel_Normal_4].GptNotificationCallBack_OverFlowEvent();
+            GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].GptNotificationCallBack_OverFlowEvent();
             G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_4] = 0;
         }
-    }else if(temp & Gpt_ConfigPtr[Gpt_Channel_Normal_4].Interrupt_Type & ( (1 << Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
-        if(Gpt_ConfigPtr[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_OneShot_A ||Gpt_ConfigPtr[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_Periodic_A){
+    }else if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].Interrupt_Type & ( (1 << Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_OneShot_A ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),4);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),11);
         }
-        Gpt_ConfigPtr[Gpt_Channel_Normal_4].GptNotificationCallBack_Match();
+        GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].GptNotificationCallBack_Match();
     }
 }
 void Gpt_Notification_channel_Normal_5(void){
     volatile uint32* timePtr = (uint32*)GPTM_5_16_32_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
-    if(temp & Gpt_ConfigPtr[Gpt_Channel_Normal_5].Interrupt_Type &( (1 << Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
+    if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].Interrupt_Type &( (1 << Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
         /* Individual Mode */
-        if(Gpt_ConfigPtr[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_Periodic_A){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),0);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Normal_5].ChannelMode  == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Normal_5].ChannelMode  == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].ChannelMode  == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].ChannelMode  == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),8);
         }
         /* if Software preScaler disabled, G_SW_PreScaling[Gpt_Channel_Normal_5] = 1 and will be UP
          * if it's enable it will just increment and go on                                          */
         G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_5] ++;
         if(G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_5] == G_SW_PreScaling[5]){
-            Gpt_ConfigPtr[Gpt_Channel_Normal_5].GptNotificationCallBack_OverFlowEvent();
+            GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].GptNotificationCallBack_OverFlowEvent();
             G_SW_PreScaler_RealCounter[Gpt_Channel_Normal_5] = 0;
         }
-    }else if(temp & Gpt_ConfigPtr[Gpt_Channel_Normal_5].Interrupt_Type & ( (1 <<  Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
-        if(Gpt_ConfigPtr[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_OneShot_A ||Gpt_ConfigPtr[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_Periodic_A){
+    }else if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].Interrupt_Type & ( (1 <<  Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_OneShot_A ||GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),4);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),11);
         }
-        Gpt_ConfigPtr[Gpt_Channel_Normal_5].GptNotificationCallBack_Match();
+        GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].GptNotificationCallBack_Match();
     }
 }
 
 void Gpt_Notification_channel_Wide_0(void){
     volatile uint32* timePtr = (uint32*)GPTM_0_32_64_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
-    if(temp & Gpt_ConfigPtr[Gpt_Channel_Wide_0].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
+    if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
         /* Individual Mode */
-        if(Gpt_ConfigPtr[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_Periodic_A){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),0);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Wide_0].ChannelMode  == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].ChannelMode  == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),8);
         }
         /* if Software preScaler disabled, G_SW_PreScaling[Gpt_Channel_Wide_0] = 1 and will be UP
          * if it's enable it will just increment and go on                                          */
         G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_0] ++;
         if(G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_0] == G_SW_PreScaling[Gpt_Channel_Wide_0]){
-            Gpt_ConfigPtr[Gpt_Channel_Wide_0].GptNotificationCallBack_OverFlowEvent();
+            GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].GptNotificationCallBack_OverFlowEvent();
             G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_0] = 0;
         }
-    }else if(temp & Gpt_ConfigPtr[Gpt_Channel_Wide_0].Interrupt_Type & ( (1 <<  Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
-        if(Gpt_ConfigPtr[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_OneShot_A ||Gpt_ConfigPtr[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_Periodic_A){
+    }else if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].Interrupt_Type & ( (1 <<  Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_OneShot_A ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),4);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),11);
         }
-        Gpt_ConfigPtr[Gpt_Channel_Wide_0].GptNotificationCallBack_Match();
+        GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].GptNotificationCallBack_Match();
     }
 }
 void Gpt_Notification_channel_Wide_1(void){
     volatile uint32* timePtr = (uint32*)GPTM_1_32_64_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
-    if(temp & Gpt_ConfigPtr[Gpt_Channel_Wide_1].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
+    if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
         /* Individual Mode */
-        if(Gpt_ConfigPtr[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_Periodic_A){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),0);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),8);
         }
         /* if Software preScaler disabled, G_SW_PreScaling[Gpt_Channel_Wide_1] = 1 and will be UP
          * if it's enable it will just increment and go on                                          */
         G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_1] ++;
         if(G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_1] == G_SW_PreScaling[Gpt_Channel_Wide_1]){
-            Gpt_ConfigPtr[Gpt_Channel_Wide_1].GptNotificationCallBack_OverFlowEvent();
+            GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].GptNotificationCallBack_OverFlowEvent();
             G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_1] = 0;
         }
-    }else if(temp & Gpt_ConfigPtr[Gpt_Channel_Wide_1].Interrupt_Type & ( (1 <<  Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
-        if(Gpt_ConfigPtr[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_OneShot_A ||Gpt_ConfigPtr[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_Periodic_A){
+    }else if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].Interrupt_Type & ( (1 <<  Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_OneShot_A ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),4);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),11);
         }
-        Gpt_ConfigPtr[Gpt_Channel_Wide_1].GptNotificationCallBack_Match();
+        GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].GptNotificationCallBack_Match();
     }
 }
 void Gpt_Notification_channel_Wide_2(void){
     volatile uint32* timePtr = (uint32*)GPTM_2_32_64_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
-    if(temp & Gpt_ConfigPtr[Gpt_Channel_Wide_2].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow ) | (1 << Gpt_InterruptOverFlow << 8)) ){
+    if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow ) | (1 << Gpt_InterruptOverFlow << 8)) ){
         /* Individual Mode */
-        if(Gpt_ConfigPtr[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_Periodic_A){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),0);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),8);
         }
 
@@ -901,68 +901,68 @@ void Gpt_Notification_channel_Wide_2(void){
          * if it's enable it will just increment and go on                                          */
         G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_2] ++;
         if(G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_2] == G_SW_PreScaling[Gpt_Channel_Wide_2]){
-            Gpt_ConfigPtr[Gpt_Channel_Wide_2].GptNotificationCallBack_OverFlowEvent();
+            GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].GptNotificationCallBack_OverFlowEvent();
             G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_2] = 0;
         }
-    }else if(temp & Gpt_ConfigPtr[Gpt_Channel_Wide_2].Interrupt_Type & ( (1 <<  Gpt_InterruptMatch) | (1 << Gpt_InterruptMatch << 8)) ){
-        if(Gpt_ConfigPtr[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_OneShot_A ||Gpt_ConfigPtr[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_Periodic_A){
+    }else if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].Interrupt_Type & ( (1 <<  Gpt_InterruptMatch) | (1 << Gpt_InterruptMatch << 8)) ){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_OneShot_A ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),4);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),11);
         }
-        Gpt_ConfigPtr[Gpt_Channel_Wide_2].GptNotificationCallBack_Match();
+        GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].GptNotificationCallBack_Match();
     }
 }
 void Gpt_Notification_channel_Wide_3(void){
     volatile uint32* timePtr = (uint32*)GPTM_3_32_64_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
-    if(temp & Gpt_ConfigPtr[Gpt_Channel_Wide_3].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
+    if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
         /* Individual Mode */
-        if(Gpt_ConfigPtr[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_Periodic_A){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),0);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),8);
         }
         /* if Software preScaler disabled, G_SW_PreScaling[Gpt_Channel_Wide_3] = 1 and will be UP
          * if it's enable it will just increment and go on                                          */
         G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_3] ++;
         if(G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_3] == G_SW_PreScaling[Gpt_Channel_Wide_3]){
-            Gpt_ConfigPtr[Gpt_Channel_Wide_3].GptNotificationCallBack_OverFlowEvent();
+            GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].GptNotificationCallBack_OverFlowEvent();
             G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_3] = 0;
         }
-    }else if(temp & Gpt_ConfigPtr[Gpt_Channel_Wide_3].Interrupt_Type & ( (1 <<  Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
-        if(Gpt_ConfigPtr[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_OneShot_A ||Gpt_ConfigPtr[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_Periodic_A){
+    }else if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].Interrupt_Type & ( (1 <<  Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_OneShot_A ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),4);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),11);
         }
-        Gpt_ConfigPtr[Gpt_Channel_Wide_3].GptNotificationCallBack_Match();
+        GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].GptNotificationCallBack_Match();
     }
 }
 void Gpt_Notification_channel_Wide_4(void){
     volatile uint32* timePtr = (uint32*)GPTM_4_32_64_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
-    if(temp & Gpt_ConfigPtr[Gpt_Channel_Wide_4].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
+    if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
         /* Individual Mode */
-        if(Gpt_ConfigPtr[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_OneShot_A || Gpt_ConfigPtr[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_Periodic_A){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_OneShot_A || GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),0);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),8);
         }
         /* if Software preScaler disabled, G_SW_PreScaling[Gpt_Channel_Wide_4] = 1 and will be UP
          * if it's enable it will just increment and go on                                          */
         G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_4] ++;
         if(G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_4] == G_SW_PreScaling[Gpt_Channel_Wide_4]){
-            Gpt_ConfigPtr[Gpt_Channel_Wide_4].GptNotificationCallBack_OverFlowEvent();
+            GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].GptNotificationCallBack_OverFlowEvent();
             G_SW_PreScaler_RealCounter[Gpt_Channel_Wide_4] = 0;
         }
-    }else if(temp & Gpt_ConfigPtr[Gpt_Channel_Wide_4].Interrupt_Type & ( (1 <<  Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
-        if(Gpt_ConfigPtr[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_OneShot_Concatenate || Gpt_ConfigPtr[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_Periodic_Concatenate ||Gpt_ConfigPtr[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_OneShot_A ||Gpt_ConfigPtr[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_Periodic_A){
+    }else if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].Interrupt_Type & ( (1 <<  Gpt_InterruptMatch)  | (1 << Gpt_InterruptMatch << 8)) ){
+        if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_OneShot_Concatenate || GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_Periodic_Concatenate ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_OneShot_A ||GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_Periodic_A){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),4);
-        }else if(Gpt_ConfigPtr[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_OneShot_B || Gpt_ConfigPtr[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_Periodic_B){
+        }else if(GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_OneShot_B || GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].ChannelMode == Gpt_Mode_Periodic_B){
             REG_SET_PEIPTH_BB_PTR(((uint8*)timePtr +GPTM_ICR_REG_OFFSET),11);
         }
-        Gpt_ConfigPtr[Gpt_Channel_Wide_4].GptNotificationCallBack_Match();
+        GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].GptNotificationCallBack_Match();
     }
 }
 

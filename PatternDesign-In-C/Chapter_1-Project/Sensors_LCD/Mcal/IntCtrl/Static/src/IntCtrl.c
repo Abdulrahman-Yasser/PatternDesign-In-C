@@ -35,61 +35,61 @@
 * \Parameters (out): None
 * \Return value:   : None
 *******************************************************************************/
-void IntCtrl_Init(const IntCtrl_Container_t* IntCtrl_config_var)
+void IntCtrl_Init(void)
  {
     uint32 t1, t3;
     volatile uint32* t2;
     uint8 i;
-    NVIC_APINT = IntCtrl_Prio_Group_System_Lock_reg | (IntCtrl_config_var->Prio_Group_System << 8);
+    NVIC_APINT = IntCtrl_Prio_Group_System_Lock_reg | (Initialized_Interrupt_Container.Prio_Group_System << 8);
     for (i = 0; i  < IntCtrl_Interrupt_count_cfg; i++){
-        if(IntCtrl_config_var->container_ptr[i].int_state == IntCtrl_Disable){
+        if(Initialized_Interrupt_Container.container_ptr[i].int_state == IntCtrl_Disable){
             continue;
         }
-        if(IntCtrl_config_var->container_ptr[i].int_num >= 16){
-            switch (((IntCtrl_config_var->container_ptr[i].int_num)-16)/(32))
+        if(Initialized_Interrupt_Container.container_ptr[i].int_num >= 16){
+            switch (((Initialized_Interrupt_Container.container_ptr[i].int_num)-16)/(32))
             {
             case 0:
-                REG_WRITE_BIT(NVIC_EN0, ((IntCtrl_config_var->container_ptr[i].int_num - 16) % 32));
+                REG_WRITE_BIT(NVIC_EN0, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % 32));
                 break;
             case 1:
-                REG_WRITE_BIT(NVIC_EN1, ((IntCtrl_config_var->container_ptr[i].int_num - 16) % (32*2)));
+                REG_WRITE_BIT(NVIC_EN1, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % (32*2)));
                 break;
             case 2:
-                REG_WRITE_BIT(NVIC_EN2, ((IntCtrl_config_var->container_ptr[i].int_num - 16) % (32*3)));
+                REG_WRITE_BIT(NVIC_EN2, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % (32*3)));
                 break;
             case 3:
-                REG_WRITE_BIT(NVIC_EN3, ((IntCtrl_config_var->container_ptr[i].int_num - 16) % (32*4)));
+                REG_WRITE_BIT(NVIC_EN3, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % (32*4)));
                 break;
             case 4:
-                REG_WRITE_BIT(NVIC_EN4, ((IntCtrl_config_var->container_ptr[i].int_num - 16) % (32*5)));
+                REG_WRITE_BIT(NVIC_EN4, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % (32*5)));
                 break;
             default:
                 break;
             }
-            t1 = (((IntCtrl_config_var->container_ptr[i].int_num)-16)/4);
+            t1 = (((Initialized_Interrupt_Container.container_ptr[i].int_num)-16)/4);
             t2 = ((volatile uint32*)NVIC_PRI0_ADDRESS + t1) ;
-            t3 = (IntCtrl_config_var->container_ptr[i].int_priority << ((((IntCtrl_config_var->container_ptr[i].int_num-16)%4)*8)+5));
+            t3 = (Initialized_Interrupt_Container.container_ptr[i].int_priority << ((((Initialized_Interrupt_Container.container_ptr[i].int_num-16)%4)*8)+5));
             (*(volatile uint32 *)t2) |= t3;
-        }else if(IntCtrl_config_var->container_ptr[i].int_num < 7){
-            if(IntCtrl_config_var->container_ptr[i].int_num == Memory_Management){
+        }else if(Initialized_Interrupt_Container.container_ptr[i].int_num < 7){
+            if(Initialized_Interrupt_Container.container_ptr[i].int_num == Memory_Management){
                 REG_WRITE_BIT(NVIC_SYSHNDCTRL, 16);
-                REG_WRITE_32_BIT(NVIC_SYSPRI1, (IntCtrl_config_var->container_ptr[i].int_priority << 5));
-            }else if(IntCtrl_config_var->container_ptr[i].int_num == Bus_Fault){
+                REG_WRITE_32_BIT(NVIC_SYSPRI1, (Initialized_Interrupt_Container.container_ptr[i].int_priority << 5));
+            }else if(Initialized_Interrupt_Container.container_ptr[i].int_num == Bus_Fault){
                 REG_WRITE_BIT(NVIC_SYSHNDCTRL, 17);
-                REG_WRITE_32_BIT(NVIC_SYSPRI1, (IntCtrl_config_var->container_ptr[i].int_priority << 13));
-            }else if(IntCtrl_config_var->container_ptr[i].int_num == Usage_Fault){
+                REG_WRITE_32_BIT(NVIC_SYSPRI1, (Initialized_Interrupt_Container.container_ptr[i].int_priority << 13));
+            }else if(Initialized_Interrupt_Container.container_ptr[i].int_num == Usage_Fault){
                 REG_WRITE_BIT(NVIC_SYSHNDCTRL, 18);
-                REG_WRITE_32_BIT(NVIC_SYSPRI1, (IntCtrl_config_var->container_ptr[i].int_priority << 21));
+                REG_WRITE_32_BIT(NVIC_SYSPRI1, (Initialized_Interrupt_Container.container_ptr[i].int_priority << 21));
             }
-        }else if(IntCtrl_config_var->container_ptr[i].int_num < 16){
-            if(IntCtrl_config_var->container_ptr[i].int_num == SVCall){
-                REG_WRITE_32_BIT(NVIC_SYSPRI2, (IntCtrl_config_var->container_ptr[i].int_priority << 29));
-            }else if(IntCtrl_config_var->container_ptr[i].int_num == Debug_Monitor){
-                REG_WRITE_32_BIT(NVIC_SYSPRI3, (IntCtrl_config_var->container_ptr[i].int_priority << 5));
-            }else if(IntCtrl_config_var->container_ptr[i].int_num == PendSV){
-                REG_WRITE_32_BIT(NVIC_SYSPRI3, (IntCtrl_config_var->container_ptr[i].int_priority << 21));
-            }else if(IntCtrl_config_var->container_ptr[i].int_num == SysTick){
-                REG_WRITE_32_BIT(NVIC_SYSPRI3, (IntCtrl_config_var->container_ptr[i].int_priority << 29));
+        }else if(Initialized_Interrupt_Container.container_ptr[i].int_num < 16){
+            if(Initialized_Interrupt_Container.container_ptr[i].int_num == SVCall){
+                REG_WRITE_32_BIT(NVIC_SYSPRI2, (Initialized_Interrupt_Container.container_ptr[i].int_priority << 29));
+            }else if(Initialized_Interrupt_Container.container_ptr[i].int_num == Debug_Monitor){
+                REG_WRITE_32_BIT(NVIC_SYSPRI3, (Initialized_Interrupt_Container.container_ptr[i].int_priority << 5));
+            }else if(Initialized_Interrupt_Container.container_ptr[i].int_num == PendSV){
+                REG_WRITE_32_BIT(NVIC_SYSPRI3, (Initialized_Interrupt_Container.container_ptr[i].int_priority << 21));
+            }else if(Initialized_Interrupt_Container.container_ptr[i].int_num == SysTick){
+                REG_WRITE_32_BIT(NVIC_SYSPRI3, (Initialized_Interrupt_Container.container_ptr[i].int_priority << 29));
                 REG_WRITE_BIT(NVIC_STCTRL, 1);
                 REG_WRITE_BIT(NVIC_STCTRL, 0);
             }

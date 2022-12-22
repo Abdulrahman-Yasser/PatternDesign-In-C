@@ -22,13 +22,15 @@
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
+#define UART_ALLOWED_INTERRUPTS_NUMBER  4
+
 typedef uint32 UART_BaudRateType;
 
 typedef uint8 UART_EOF_FlagType;
 
 
 typedef enum{
-         UART_NUM_0, UART_NUM_1, UART_NUM_2, UART_NUM_3, UART_NUM_4, UART_NUM_5, UART_NUM_6, UART_NUM_7
+    UART_NUM_0, UART_NUM_1, UART_NUM_2, UART_NUM_3, UART_NUM_4, UART_NUM_5, UART_NUM_6, UART_NUM_7
 }UART_ChannelType;
 
 typedef enum{
@@ -45,11 +47,16 @@ typedef enum{
 }UART_StopBitsType;
 
 typedef enum{
-    UARTISRMode_POLLING, UARTISRMode_INTERRUPT
+    UARTISRMode_ClearToSendModem=1, UARTISRMode_Receive = 4,
+    UARTISRMode_Transmit, UARTISRMode_ReceiveTimeOut_Error,
+    UARTISRMode_Framing_Error, UARTISRMode_Parity_Error,
+    UARTISRMode_Break_Error, UARTISRMode_Overrun_Error,
+    UARTISRMode_9BitMode = 12, UARTISRMode_None
 }UART_ISRModeType;
 
 typedef enum{
-    UARTMode_Transmit, UARTMode_Receive, UARTMode_Transmit_Receive
+    UARTMode_Transmit, UARTMode_Receive, UARTMode_Transmit_Receive,
+    UARTMode_Transmit_HSE, UARTMode_Receive_HSE, UARTMode_Transmit_Receive_HSE
 }UART_ModeType;
 
 typedef enum{
@@ -57,10 +64,9 @@ typedef enum{
 }UART_FIFOType;
 
 typedef enum{
-    UART_PREDEF_8_1S_18Rx_18Tx,         // 8 Data-bit, 1 Stop bit, No Priority, FIFO 1/8 Rx, FIFO 1/8 Tx, No ISR
-    UART_PREDEF_8_1S_18Rx_18Tx_ISR_EOT, // 8 Data-bit, 1 Stop bit, No Priority, FIFO 1/8 Rx, FIFO 1/8 Tx, End-Of-Transmission ISR
-    UART_PREDEF_8_1S_18Rx_18Tx_ISR_FIFO,// 8 Data-bit, 1 Stop bit, No Priority, FIFO 1/8 Rx, FIFO 1/8 Tx, FIFO Memory ISR
-    UART_PREDEF_8_1S_Rx_ISR             // 8 Data-bit, 1 Stop bit, No Priority, No FIFO Rx, ISR When ever it receives
+    UART0_PREDEF_enum,
+    UART1_PREDEF_enum,
+    UART5_PREDEF_enum
 }UART_PredefUARTType;
 
 typedef struct{
@@ -69,15 +75,11 @@ typedef struct{
     UART_SizeType Data_Size;
     UART_ParityType parity;
     UART_StopBitsType StopBits_Num;
-    UART_ISRModeType Uart_ISRMode;
+    UART_ISRModeType Uart_ISRMode[UART_ALLOWED_INTERRUPTS_NUMBER];
     UART_BaudRateType BaudRate;
     UART_EOF_FlagType endOfTransmission;
     UART_FIFOType fifo_size_rx;
     UART_FIFOType fifo_size_tx;
-    uint8 front_pointer_tx;
-    uint8 rear_pointer_tx;
-    uint8 front_pointer_rx;
-    uint8 rear_pointer_rx;
 }UART_ConfigType;
 
 

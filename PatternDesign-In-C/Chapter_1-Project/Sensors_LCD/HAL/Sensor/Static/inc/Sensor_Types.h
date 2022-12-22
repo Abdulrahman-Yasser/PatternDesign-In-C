@@ -11,9 +11,10 @@
 
 typedef uint8 SENSOR_READ_TYPE;
 
-typedef struct{
+typedef struct Sensor_struct Sensor_Type;
+struct Sensor_struct{
     SENSOR_READ_TYPE value;
     SENSOR_READ_TYPE (*GetValue)(Sensor_Type* const me);
-}Sensor_Type;
+};
 
 #endif /* HAL_SENSOR_STATIC_INC_SENSOR_TYPES_H_ */

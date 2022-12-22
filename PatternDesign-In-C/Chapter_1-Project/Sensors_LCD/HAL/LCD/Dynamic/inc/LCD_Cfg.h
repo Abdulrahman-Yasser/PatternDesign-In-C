@@ -11,6 +11,7 @@
 
 #define Number_Of_LCD       2
 
-extern const LCD_Container_Type LCD_ConfigPtr[Number_Of_LCD];
+#define LCD_BUFFER_SIZE     16
+
 
 #endif /* HAL_LED_DYNAMIC_INC_LCD_CFG_H_ */

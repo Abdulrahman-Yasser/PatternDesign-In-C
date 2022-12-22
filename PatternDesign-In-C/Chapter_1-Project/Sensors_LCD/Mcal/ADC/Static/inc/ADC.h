@@ -16,7 +16,6 @@
  *********************************************************************************************************************/
 
 #include <Mcal/ADC/Static/inc/ADC_Types.h>
-#include <Mcal/DIO/Dynamic/inc/ADC_Cfg.h>
 #include "../../../../Common/Std_Types.h"
 
 

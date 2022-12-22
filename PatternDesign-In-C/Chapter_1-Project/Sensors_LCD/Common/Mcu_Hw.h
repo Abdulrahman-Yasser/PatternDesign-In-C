@@ -530,12 +530,28 @@ WatchDog Timer Registers
 #define UART_CTL_REG_OFFSET               0x030
 #define UART_IFLS_REG_OFFSET              0x034
 #define UART_IM_REG_OFFSET                0x038
+#define UART_RIS_REG_OFFSET               0x03C
 #define UART_ICR_REG_OFFSET               0x044
 #define UART_CC_REG_OFFSET                0xFC8
 #define UART_UARTRIS_REG_OFFSET           0x03C
 
+#define UART_FR_CTS_MASK            0
+#define UART_FR_BUSY_MASK           3
+#define UART_FR_RXFE_MASK           4
+#define UART_FR_TXFF_MASK           5
+#define UART_FR_RXFF_MASK           6
+#define UART_FR_TXFE_MASK           7
 
 
+#define UART_MIS_CTS_MASK           1
+#define UART_MIS_RX_MASK            4
+#define UART_MIS_TX_MASK            5
+#define UART_MIS_RT_MASK            6
+#define UART_MIS_FE_MASK            7
+#define UART_MIS_PE_MASK            8
+#define UART_MIS_BE_MASK            9
+#define UART_MIS_OE_MASK            10
+#define UART_MIS_9BIT_MASK          12
 
 #define SYSCTL_RCGCUART       (*((volatile uint32 *)0x400FE618))
 

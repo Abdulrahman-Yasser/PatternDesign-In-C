@@ -24,7 +24,7 @@
  *  GLOBAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
 
-void Gpt_Init(const Gpt_ConfigType* ConfigPtr);
+void Gpt_Init(void);
 
 void Gpt_DisableNotification(Gpt_ChannelType Channel);
 
@@ -41,6 +41,5 @@ Gpt_ValueType Gpt_GetTimeRemaining(Gpt_ChannelType Channel);
 Std_ReturnType Gpt_GetPredefTimerValue(Gpt_PredefTimerType PredefTimer, uint32* TimeValuePtr);
 
 
-extern const Gpt_ConfigType Gpt_ConfigPtr[TIMERS_NUMBERS];
 
 #endif

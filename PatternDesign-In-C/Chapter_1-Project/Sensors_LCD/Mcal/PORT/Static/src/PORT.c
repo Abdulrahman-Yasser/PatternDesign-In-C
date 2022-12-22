@@ -131,7 +131,7 @@ volatile uint32 *GetPortAddress(Port_PinType PortNum_Var){
 * \Parameters (out): None                                                      
 * \Return value:   : Std_ReturnType  None
 *******************************************************************************/
-void Port_Init(const Port_ConfigType *ConfigPtr){
+void Port_Init(void){
     uint8 i, PinNum;
     volatile uint32* PortPtr;
     static uint8 ClockConfiguredPins = 0;

@@ -38,14 +38,14 @@ static void (*SysTick_CallBack_PtrToFunc)(void) = ((void*) 0);
 * \Parameters (out): None
 * \Return value:   : None
 *******************************************************************************/
-void SysTick_Init(SysTick_Config *ConfigPtr){
-    SYSTICK_RELOAD_REG = ConfigPtr->ReLoad;
-    if(ConfigPtr->Interrupt == SysTick_Interrupt_Enable){
+void SysTick_Init(void){
+    SYSTICK_RELOAD_REG = My_SysTick.ReLoad;
+    if(My_SysTick.Interrupt == SysTick_Interrupt_Enable){
         SYSTICK_CTRL_REG |= 1 << 1;
     }else{
         SYSTICK_CTRL_REG &= ~(1 << 1);
     }
-    if(ConfigPtr->Clock ==SysTick_ClkSrc_SysClk){
+    if(My_SysTick.Clock ==SysTick_ClkSrc_SysClk){
         SYSTICK_CTRL_REG |= 1 << 2;
     }else{
         SYSTICK_CTRL_REG &= ~(1 << 2);

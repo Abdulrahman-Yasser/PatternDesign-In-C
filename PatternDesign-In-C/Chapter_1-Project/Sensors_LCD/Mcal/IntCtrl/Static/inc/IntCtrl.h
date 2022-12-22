@@ -25,7 +25,7 @@
  *  GLOBAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
 
-void IntCtrl_Init(const IntCtrl_Container_t* IntCtrl_config_var) ;
+void IntCtrl_Init(void) ;
 
 void IntCtrl_DisableInterrupt(IntCtrl_InterruptType_t InterruptID) ;
 

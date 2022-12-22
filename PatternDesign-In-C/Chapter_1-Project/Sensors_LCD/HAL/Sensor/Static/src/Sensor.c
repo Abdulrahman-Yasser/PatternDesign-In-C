@@ -15,7 +15,7 @@ void Sensor_Cleanup(Sensor_Type* const me) {
 }
 
 /* Operation GetValue() */
-SENSOR_READ_TYPE Sensor_GetValue(const Sensor* const me){
+SENSOR_READ_TYPE Sensor_GetValue(const Sensor_Type* const me){
     return me->value;
 }
 

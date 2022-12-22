@@ -25,7 +25,7 @@ extern const SysTick_Config My_SysTick ;
  *  GLOBAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
 
-void SysTick_Init(SysTick_Config *ConfigPtr);
+void SysTick_Init(void);
 
 void SysTick_Start(void);
 

@@ -5,6 +5,7 @@
  *      Author: abduy
  */
 #include "../inc/LCD.h"
+#include "../../../../Common/Platform_Types.h"
 
 #include "../../Dynamic/inc/LCD_Cfg.h"
 
@@ -21,27 +22,5 @@ void LCD_CleanUp(LCD_Container_Type* const me){
 }
 
 /* Operations */
-Std_BoolReturnType (*isFullFunction)(LCD_Container_Type* const me){
-
-}
-Std_BoolReturnType (*isEmptyFunction)(LCD_Container_Type* const me){
-
-}
-Std_BoolReturnType (*getSizeFunction)(LCD_Container_Type* const me){
-
-}
-void (*insertFunction)(LCD_Container_Type* const me, LCD_CHAR_Type k){
-
-}
-LCD_CHAR_Type (*removeFunction)(LCD_Container_Type* const me, LCD_Position_Type i){
-
-}
-
-LCD_Container_Type *LCD_Create(void){
-
-}
-void LCD_Destroy(LCD_Container_Type* const me){
-
-}
 
 
