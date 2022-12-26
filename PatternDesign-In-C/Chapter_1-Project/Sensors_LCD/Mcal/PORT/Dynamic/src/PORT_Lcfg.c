@@ -21,9 +21,12 @@
   *********************************************************************************************************************/
 const Port_ConfigType ConfigPtr[configured_pins] =
 {
-  {Port_Pin_F1, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma},
+  {Port_Pin_B1, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma},
+  {Port_Pin_B0, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma},
   {Port_Pin_E4, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_UARTn, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma},
-  {Port_Pin_E5, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_UARTn, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma}
+  {Port_Pin_E5, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_UARTn, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma},
+  {Port_Pin_E0, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_UARTn, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma},
+  {Port_Pin_E1, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_UARTn, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma}
 };
 
 /* For initializing the whole pins */

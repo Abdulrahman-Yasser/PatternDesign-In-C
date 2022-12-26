@@ -16,10 +16,8 @@
  /**********************************************************************************************************************
   *  GLOBAL CONSTANT MACROS
   *********************************************************************************************************************/
-
-#define Port_F_Pin_0        (DIO_ChannelType)DIO_Channel0_F
-#define Port_F_Pin_1        (DIO_ChannelType)DIO_Channel1_F
-#define Port_F_Pin_2        (DIO_ChannelType)DIO_Channel2_F
+#define GPIO_UART5_CHECK_PIN         (DIO_ChannelType)DIO_Channel0_B
+#define GPIO_UART7_CHECK_PIN         (DIO_ChannelType)DIO_Channel1_B
 
 #endif  /* DIO_CFG_H */
 

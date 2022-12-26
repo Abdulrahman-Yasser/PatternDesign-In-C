@@ -15,6 +15,15 @@
 #include "../Mcal/GPT/Static/inc/GPT.h"
 #include "../Mcal/SysTick/Static/inc/SysTick.h"
 
+
+#include "../Mcal/UART/Dynamic/inc/UART_Cfg.h"
+#include "../Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
+#include "../Mcal/PORT/Dynamic/inc/PORT_Cfg.h"
+#include "../Mcal/IntCtrl/Dynamic/inc/IntCtrl_Cfg.h"
+#include "../Mcal/GPT/Dynamic/inc/GPT_Cfg.h"
+#include "../Mcal/SysTick/Dynamic/inc/SysTick_CFG.h"
+
+
 void App_Init(void);
 void transmit(void);
 void Send_Msg(char* msg);

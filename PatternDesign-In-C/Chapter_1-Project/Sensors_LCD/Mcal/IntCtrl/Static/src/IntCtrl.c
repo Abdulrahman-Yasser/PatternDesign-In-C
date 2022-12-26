@@ -49,19 +49,19 @@ void IntCtrl_Init(void)
             switch (((Initialized_Interrupt_Container.container_ptr[i].int_num)-16)/(32))
             {
             case 0:
-                REG_WRITE_BIT(NVIC_EN0, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % 32));
+                REG_WRITE_BIT(NVIC_EN0, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) ));
                 break;
             case 1:
-                REG_WRITE_BIT(NVIC_EN1, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % (32*2)));
+                REG_WRITE_BIT(NVIC_EN1, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % (32*1)));
                 break;
             case 2:
-                REG_WRITE_BIT(NVIC_EN2, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % (32*3)));
+                REG_WRITE_BIT(NVIC_EN2, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % (32*2)));
                 break;
             case 3:
-                REG_WRITE_BIT(NVIC_EN3, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % (32*4)));
+                REG_WRITE_BIT(NVIC_EN3, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % (32*3)));
                 break;
             case 4:
-                REG_WRITE_BIT(NVIC_EN4, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % (32*5)));
+                REG_WRITE_BIT(NVIC_EN4, ((Initialized_Interrupt_Container.container_ptr[i].int_num - 16) % (32*4)));
                 break;
             default:
                 break;
@@ -101,19 +101,19 @@ void IntCtrl_DisableInterrupt(IntCtrl_InterruptType_t InterruptID){
         switch (((InterruptID)-16)/(32))
         {
         case 0:
-            REG_CLEAR_BIT(NVIC_EN0, ( (InterruptID - 16) % 32));
+            REG_CLEAR_BIT(NVIC_EN0, ( (InterruptID - 16) ));
             break;
         case 1:
-            REG_CLEAR_BIT(NVIC_EN1, ( (InterruptID - 16) % (32*2)));
+            REG_CLEAR_BIT(NVIC_EN1, ( (InterruptID - 16) % (32*1)));
             break;
         case 2:
-            REG_CLEAR_BIT(NVIC_EN2, ( (InterruptID - 16) % (32*3)));
+            REG_CLEAR_BIT(NVIC_EN2, ( (InterruptID - 16) % (32*2)));
             break;
         case 3:
-            REG_CLEAR_BIT(NVIC_EN3, ( (InterruptID - 16) % (32*4)));
+            REG_CLEAR_BIT(NVIC_EN3, ( (InterruptID - 16) % (32*3)));
             break;
         case 4:
-            REG_CLEAR_BIT(NVIC_EN4, ( (InterruptID - 16) % (32*5)));
+            REG_CLEAR_BIT(NVIC_EN4, ( (InterruptID - 16) % (32*4)));
             break;
         default:
             break;
@@ -137,19 +137,19 @@ void IntCtrl_Enable_Interrupt(IntCtrl_InterruptType_t InterruptID){
         switch (((InterruptID)-16)/(32))
         {
         case 0:
-            REG_WRITE_BIT(NVIC_EN0, ( (InterruptID - 16) % 32));
+            REG_WRITE_BIT(NVIC_EN0, ( (InterruptID - 16) ));
             break;
         case 1:
-            REG_WRITE_BIT(NVIC_EN1, ( (InterruptID - 16) % (32*2)));
+            REG_WRITE_BIT(NVIC_EN1, ( (InterruptID - 16) % (32*1)));
             break;
         case 2:
-            REG_WRITE_BIT(NVIC_EN2, ( (InterruptID - 16) % (32*3)));
+            REG_WRITE_BIT(NVIC_EN2, ( (InterruptID - 16) % (32*2)));
             break;
         case 3:
-            REG_WRITE_BIT(NVIC_EN3, ( (InterruptID - 16) % (32*4)));
+            REG_WRITE_BIT(NVIC_EN3, ( (InterruptID - 16) % (32*3)));
             break;
         case 4:
-            REG_WRITE_BIT(NVIC_EN4, ( (InterruptID - 16) % (32*5)));
+            REG_WRITE_BIT(NVIC_EN4, ( (InterruptID - 16) % (32*4)));
             break;
         default:
             break;

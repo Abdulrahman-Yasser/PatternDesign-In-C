@@ -140,6 +140,14 @@ volatile uint32* GetTimerAddress(Gpt_ChannelType TimerAddress){
     return i;
 }
 
+void __attribute__((weak)) App_Function(void){
+
+}
+
+void __attribute__((weak)) Default_Function(void){
+
+}
+
 /**********************************************************************************************************************
  *  GLOBAL FUNCTIONS
  *********************************************************************************************************************/

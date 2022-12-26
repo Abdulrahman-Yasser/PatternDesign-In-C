@@ -36,13 +36,14 @@
 #define MY_TIMER0_INTERRUPT             ((1 << Gpt_InterruptOverFlow))
 #define MY_TIMER0_ISR_CALLBACK          App_Function
 
+
 #define MY_DEFAULT_CHANNEL              Gpt_Channel_Normal_0
 #define MY_DEFAULT_FREQUENCY            0
 #define MY_DEFAULT_PRESCALING_TYPE      Gpt_Prescale_NotUsed
 #define MY_DEFAULT_WAIT_PERIOD          0
 #define MY_DEFAULT_MODE                 Gpt_Mode_NotUsed
 #define MY_DEFAULT_INTERRUPT            Gpt_Interrupt_NotUsed
-#define MY_DEFAULT_ISR_CALLBACK         (void*)0
+#define MY_DEFAULT_ISR_CALLBACK         Default_Function
 
 
 

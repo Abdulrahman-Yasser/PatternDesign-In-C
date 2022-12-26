@@ -20,19 +20,24 @@
 
 #define UART_CONFIGURED_PREDEF_NUMBER  3
 
+#define UART_TRANSMIT_RECEIVE_ONE_CHAR          1
+#define UART_TRANSMIT_RECEIVE_MANY_CHAR         0
+
+#define UART_BUFFER_MUST_BE_PUSHED      1
+#define UART_BUFFER_MAY_NOT_BE_PUSHED   0
 
 /**********************************************************************************************************************
  *  GLOBAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
 void uart_init(void);
 
-void Poke_to_transmit(UART_ChannelType my_uart);
+void Poke_to_transmit(UART_ChannelType my_uart, uint8 OnlyOneChar);
+void Poke_to_receive(UART_ChannelType my_uart, uint8 OnlyOneChar);
 
-void Push_to_Transmit(UART_ChannelType my_uart, uint8 x);
+void Push_to_Transmit(UART_ChannelType my_uart, uint8 x, uint8 must_be_pushed);
+
 void Pop_the_Received(UART_ChannelType my_uart, uint8* data);
 
-void Push_to_Transmit_predef(UART_PredefUARTType uart_predef_arg, uint8 x);
-void Pop_the_Received_predef(UART_PredefUARTType uart_predef_arg, uint8* data);
 
 
 void uart0_handler(void);

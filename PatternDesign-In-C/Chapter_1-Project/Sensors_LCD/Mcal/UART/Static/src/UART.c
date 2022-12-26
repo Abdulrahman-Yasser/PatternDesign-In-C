@@ -26,12 +26,11 @@
 /**********************************************************************************************************************
  *  LOCAL VARIABLES
  *********************************************************************************************************************/
-Queue_uint8_Type* UART_Queue_Buffer[7 * 2];
+Queue_uint8_DYNAMIC_Type* UART_Queue_Buffer[8 * 2];
 
-Queue_uint8_Type* UART_Queue_Buffer_Predef[UART_CONFIGURED_PREDEF_NUMBER * 2];
+#define UART_Transmit_Buffer_Mask   1
+#define UART_Receive_Buffer_Mask    0
 
-#define UART_Transmit_Buffer_Mask    1
-#define UART_Receive_Buffer_Mask     0
 
 /**********************************************************************************************************************
  *  LOCAL Functions Definition
@@ -39,132 +38,117 @@ Queue_uint8_Type* UART_Queue_Buffer_Predef[UART_CONFIGURED_PREDEF_NUMBER * 2];
 
 static uint32 get_address(UART_ChannelType uart_n);
 
-void uart_transmit(UART_ChannelType my_uart);
-void uart_receive(UART_ChannelType my_uart);
+void uart_transmit_one_char(UART_ChannelType my_uart);
+void uart_transmit_all_of_it(UART_ChannelType my_uart);
+
+void uart_receive_one_char(UART_ChannelType my_uart);
+void uart_receive_all_of_it(UART_ChannelType my_uart);
 
 
-void uart_transmit_predef(UART_PredefUARTType uart_predef_arg);
-void uart_receive_predef(UART_PredefUARTType uart_predef_arg);
 
+void __attribute__((weak)) App_Uart0_Tx_CallBack(void);
+void __attribute__((weak)) App_Uart0_Rx_CallBack(void);
+void __attribute__((weak)) App_Uart1_Tx_CallBack(void);
+void __attribute__((weak)) App_Uart1_Rx_CallBack(void);
+void __attribute__((weak)) App_Uart2_Tx_CallBack(void);
+void __attribute__((weak)) App_Uart2_Rx_CallBack(void);
+void __attribute__((weak)) App_Uart3_Tx_CallBack(void);
+void __attribute__((weak)) App_Uart3_Rx_CallBack(void);
+void __attribute__((weak)) App_Uart4_Tx_CallBack(void);
+void __attribute__((weak)) App_Uart4_Rx_CallBack(void);
+void __attribute__((weak)) App_Uart5_Tx_CallBack(void);
+void __attribute__((weak)) App_Uart5_Rx_CallBack(void);
+void __attribute__((weak)) App_Uart6_Tx_CallBack(void);
+void __attribute__((weak)) App_Uart6_Rx_CallBack(void);
+void __attribute__((weak)) App_Uart7_Tx_CallBack(void);
+void __attribute__((weak)) App_Uart7_Rx_CallBack(void);
 
 /**********************************************************************************************************************
  *  LOCAL Functions Implementation
  *********************************************************************************************************************/
 
-void uart_transmit(UART_ChannelType my_uart){
+void uart_transmit_one_char(UART_ChannelType my_uart){
     uint32 base, Register_Check;
     uint8 data;
     base = get_address(my_uart);
-    Register_Check = (*(volatile uint32 *)(base + UART_RIS_REG_OFFSET));
 
-    // CAN WE CHECK ONLY USING THIS REGISTER ?
+    if(!(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]->isEmpty(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]))){
 
-    if(Register_Check  & (1 << UART_MIS_TX_MASK)){
-        /* it will stop when it has a Full FIFO */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while(! Register_Check & (1 << UART_FR_TXFF_MASK) ){
-            if(!UART_Queue_Buffer[my_uart + UART_Transmit_Buffer_Mask]->isEmpty(UART_Queue_Buffer[my_uart + UART_Transmit_Buffer_Mask])){
-                data = UART_Queue_Buffer[my_uart + UART_Transmit_Buffer_Mask]->remove(UART_Queue_Buffer[my_uart + UART_Transmit_Buffer_Mask]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-            }else{
-                break;
-            }
-        }
+        do{
+            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
+        }while((Register_Check & (1 << UART_FR_TXFF_MASK) ));
+
+        data = UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]->remove(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]);
+        REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
     }
-    /* Clear the MIS Flag */
-    REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
 }
 
-void uart_receive(UART_ChannelType my_uart){
+void uart_transmit_all_of_it(UART_ChannelType my_uart){
     uint32 base, Register_Check;
     uint8 data;
     base = get_address(my_uart);
-    Register_Check = (*(volatile uint32 *)(base + UART_RIS_REG_OFFSET));
 
-    // CAN WE CHECK ONLY USING THIS REGISTER ?
+    while(!(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]->isEmpty(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]))){
+        do{
+            Register_Check = (uint32)(*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
+        }while((Register_Check & (1 << UART_FR_TXFF_MASK) ));
 
-    if(Register_Check  & (1 << UART_MIS_RX_MASK)){
-        /* it will stop when it has an Empty FIFO */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while(! Register_Check & (1 << UART_FR_RXFE_MASK) ){
-            if(!UART_Queue_Buffer[my_uart + UART_Receive_Buffer_Mask]->isFull(UART_Queue_Buffer[my_uart + UART_Receive_Buffer_Mask])){
-                data = (*(volatile uint32 *)(base + UART_DATA_REG_OFFSET));
-                UART_Queue_Buffer[my_uart + UART_Receive_Buffer_Mask]->insert(UART_Queue_Buffer[my_uart + UART_Receive_Buffer_Mask], data);
-            }else{
-                break;
-            }
-        }
+        data = UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]->remove(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]);
+        REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
     }
-    /* Clear the MIS Flag */
-    REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
 }
 
-void uart_transmit_predef(UART_PredefUARTType uart_predef_arg){
+void uart_transmit_some_of_it(UART_ChannelType my_uart, uint8 num){
     uint32 base, Register_Check;
-    uint8 data;
-    switch(uart_predef_arg){
-    case UART0_PREDEF_enum:
-        base = UART0_BASE_ADDRESS;
-        break;
-    case UART1_PREDEF_enum:
-        base = UART1_BASE_ADDRESS;
-        break;
-    case UART5_PREDEF_enum:
-        base = UART5_BASE_ADDRESS;
-        break;
-    }
-    Register_Check = (*(volatile uint32 *)(base + UART_RIS_REG_OFFSET));
+    uint8 data, i;
+    base = get_address(my_uart);
+    for(i = 0; i < num; i++){
+        if(!(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]->isEmpty(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]))){
+            do{
+                Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
+            }while((Register_Check & (1 << UART_FR_TXFF_MASK) ));
 
-    // CAN WE CHECK ONLY USING THIS REGISTER ?
-
-    if(Register_Check  & (1 << UART_MIS_TX_MASK)){
-        /* it will stop when it has a Full FIFO */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while(! Register_Check & (1 << UART_FR_TXFF_MASK) ){
-            if(!UART_Queue_Buffer_Predef[uart_predef_arg + UART_Transmit_Buffer_Mask]->isEmpty(UART_Queue_Buffer_Predef[uart_predef_arg + UART_Transmit_Buffer_Mask])){
-                data = UART_Queue_Buffer_Predef[uart_predef_arg + UART_Transmit_Buffer_Mask]->remove(UART_Queue_Buffer_Predef[uart_predef_arg + UART_Transmit_Buffer_Mask]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-            }else{
-                break;
-            }
+            data = UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]->remove(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]);
+            REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
         }
     }
-    /* Clear the MIS Flag */
-    REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
 }
 
-void uart_receive_predef(UART_PredefUARTType uart_predef_arg){
+
+void uart_receive_one_char(UART_ChannelType my_uart){
     uint32 base, Register_Check;
     uint8 data;
-    switch(uart_predef_arg){
-    case UART0_PREDEF_enum:
-        base = UART0_BASE_ADDRESS;
-        break;
-    case UART1_PREDEF_enum:
-        base = UART1_BASE_ADDRESS;
-        break;
-    case UART5_PREDEF_enum:
-        base = UART5_BASE_ADDRESS;
-        break;
-    }
-    Register_Check = (*(volatile uint32 *)(base + UART_RIS_REG_OFFSET));
+    base = get_address(my_uart);
 
-    // CAN WE CHECK ONLY USING THIS REGISTER ?
-
-    if(Register_Check  & (1 << UART_MIS_RX_MASK)){
-        /* it will stop when it has an Empty FIFO */
+    /* it will stop when it has an Empty FIFO */
+    do{
         Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while(! Register_Check & (1 << UART_FR_RXFE_MASK) ){
-            if(!UART_Queue_Buffer_Predef[uart_predef_arg + UART_Receive_Buffer_Mask]->isFull(UART_Queue_Buffer_Predef[uart_predef_arg + UART_Receive_Buffer_Mask])){
-                data = (*(volatile uint32 *)(base + UART_DATA_REG_OFFSET));
-                UART_Queue_Buffer_Predef[uart_predef_arg + UART_Receive_Buffer_Mask]->insert(UART_Queue_Buffer_Predef[uart_predef_arg + UART_Receive_Buffer_Mask], data);
-            }else{
-                break;
-            }
-        }
+    }while((Register_Check & (1 << UART_FR_RXFE_MASK) ));
+
+    if(!UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]->isFull(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask])){
+    }else{
+        UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]->remove(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]);
     }
-    /* Clear the MIS Flag */
-    REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
+    data = (*(volatile uint32 *)(base + UART_DATA_REG_OFFSET));
+    UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]->insert(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask], data);
+}
+
+void uart_receive_all_of_it(UART_ChannelType my_uart){
+    uint32 base, Register_Check;
+    uint8 data;
+    base = get_address(my_uart);
+
+    /* it will stop when it has an Empty FIFO */
+    Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
+    while(!(Register_Check & (1 << UART_FR_RXFE_MASK) )){
+        if(!UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]->isFull(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask])){
+        }else{
+            UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]->remove(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]);
+        }
+        data = (*(volatile uint32 *)(base + UART_DATA_REG_OFFSET));
+        UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]->insert(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask], data);
+        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
+    }
 }
 
 static uint32 get_address(UART_ChannelType uart_n){
@@ -199,6 +183,25 @@ static uint32 get_address(UART_ChannelType uart_n){
     }
     return ptr;
 }
+
+
+void __attribute__((weak)) App_Uart0_Tx_CallBack(void){ }
+void __attribute__((weak)) App_Uart0_Rx_CallBack(void){ }
+void __attribute__((weak)) App_Uart1_Tx_CallBack(void){ }
+void __attribute__((weak)) App_Uart1_Rx_CallBack(void){ }
+void __attribute__((weak)) App_Uart2_Tx_CallBack(void){ }
+void __attribute__((weak)) App_Uart2_Rx_CallBack(void){ }
+void __attribute__((weak)) App_Uart3_Tx_CallBack(void){ }
+void __attribute__((weak)) App_Uart3_Rx_CallBack(void){ }
+void __attribute__((weak)) App_Uart4_Tx_CallBack(void){ }
+void __attribute__((weak)) App_Uart4_Rx_CallBack(void){ }
+void __attribute__((weak)) App_Uart5_Tx_CallBack(void){ }
+void __attribute__((weak)) App_Uart5_Rx_CallBack(void){ }
+void __attribute__((weak)) App_Uart6_Tx_CallBack(void){ }
+void __attribute__((weak)) App_Uart6_Rx_CallBack(void){ }
+void __attribute__((weak)) App_Uart7_Tx_CallBack(void){ }
+void __attribute__((weak)) App_Uart7_Rx_CallBack(void){ }
+
 /**********************************************************************************************************************
  *  GLOBAL FUNCTIONS
  *********************************************************************************************************************/
@@ -206,13 +209,17 @@ static uint32 get_address(UART_ChannelType uart_n){
 void uart_init(void){
     uint8 i, j;
     uint32 ptr;
+    uint32 k;
     float temp2;
     /*********************************
     *1)   Enable Clock to UART
     *       Registers : SYSCTL_RCGCUART
     *********************************/
     for(j = 0; j < UART_CONFIGURED_NUMBER; j++){
+        ptr = get_address(UART_Container[j].uart_n);
         REG_WRITE_BIT(SYSCTL_RCGCUART, (uint8)UART_Container[j].uart_n);
+        /* For delay */
+        k = (uint32)(*(volatile uint32 *)(SYSCTL_RCGCUART));
 
 
         /*********************************
@@ -233,44 +240,44 @@ void uart_init(void){
             REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 8);
             REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 5);
             /* Initialize the Buffers for the UART */
-            UART_Queue_Buffer[j + 1] = Queue_Create_uint8(8);   // Transmitting Buffer
+            UART_Queue_Buffer[(2 * UART_Container[j].uart_n) + 1] = Queue_Create_DYNAMIC_uint8(30);   // Transmitting Buffer
             break;
         case UARTMode_Receive:
             REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 8);
             REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 9);
             REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 5);
             /* Initialize the Buffers for the UART */
-            UART_Queue_Buffer[j] = Queue_Create_uint8(8);       // Receiving Buffer
+            UART_Queue_Buffer[2 * UART_Container[j].uart_n] = Queue_Create_DYNAMIC_uint8(30);       // Receiving Buffer
             break;
         case UARTMode_Transmit_Receive:
             REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 8);
             REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 9);
             REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 5);
             /* Initialize the Buffers for the UART */
-            UART_Queue_Buffer[j] = Queue_Create_uint8(8);       // Receiving Buffer
-            UART_Queue_Buffer[j + 1] = Queue_Create_uint8(8);   // Transmitting Buffer
+            UART_Queue_Buffer[(2 * UART_Container[j].uart_n) + 1] = Queue_Create_DYNAMIC_uint8(30);   // Transmitting Buffer
+            UART_Queue_Buffer[2 * UART_Container[j].uart_n] = Queue_Create_DYNAMIC_uint8(30);       // Receiving Buffer
             break;
         case UARTMode_Transmit_HSE:
             REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 9);
             REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 8);
             REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 5);
             /* Initialize the Buffers for the UART */
-            UART_Queue_Buffer[j + 1] = Queue_Create_uint8(8);   // Transmitting Buffer
+            UART_Queue_Buffer[(2 * UART_Container[j].uart_n) + 1] = Queue_Create_DYNAMIC_uint8(30);   // Transmitting Buffer
             break;
         case UARTMode_Receive_HSE:
             REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 8);
             REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 9);
             REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 5);
             /* Initialize the Buffers for the UART */
-            UART_Queue_Buffer[j] = Queue_Create_uint8(8);       // Receiving Buffer
+            UART_Queue_Buffer[2 * UART_Container[j].uart_n] = Queue_Create_DYNAMIC_uint8(30);       // Receiving Buffer
             break;
         case UARTMode_Transmit_Receive_HSE:
             REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 8);
             REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 9);
             REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 5);
             /* Initialize the Buffers for the UART */
-            UART_Queue_Buffer[j] = Queue_Create_uint8(8);       // Receiving Buffer
-            UART_Queue_Buffer[j + 1] = Queue_Create_uint8(8);   // Transmitting Buffer
+            UART_Queue_Buffer[2 * UART_Container[j].uart_n] = Queue_Create_DYNAMIC_uint8(30);       // Receiving Buffer
+            UART_Queue_Buffer[(2 * UART_Container[j].uart_n) + 1] = Queue_Create_DYNAMIC_uint8(30);   // Transmitting Buffer
             break;
         default :
             break;
@@ -361,20 +368,21 @@ void uart_init(void){
          *6)   Choose the FIFO buffers length
          *      Registers : UARTIFLS (UART Interrupt FIFO Level Select)
          *********************************/
+        REG_CLEAR_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET));
         switch(UART_Container[j].fifo_size_tx){
         case UART_FIFO_NOTUSED:
-        case UART_FIFO_1_8:
+        case UART_FIFO_7_8:
             break;
-        case UART_FIFO_2_8:
+        case UART_FIFO_6_8:
             REG_WRITE_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET),0x1);
             break;
         case UART_FIFO_4_8:
             REG_WRITE_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET),0x2);
             break;
-        case UART_FIFO_6_8:
+        case UART_FIFO_2_8:
             REG_WRITE_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET),0x3);
             break;
-        case UART_FIFO_7_8:
+        case UART_FIFO_1_8:
             REG_WRITE_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET),0x4);
             break;
         default:
@@ -418,7 +426,16 @@ void uart_init(void){
      *******************************************************/
 #if UART0_PREDEF_MACRO == Enable
     /*  Enable the clock to it */
-    REG_WRITE_BIT(SYSCTL_RCGCUART, 0);
+    ptr = (uint32)(*(volatile uint32 *)SYSCTL_RCGCUART);
+    if(ptr & (1 << 0)){
+        /* that could not be possible, we should use it either with predefined UART or a user-defined UART
+         * so we going to shut it down to make a  . */
+        REG_CLEAR_BIT(SYSCTL_RCGCUART, 0);
+    }else{
+        REG_WRITE_BIT(SYSCTL_RCGCUART, 0);
+        /* just for delay purpose */
+        ptr = (uint32)(*(volatile uint32 *)SYSCTL_RCGCUART);
+    }
 
     /*  Clear most of Registers from any value it may got from the previous initialization */
     REG_CLEAR_32_BIT_PTR((UART0_BASE_ADDRESS + UART_CTL_REG_OFFSET));
@@ -426,11 +443,8 @@ void uart_init(void){
     REG_CLEAR_32_BIT_PTR((UART0_BASE_ADDRESS + UART_IM_REG_OFFSET));
     REG_CLEAR_32_BIT_PTR((UART0_BASE_ADDRESS + UART_LCRH_REG_OFFSET));
 
-    UART_Queue_Buffer_Predef[0] = Queue_Create_uint8(16);
-    UART_Queue_Buffer_Predef[1] = Queue_Create_uint8(16);
-
-    /* 8-Bit Data-width, one stop bit, no parity check, Disable FIFO */
-    REG_WRITE_32_BIT_PTR((UART0_BASE_ADDRESS + UART_LCRH_REG_OFFSET), 0x60);
+    UART_Queue_Buffer[0] = Queue_Create_uint8(16);
+    UART_Queue_Buffer[1] = Queue_Create_uint8(16);
 
     /* Rx Enable, Tx Enable, End-Of-Transmission Flag Enable,  */
     REG_WRITE_32_BIT_PTR((UART0_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0x310);
@@ -441,12 +455,24 @@ void uart_init(void){
     REG_CLEAR_32_BIT_PTR((UART0_BASE_ADDRESS + UART_FBRD_REG_OFFSET));
     REG_WRITE_32_BIT_PTR((UART0_BASE_ADDRESS + UART_FBRD_REG_OFFSET),11);
 
+    /* 8-Bit Data-width, one stop bit, no parity check, Disable FIFO */
+    REG_WRITE_32_BIT_PTR((UART0_BASE_ADDRESS + UART_LCRH_REG_OFFSET), 0x60);
+
     REG_WRITE_BIT_PTR((UART0_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0);
 #endif
 
 #if UART1_PREDEF_MACRO == Enable
     /*  Enable the clock to it */
-    REG_WRITE_BIT(SYSCTL_RCGCUART, 1);
+    ptr = (uint32)(*(volatile uint32 *)SYSCTL_RCGCUART);
+    if(ptr & (1 << 1)){
+        /* that could not be possible, we should use it either with predefined UART or a user-defined UART
+         * so we going to shut it down to make a  . */
+        REG_CLEAR_BIT(SYSCTL_RCGCUART, 1);
+    }else{
+        REG_WRITE_BIT(SYSCTL_RCGCUART, 1);
+        /* just for delay purpose */
+        ptr = (uint32)(*(volatile uint32 *)SYSCTL_RCGCUART);
+    }
 
     /*  Clear most of Registers from any value it may got from the previous initialization */
     REG_CLEAR_32_BIT_PTR((UART1_BASE_ADDRESS + UART_CTL_REG_OFFSET));
@@ -454,8 +480,8 @@ void uart_init(void){
     REG_CLEAR_32_BIT_PTR((UART1_BASE_ADDRESS + UART_IM_REG_OFFSET));
     REG_CLEAR_32_BIT_PTR((UART1_BASE_ADDRESS + UART_LCRH_REG_OFFSET));
 
-    UART_Queue_Buffer_Predef[2] = Queue_Create_uint8(16);
-    UART_Queue_Buffer_Predef[3] = Queue_Create_uint8(16);
+    UART_Queue_Buffer[2] = Queue_Create_uint8(16);
+    UART_Queue_Buffer[3] = Queue_Create_uint8(16);
 
     /* 8-Bit Data-width, one stop bit, no parity check, Enable FIFO */
     REG_WRITE_32_BIT_PTR((UART1_BASE_ADDRESS + UART_LCRH_REG_OFFSET), 0x70);
@@ -479,7 +505,16 @@ void uart_init(void){
 
 #if UART5_PREDEF_MACRO == Enable
     /*  Enable the clock to it */
-    REG_WRITE_BIT(SYSCTL_RCGCUART, 5);
+    ptr = (uint32)(*(volatile uint32 *)SYSCTL_RCGCUART);
+    if(ptr & (1 << 5)){
+        /* that could not be possible, we should use it either with predefined UART or a user-defined UART
+         * so we going to shut it down to make a  . */
+        REG_CLEAR_BIT(SYSCTL_RCGCUART, 5);
+    }else{
+        REG_WRITE_BIT(SYSCTL_RCGCUART, 5);
+        /* just for delay purpose */
+        ptr = (uint32)(*(volatile uint32 *)SYSCTL_RCGCUART);
+    }
 
     /*  Clear most of Registers from any value it may got from the previous initialization */
     REG_CLEAR_32_BIT_PTR((UART5_BASE_ADDRESS + UART_CTL_REG_OFFSET));
@@ -487,17 +522,11 @@ void uart_init(void){
     REG_CLEAR_32_BIT_PTR((UART5_BASE_ADDRESS + UART_IM_REG_OFFSET));
     REG_CLEAR_32_BIT_PTR((UART5_BASE_ADDRESS + UART_LCRH_REG_OFFSET));
 
-    UART_Queue_Buffer_Predef[4] = Queue_Create_uint8(16);
-    UART_Queue_Buffer_Predef[5] = Queue_Create_uint8(16);
+    UART_Queue_Buffer[10] = Queue_Create_uint8(50);
+    UART_Queue_Buffer[11] = Queue_Create_uint8(50);
 
-    /* 8-Bit Data-width, one stop bit, no parity check, Disable FIFO */
-    REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_LCRH_REG_OFFSET), 0x60);
-
-    /* Rx Enable, Tx Enable, End-Of-Transmission Flag Enable,  */
-    REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0x310);
-
-    /* Rx Interrupt Enable, Tx Interrupt Enable */
-    REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_IM_REG_OFFSET), 0x30);
+    /* Rx Enable, Tx Enable, End-Of-Transmission Flag Disable,  */
+    REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0x300);
 
     /* 9600 Baud-Rate */
     REG_CLEAR_32_BIT_PTR((UART5_BASE_ADDRESS + UART_IBRD_REG_OFFSET));
@@ -505,423 +534,241 @@ void uart_init(void){
     REG_CLEAR_32_BIT_PTR((UART5_BASE_ADDRESS + UART_FBRD_REG_OFFSET));
     REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_FBRD_REG_OFFSET),11);
 
+    /* 8-Bit Data-width, one stop bit, no parity check, Enable FIFO */
+    REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_LCRH_REG_OFFSET), 0x70);
+
+    /* Rx Interrupt Disable, Tx Interrupt Disable */
+    REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_IM_REG_OFFSET), 0x00);
+
+    /* FIFO Disable */
+    REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_IFLS_REG_OFFSET), 0x00);
+
+    /* Enable UART */
     REG_WRITE_BIT_PTR((UART5_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0);
 #endif
 }
 
 
-void Poke_to_transmit(UART_ChannelType my_uart){
-    uart_transmit(my_uart);
-}
-
-
-void Push_to_Transmit(UART_ChannelType my_uart, uint8 x){
-    if(!UART_Queue_Buffer[my_uart + UART_Transmit_Buffer_Mask]->isFull(UART_Queue_Buffer[my_uart + UART_Transmit_Buffer_Mask])){
-        UART_Queue_Buffer[my_uart + UART_Transmit_Buffer_Mask]->insert(UART_Queue_Buffer[my_uart + UART_Transmit_Buffer_Mask], x);
+void Poke_to_transmit(UART_ChannelType my_uart, uint8 OnlyOneChar){
+    if(OnlyOneChar == 1){
+        uart_transmit_one_char(my_uart);
+    }else if(OnlyOneChar > 1){
+        uart_transmit_some_of_it(my_uart, OnlyOneChar);
+    }else{
+        uart_transmit_all_of_it(my_uart);
     }
 }
+
+void Poke_to_receive(UART_ChannelType my_uart, uint8 OnlyOneChar){
+    if(OnlyOneChar){
+        uart_receive_one_char(my_uart);
+    }else{
+        uart_receive_all_of_it(my_uart);
+    }
+}
+
+void Push_to_Transmit(UART_ChannelType my_uart, uint8 x, uint8 must_be_pushed){
+    if(must_be_pushed){
+        /* it will be stuck here until the any ISR function remove an element to push it */
+        while((UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]->isFull(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]))){
+//            Poke_to_transmit(my_uart, UART_TRANSMIT_RECEIVE_ONE_CHAR);
+        }
+    }else{
+        /* it will not push the element if the QUEUE is full, as simple as that */
+        if(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]->isFull(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask])){
+            return;
+        }
+    }
+    UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]->insert(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask], x);
+}
+
+
 void Pop_the_Received(UART_ChannelType my_uart, uint8* data){
     uint8 i;
     for( i = 0; i < 100; i++){
-        if(!UART_Queue_Buffer[my_uart + UART_Receive_Buffer_Mask]->isEmpty(UART_Queue_Buffer[my_uart + UART_Receive_Buffer_Mask])){
-            data[i] = (uint8)(UART_Queue_Buffer[my_uart + UART_Receive_Buffer_Mask]->remove(UART_Queue_Buffer[my_uart + UART_Receive_Buffer_Mask]));
+        if(!UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]->isEmpty(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask])){
+            data[i] = (uint8)(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]->remove(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]));
         }else{
             break;
         }
     }
 }
 
-void Push_to_Transmit_predef(UART_PredefUARTType uart_predef_arg, uint8 x){
-    if(!UART_Queue_Buffer_Predef[uart_predef_arg + UART_Transmit_Buffer_Mask]->isFull(UART_Queue_Buffer_Predef[uart_predef_arg + UART_Transmit_Buffer_Mask])){
-        UART_Queue_Buffer_Predef[uart_predef_arg + UART_Transmit_Buffer_Mask]->insert(UART_Queue_Buffer_Predef[uart_predef_arg + UART_Transmit_Buffer_Mask], x);
-    }
-}
-void Pop_the_Received_predef(UART_PredefUARTType uart_predef_arg, uint8* data){
-    uint8 i;
-    for(i = 0; i < 100; i++){
-        if(!UART_Queue_Buffer_Predef[uart_predef_arg + UART_Receive_Buffer_Mask]->isEmpty(UART_Queue_Buffer_Predef[uart_predef_arg + UART_Receive_Buffer_Mask])){
-            data[i] = UART_Queue_Buffer_Predef[uart_predef_arg + UART_Receive_Buffer_Mask]->remove(UART_Queue_Buffer_Predef[uart_predef_arg + UART_Receive_Buffer_Mask]);
-        }else{
-            break;
-        }
-    }
-}
+
 
 extern void uart0_handler(void){
     uint32 base, Register_Check;
-    uint8 data;
     base = UART0_BASE_ADDRESS;
-    Register_Check = (*(volatile uint32 *)(base + UART_IM_REG_OFFSET));
+    Register_Check = (*(volatile uint32 *)(base + UART_MIS_REG_OFFSET));
 
     if(Register_Check & (1 << UART_MIS_TX_MASK)){
-        /* Transmitting data */
-        /* Reading the Flag and check if the FIFO is available to transmit and stop when it's full */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_TXFF_MASK)){
-            if(!UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 0]->isEmpty(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 0]) ){
-                /* there is some data to be send */
-                data = UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 0]->remove(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 0]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-            }else{
-                /* there is no data to be send */
-                break;
-            }
-            /* Reading the Flag and check if the FIFO is available to transmit */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
+        uart_transmit_one_char(UART_NUM_0);
         /* Clear the MIS Flag */
+        UART0_TX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
-        /* Receiving data */
-        /* Reading the Flag and check if the FIFO is available to Receive and stop when it's empty */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_RXFE_MASK)){
-            /* Receive the data in the buffer even if the buffer is full */
-            if(!UART_Queue_Buffer[UART_Receive_Buffer_Mask + 0]->isFull(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 0]) ){
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 0]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 0], data);
-            }else{
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 0]->remove(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 0]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 0]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 0], data);
-            }
-            /* Reading the Flag and check if the FIFO is available to receive */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
-
+        uart_receive_one_char(UART_NUM_0);
         /* Clear the MIS Flag */
+        UART0_RX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
 extern void uart1_handler(void){
     uint32 base, Register_Check;
-    uint8 data;
     base = UART1_BASE_ADDRESS;
-    Register_Check = (*(volatile uint32 *)(base + UART_IM_REG_OFFSET));
+    Register_Check = (*(volatile uint32 *)(base + UART_MIS_REG_OFFSET));
 
     if(Register_Check & (1 << UART_MIS_TX_MASK)){
-        /* Transmitting data */
-        /* Reading the Flag and check if the FIFO is available to transmit and stop when it's full */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_TXFF_MASK)){
-            if(!UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 1]->isEmpty(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 1]) ){
-                /* there is some data to be send */
-                data = UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 1]->remove(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 1]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-            }else{
-                /* there is no data to be send */
-                break;
-            }
-            /* Reading the Flag and check if the FIFO is available to transmit */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
+        uart_transmit_one_char(UART_NUM_1);
         /* Clear the MIS Flag */
+        UART1_TX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
-        /* Receiving data */
-        /* Reading the Flag and check if the FIFO is available to Receive and stop when it's empty */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_RXFE_MASK)){
-            /* Receive the data in the buffer even if the buffer is full */
-            if(!UART_Queue_Buffer[UART_Receive_Buffer_Mask + 1]->isFull(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 1]) ){
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 1]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 1], data);
-            }else{
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 1]->remove(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 1]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 1]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 1], data);
-            }
-            /* Reading the Flag and check if the FIFO is available to receive */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
-
+        uart_receive_one_char(UART_NUM_1);
         /* Clear the MIS Flag */
+        UART1_RX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
 extern void uart2_handler(void){
     uint32 base, Register_Check;
-    uint8 data;
     base = UART2_BASE_ADDRESS;
-    Register_Check = (*(volatile uint32 *)(base + UART_IM_REG_OFFSET));
+    Register_Check = (*(volatile uint32 *)(base + UART_MIS_REG_OFFSET));
 
     if(Register_Check & (1 << UART_MIS_TX_MASK)){
-        /* Transmitting data */
-        /* Reading the Flag and check if the FIFO is available to transmit and stop when it's full */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_TXFF_MASK)){
-            if(!UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 2]->isEmpty(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 2]) ){
-                /* there is some data to be send */
-                data = UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 2]->remove(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 2]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-            }else{
-                /* there is no data to be send */
-                break;
-            }
-            /* Reading the Flag and check if the FIFO is available to transmit */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
+        uart_transmit_one_char(UART_NUM_2);
         /* Clear the MIS Flag */
+        UART2_TX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
-        /* Receiving data */
-        /* Reading the Flag and check if the FIFO is available to Receive and stop when it's empty */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_RXFE_MASK)){
-            /* Receive the data in the buffer even if the buffer is full */
-            if(!UART_Queue_Buffer[UART_Receive_Buffer_Mask + 2]->isFull(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 2]) ){
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 2]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 2], data);
-            }else{
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 2]->remove(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 2]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 2]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 2], data);
-            }
-            /* Reading the Flag and check if the FIFO is available to receive */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
-
+        uart_receive_one_char(UART_NUM_2);
         /* Clear the MIS Flag */
+        UART2_RX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
 extern void uart3_handler(void){
     uint32 base, Register_Check;
-    uint8 data;
     base = UART3_BASE_ADDRESS;
-    Register_Check = (*(volatile uint32 *)(base + UART_IM_REG_OFFSET));
+    Register_Check = (*(volatile uint32 *)(base + UART_MIS_REG_OFFSET));
 
     if(Register_Check & (1 << UART_MIS_TX_MASK)){
-        /* Transmitting data */
-        /* Reading the Flag and check if the FIFO is available to transmit and stop when it's full */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_TXFF_MASK)){
-            if(!UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 3]->isEmpty(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 3]) ){
-                /* there is some data to be send */
-                data = UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 3]->remove(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 3]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-            }else{
-                /* there is no data to be send */
-                break;
-            }
-            /* Reading the Flag and check if the FIFO is available to transmit */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
+        uart_transmit_one_char(UART_NUM_3);
         /* Clear the MIS Flag */
+        UART3_TX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
-        /* Receiving data */
-        /* Reading the Flag and check if the FIFO is available to Receive and stop when it's empty */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_RXFE_MASK)){
-            /* Receive the data in the buffer even if the buffer is full */
-            if(!UART_Queue_Buffer[UART_Receive_Buffer_Mask + 3]->isFull(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 3]) ){
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 3]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 3], data);
-            }else{
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 3]->remove(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 3]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 3]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 3], data);
-            }
-            /* Reading the Flag and check if the FIFO is available to receive */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
-
+        uart_receive_one_char(UART_NUM_3);
         /* Clear the MIS Flag */
+        UART3_RX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
 extern void uart4_handler(void){
     uint32 base, Register_Check;
-    uint8 data;
     base = UART4_BASE_ADDRESS;
-    Register_Check = (*(volatile uint32 *)(base + UART_IM_REG_OFFSET));
+    Register_Check = (*(volatile uint32 *)(base + UART_MIS_REG_OFFSET));
 
     if(Register_Check & (1 << UART_MIS_TX_MASK)){
-        /* Transmitting data */
-        /* Reading the Flag and check if the FIFO is available to transmit and stop when it's full */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_TXFF_MASK)){
-            if(!UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 4]->isEmpty(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 4]) ){
-                /* there is some data to be send */
-                data = UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 4]->remove(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 4]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-            }else{
-                /* there is no data to be send */
-                break;
-            }
-            /* Reading the Flag and check if the FIFO is available to transmit */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
+        uart_transmit_one_char(UART_NUM_4);
         /* Clear the MIS Flag */
+        UART4_TX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
-        /* Receiving data */
-        /* Reading the Flag and check if the FIFO is available to Receive and stop when it's empty */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_RXFE_MASK)){
-            /* Receive the data in the buffer even if the buffer is full */
-            if(!UART_Queue_Buffer[UART_Receive_Buffer_Mask + 4]->isFull(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 4]) ){
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 4]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 4], data);
-            }else{
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 4]->remove(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 4]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 4]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 4], data);
-            }
-            /* Reading the Flag and check if the FIFO is available to receive */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
-
+        uart_receive_one_char(UART_NUM_4);
         /* Clear the MIS Flag */
+        UART4_RX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
 extern void uart5_handler(void){
     uint32 base, Register_Check;
-    uint8 data;
-    base = UART2_BASE_ADDRESS;
-    Register_Check = (*(volatile uint32 *)(base + UART_IM_REG_OFFSET));
+    base = UART5_BASE_ADDRESS;
+    Register_Check = (*(volatile uint32 *)(base + UART_MIS_REG_OFFSET));
 
     if(Register_Check & (1 << UART_MIS_TX_MASK)){
-        /* Transmitting data */
-        /* Reading the Flag and check if the FIFO is available to transmit and stop when it's full */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_TXFF_MASK)){
-            if(!UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 5]->isEmpty(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 5]) ){
-                /* there is some data to be send */
-                data = UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 5]->remove(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 5]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-            }else{
-                /* there is no data to be send */
-                break;
-            }
-            /* Reading the Flag and check if the FIFO is available to transmit */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
+        uart_transmit_one_char(UART_NUM_5);
         /* Clear the MIS Flag */
+        UART5_TX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
-        /* Receiving data */
-        /* Reading the Flag and check if the FIFO is available to Receive and stop when it's empty */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_RXFE_MASK)){
-            /* Receive the data in the buffer even if the buffer is full */
-            if(!UART_Queue_Buffer[UART_Receive_Buffer_Mask + 5]->isFull(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 5]) ){
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 5]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 5], data);
-            }else{
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 5]->remove(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 5]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 5]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 5], data);
-            }
-            /* Reading the Flag and check if the FIFO is available to receive */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
-
+        uart_transmit_one_char(UART_NUM_5);
         /* Clear the MIS Flag */
+        UART5_RX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
 extern void uart6_handler(void){
     uint32 base, Register_Check;
-    uint8 data;
     base = UART6_BASE_ADDRESS;
-    Register_Check = (*(volatile uint32 *)(base + UART_IM_REG_OFFSET));
+    Register_Check = (*(volatile uint32 *)(base + UART_MIS_REG_OFFSET));
 
     if(Register_Check & (1 << UART_MIS_TX_MASK)){
-        /* Transmitting data */
-        /* Reading the Flag and check if the FIFO is available to transmit and stop when it's full */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_TXFF_MASK)){
-            if(!UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 6]->isEmpty(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 6]) ){
-                /* there is some data to be send */
-                data = UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 6]->remove(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 6]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-            }else{
-                /* there is no data to be send */
-                break;
-            }
-            /* Reading the Flag and check if the FIFO is available to transmit */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
+        uart_transmit_one_char(UART_NUM_6);
         /* Clear the MIS Flag */
+        UART6_TX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
-        /* Receiving data */
-        /* Reading the Flag and check if the FIFO is available to Receive and stop when it's empty */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_RXFE_MASK)){
-            /* Receive the data in the buffer even if the buffer is full */
-            if(!UART_Queue_Buffer[UART_Receive_Buffer_Mask + 6]->isFull(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 6]) ){
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 6]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 6], data);
-            }else{
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 6]->remove(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 6]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 6]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 6], data);
-            }
-            /* Reading the Flag and check if the FIFO is available to receive */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
-
+        uart_receive_one_char(UART_NUM_6);
         /* Clear the MIS Flag */
+        UART6_RX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
 extern void uart7_handler(void){
-    uint32 base, Register_Check;
-    uint8 data;
+    uint32 base, Register_Check, FLAGS_Check;
     base = UART7_BASE_ADDRESS;
-    Register_Check = (*(volatile uint32 *)(base + UART_IM_REG_OFFSET));
+    Register_Check = (*(volatile uint32 *)(base + UART_MIS_REG_OFFSET));
 
-    if(Register_Check & (1 << UART_MIS_TX_MASK)){
-        /* Transmitting data */
-        /* Reading the Flag and check if the FIFO is available to transmit and stop when it's full */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_TXFF_MASK)){
-            if(!UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 7]->isEmpty(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 7]) ){
-                /* there is some data to be send */
-                data = UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 7]->remove(UART_Queue_Buffer[UART_Transmit_Buffer_Mask + 7]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-            }else{
-                /* there is no data to be send */
+    FLAGS_Check = (uint32)(*(volatile uint32 *)(base + UART_CTL_REG_OFFSET));
+
+    if( (Register_Check & (1 << UART_MIS_TX_MASK ))){
+        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
+        UART7_TX_ISR_CALLBACK();
+        if( (FLAGS_Check & (1 << 4)) ){
+            uart_transmit_one_char(UART_NUM_7);
+        }else{
+            FLAGS_Check = (uint32)((*(volatile uint32 *)(base + UART_IFLS_REG_OFFSET)) & 0x07);
+            switch(FLAGS_Check){
+            case 0x4:
+                /* Tx <= 1/8 */
+                uart_transmit_some_of_it(UART_NUM_7, 2);
+                break;
+            case 0x3:
+                /* Tx <= 1/4 */
+                uart_transmit_some_of_it(UART_NUM_7, 4);
+                break;
+            case 0x2:
+                /* Tx <= 1/2 */
+                uart_transmit_some_of_it(UART_NUM_7, 8);
+                break;
+            case 0x1:
+                /* Tx <= 3/4 */
+                uart_transmit_some_of_it(UART_NUM_7, 12);
+                break;
+            case 0x0:
+                /* Tx <= 7/8 */
+                uart_transmit_some_of_it(UART_NUM_7, 14);
                 break;
             }
-            /* Reading the Flag and check if the FIFO is available to transmit */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
         }
+        UART7_TX_ISR_CALLBACK();
         /* Clear the MIS Flag */
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
-        /* Receiving data */
-        /* Reading the Flag and check if the FIFO is available to Receive and stop when it's empty */
-        Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        while( !Register_Check & (1 << UART_FR_RXFE_MASK)){
-            /* Receive the data in the buffer even if the buffer is full */
-            if(!UART_Queue_Buffer[UART_Receive_Buffer_Mask + 7]->isFull(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 7]) ){
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 7]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 7], data);
-            }else{
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 7]->remove(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 7]);
-                REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
-                UART_Queue_Buffer[UART_Receive_Buffer_Mask + 7]->insert(UART_Queue_Buffer[UART_Receive_Buffer_Mask + 7], data);
-            }
-            /* Reading the Flag and check if the FIFO is available to receive */
-            Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
-        }
-
+        uart_receive_one_char(UART_NUM_7);
         /* Clear the MIS Flag */
+        UART7_RX_ISR_CALLBACK();
         REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
+
 
 
 /**********************************************************************************************************************

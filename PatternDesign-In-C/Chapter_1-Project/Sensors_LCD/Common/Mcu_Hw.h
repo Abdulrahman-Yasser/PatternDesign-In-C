@@ -531,6 +531,7 @@ WatchDog Timer Registers
 #define UART_IFLS_REG_OFFSET              0x034
 #define UART_IM_REG_OFFSET                0x038
 #define UART_RIS_REG_OFFSET               0x03C
+#define UART_MIS_REG_OFFSET               0x040
 #define UART_ICR_REG_OFFSET               0x044
 #define UART_CC_REG_OFFSET                0xFC8
 #define UART_UARTRIS_REG_OFFSET           0x03C

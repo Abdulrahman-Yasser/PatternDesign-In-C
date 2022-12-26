@@ -19,6 +19,9 @@
   *  GLOBAL DATA
   *********************************************************************************************************************/
 
+void __attribute__((weak)) App_Function(void);
+void __attribute__((weak)) Default_Function(void);
+
 
 const Gpt_ConfigType GPT_ConfigPtr_Container[TIMERS_NUMBERS] =
 {
