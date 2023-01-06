@@ -28,7 +28,7 @@
 
 #define I2C_ALLOWED_INTERRUPTS_NUMBER  3
 
-#define I2C_RETURN_ERROR            (uint16)0x9000
+#define I2C_RETURN_ERROR            (uint16)0x8000
 #define I2C_RETURN_FINE             (uint16)0x0000
 
 typedef enum{
