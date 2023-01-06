@@ -13,6 +13,7 @@
 
 #define REG_CLEAR_32_BIT_PTR(REG)       ( (*((volatile uint32 *)REG)) &= 0x00000000)
 #define REG_WRITE_32_BIT_PTR(REG, VAL)  ( (*((volatile uint32 *)REG)) |= VAL)
+#define REG_WRITE_ALL_32_BIT_PTR(REG, VAL)  ( (*((volatile uint32 *)REG)) = VAL)
 #define REG_WRITE_BIT_PTR(REG, CNT)     ( (*((volatile uint32 *)(REG))) |= 1<<CNT)
 #define REG_CLEAR_BIT_PTR(REG, CNT)     ( (*((volatile uint32 *)(REG))) &= ~(1<<CNT))
 

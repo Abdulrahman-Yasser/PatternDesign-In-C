@@ -1,8 +1,8 @@
 /**********************************************************************************************************************
  *  FILE DESCRIPTION
   *  -----------------------------------------------------------------------------------------------------------------*/
-/**        \file  DIO.c
-  *        \brief  Digital Input Output Driver
+/**        \file  UART.c
+  *        \brief  UART Driver
   *
   *      \details  This file contains the static implementation of the driver
   *                  it contains all the function implementation logic

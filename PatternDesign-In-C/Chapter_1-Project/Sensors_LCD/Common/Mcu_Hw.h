@@ -554,6 +554,157 @@ WatchDog Timer Registers
 #define UART_MIS_OE_MASK            10
 #define UART_MIS_9BIT_MASK          12
 
-#define SYSCTL_RCGCUART       (*((volatile uint32 *)0x400FE618))
+/* I2C module 0 Master Registers */
+#define I2C0_MSA_R          (*((volatile unsigned long *)0x40020000))
+#define I2C0_MCS_R          (*((volatile unsigned long *)0x40020004))
+#define I2C0_MDR_R          (*((volatile unsigned long *)0x40020008))
+#define I2C0_MTPR_R         (*((volatile unsigned long *)0x4002000C))
+#define I2C0_MIMR_R         (*((volatile unsigned long *)0x40020010))
+#define I2C0_MRIS_R         (*((volatile unsigned long *)0x40020014))
+#define I2C0_MMIS_R         (*((volatile unsigned long *)0x40020018))
+#define I2C0_MICR_R         (*((volatile unsigned long *)0x4002001C))
+#define I2C0_MCR_R          (*((volatile unsigned long *)0x40020020))
+#define I2C0_MCLKOCNT_R     (*((volatile unsigned long *)0x40020024))
+#define I2C0_MBMON_R        (*((volatile unsigned long *)0x4002002C))
+#define I2C0_MCR2_R         (*((volatile unsigned long *)0x40020038))
+/* I2C module 0 Slave Registers */
+#define I2C0_SOAR_R         (*((volatile unsigned long *)0x40020800))
+#define I2C0_SCSR_R         (*((volatile unsigned long *)0x40020804))
+#define I2C0_SDR_R          (*((volatile unsigned long *)0x40020808))
+#define I2C0_SIMR_R         (*((volatile unsigned long *)0x4002080C))
+#define I2C0_SRIS_R         (*((volatile unsigned long *)0x40020810))
+#define I2C0_SMIS_R         (*((volatile unsigned long *)0x40020814))
+#define I2C0_SICR_R         (*((volatile unsigned long *)0x40020818))
+#define I2C0_SOAR2_R        (*((volatile unsigned long *)0x4002081C))
+#define I2C0_SACKCTL_R      (*((volatile unsigned long *)0x40020820))
+#define I2C0_PP_R           (*((volatile unsigned long *)0x40020FC0))
+#define I2C0_PC_R           (*((volatile unsigned long *)0x40020FC4))
+
+/* I2C module 1 Master Registers */
+#define I2C1_MSA_R          (*((volatile unsigned long *)0x40021000))
+#define I2C1_MCS_R          (*((volatile unsigned long *)0x40021004))
+#define I2C1_MDR_R          (*((volatile unsigned long *)0x40021008))
+#define I2C1_MTPR_R         (*((volatile unsigned long *)0x4002100C))
+#define I2C1_MIMR_R         (*((volatile unsigned long *)0x40021010))
+#define I2C1_MRIS_R         (*((volatile unsigned long *)0x40021014))
+#define I2C1_MMIS_R         (*((volatile unsigned long *)0x40021018))
+#define I2C1_MICR_R         (*((volatile unsigned long *)0x4002101C))
+#define I2C1_MCR_R          (*((volatile unsigned long *)0x40021020))
+#define I2C1_MCLKOCNT_R     (*((volatile unsigned long *)0x40021024))
+#define I2C1_MBMON_R        (*((volatile unsigned long *)0x4002102C))
+#define I2C1_MCR2_R         (*((volatile unsigned long *)0x40021038))
+/* I2C module 1 Slave Registers */
+#define I2C1_SOAR_R         (*((volatile unsigned long *)0x40021800))
+#define I2C1_SCSR_R         (*((volatile unsigned long *)0x40021804))
+#define I2C1_SDR_R          (*((volatile unsigned long *)0x40021808))
+#define I2C1_SIMR_R         (*((volatile unsigned long *)0x4002180C))
+#define I2C1_SRIS_R         (*((volatile unsigned long *)0x40021810))
+#define I2C1_SMIS_R         (*((volatile unsigned long *)0x40021814))
+#define I2C1_SICR_R         (*((volatile unsigned long *)0x40021818))
+#define I2C1_SOAR2_R        (*((volatile unsigned long *)0x4002181C))
+#define I2C1_SACKCTL_R      (*((volatile unsigned long *)0x40021820))
+#define I2C1_PP_R           (*((volatile unsigned long *)0x40021FC0))
+#define I2C1_PC_R           (*((volatile unsigned long *)0x40021FC4))
+
+/* I2C module 2 Master Registers */
+#define I2C2_MSA_R          (*((volatile unsigned long *)0x40022000))
+#define I2C2_MCS_R          (*((volatile unsigned long *)0x40022004))
+#define I2C2_MDR_R          (*((volatile unsigned long *)0x40022008))
+#define I2C2_MTPR_R         (*((volatile unsigned long *)0x4002200C))
+#define I2C2_MIMR_R         (*((volatile unsigned long *)0x40022010))
+#define I2C2_MRIS_R         (*((volatile unsigned long *)0x40022014))
+#define I2C2_MMIS_R         (*((volatile unsigned long *)0x40022018))
+#define I2C2_MICR_R         (*((volatile unsigned long *)0x4002201C))
+#define I2C2_MCR_R          (*((volatile unsigned long *)0x40022020))
+#define I2C2_MCLKOCNT_R     (*((volatile unsigned long *)0x40022024))
+#define I2C2_MBMON_R        (*((volatile unsigned long *)0x4002202C))
+#define I2C2_MCR2_R         (*((volatile unsigned long *)0x40022038))
+/* I2C module 2 Slave Registers */
+#define I2C2_SOAR_R         (*((volatile unsigned long *)0x40022800))
+#define I2C2_SCSR_R         (*((volatile unsigned long *)0x40022804))
+#define I2C2_SDR_R          (*((volatile unsigned long *)0x40022808))
+#define I2C2_SIMR_R         (*((volatile unsigned long *)0x4002280C))
+#define I2C2_SRIS_R         (*((volatile unsigned long *)0x40022810))
+#define I2C2_SMIS_R         (*((volatile unsigned long *)0x40022814))
+#define I2C2_SICR_R         (*((volatile unsigned long *)0x40022818))
+#define I2C2_SOAR2_R        (*((volatile unsigned long *)0x4002281C))
+#define I2C2_SACKCTL_R      (*((volatile unsigned long *)0x40022820))
+#define I2C2_PP_R           (*((volatile unsigned long *)0x40022FC0))
+#define I2C2_PC_R           (*((volatile unsigned long *)0x40022FC4))
+
+/* I2C module 3 Master Registers */
+#define I2C3_MSA_R          (*((volatile unsigned long *)0x40023000))
+#define I2C3_MCS_R          (*((volatile unsigned long *)0x40023004))
+#define I2C3_MDR_R          (*((volatile unsigned long *)0x40023008))
+#define I2C3_MTPR_R         (*((volatile unsigned long *)0x4002300C))
+#define I2C3_MIMR_R         (*((volatile unsigned long *)0x40023010))
+#define I2C3_MRIS_R         (*((volatile unsigned long *)0x40023014))
+#define I2C3_MMIS_R         (*((volatile unsigned long *)0x40023018))
+#define I2C3_MICR_R         (*((volatile unsigned long *)0x4002301C))
+#define I2C3_MCR_R          (*((volatile unsigned long *)0x40023020))
+#define I2C3_MCLKOCNT_R     (*((volatile unsigned long *)0x40023024))
+#define I2C3_MBMON_R        (*((volatile unsigned long *)0x4002302C))
+#define I2C3_MCR2_R         (*((volatile unsigned long *)0x40023038))
+/* I2C module 3 Slave Registers */
+#define I2C3_SOAR_R         (*((volatile unsigned long *)0x40023800))
+#define I2C3_SCSR_R         (*((volatile unsigned long *)0x40023804))
+#define I2C3_SDR_R          (*((volatile unsigned long *)0x40023808))
+#define I2C3_SIMR_R         (*((volatile unsigned long *)0x4002380C))
+#define I2C3_SRIS_R         (*((volatile unsigned long *)0x40023810))
+#define I2C3_SMIS_R         (*((volatile unsigned long *)0x40023814))
+#define I2C3_SICR_R         (*((volatile unsigned long *)0x40023818))
+#define I2C3_SOAR2_R        (*((volatile unsigned long *)0x4002381C))
+#define I2C3_SACKCTL_R      (*((volatile unsigned long *)0x40023820))
+#define I2C3_PP_R           (*((volatile unsigned long *)0x40023FC0))
+#define I2C3_PC_R           (*((volatile unsigned long *)0x40023FC4))
+
+/* I2C Base Registers */
+#define I2C0_BASE_ADDERSS           0x40020000
+#define I2C1_BASE_ADDERSS           0x40021000
+#define I2C2_BASE_ADDERSS           0x40022000
+#define I2C3_BASE_ADDERSS           0x40023000
+
+/* Master Registers */
+#define I2C_MSA_REG_OFFSET          0x000
+#define I2C_MCS_REG_OFFSET          0x004
+#define I2C_MDR_REG_OFFSET          0x008
+#define I2C_MTPR_REG_OFFSET         0x00C
+#define I2C_MIMR_REG_OFFSET         0x010
+#define I2C_MRIS_REG_OFFSET         0x014
+#define I2C_MMIS_REG_OFFSET         0x018
+#define I2C_MICR_REG_OFFSET         0x01C
+#define I2C_MCR_REG_OFFSET          0x020
+#define I2C_MCLKOCNT_REG_OFFSET     0x024
+#define I2C_MBMON_REG_OFFSET        0x02C
+#define I2C_MCR2_REG_OFFSET         0x038
+
+/* Slave Registers */
+#define I2C_SOAR_REG_OFFSET         0x800
+#define I2C_SCSR_REG_OFFSET         0x804
+#define I2C_SDR_REG_OFFSET          0x808
+#define I2C_SIMR_REG_OFFSET         0x80C
+#define I2C_SRIS_REG_OFFSET         0x810
+#define I2C_SMIS_REG_OFFSET         0x814
+#define I2C_SICR_REG_OFFSET         0x818
+#define I2C_SOAR2_REG_OFFSET        0x81C
+#define I2C_SACKCTL_REG_OFFSET      0x820
+
+#define I2C_MCS_BUSY_MASK           0
+#define I2C_MCS_ERROR_MASK          1
+#define I2C_MCS_ADRACK_MASK         2
+#define I2C_MCS_DATACK_MASK         3
+#define I2C_MCS_ARBLST_MASK         4
+#define I2C_MCS_IDLE_MASK           5
+#define I2C_MCS_BUSBSY_MASK         6
+#define I2C_MCS_CLKTO_MASK          7
+
+
+#define I2C_PP_REG_OFFSET           0xFC0
+#define I2C_PC_REG_OFFSET           0xFC4
+
+#define SYSCTL_RCGCI2C          (*((volatile uint32 *)0x400FE620))
+#define SYSCTL_RCGCUART         (*((volatile uint32 *)0x400FE618))
+
+
 
  #endif
