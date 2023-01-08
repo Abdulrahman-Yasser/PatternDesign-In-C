@@ -51,10 +51,10 @@ static void MasterMultibleTransmitLoop(uint32 base,uint8 n, Queue_uint8_DYNAMIC_
 static void MasterMultibleReceiveLoop(uint32 base,uint8 n, Queue_uint8_DYNAMIC_Type* Data);
 
 
-uint16 I2C_MasterSingleTransmit(I2C_MasterConfigType my_I2C,);
-uint16 I2C_MasterSingleReceive(I2C_MasterConfigType my_I2C);
-uint16 I2C_MasterTransmitMultibleBytes(I2C_MasterConfigType my_I2C, uint8 n);
-uint16 I2C_MasterMultipleReceive(I2C_MasterConfigType my_I2C, uint8 n);
+uint16 I2C_MasterSingleTransmit(I2C_MasterConfigType my_I2C, I2C_RepeatedStartType RepeatedStart);
+uint16 I2C_MasterSingleReceive(I2C_MasterConfigType my_I2C, I2C_RepeatedStartType RepeatedStart);
+uint16 I2C_MasterTransmitMultibleBytes(I2C_MasterConfigType my_I2C, uint8 n, I2C_RepeatedStartType RepeatedStart);
+uint16 I2C_MasterMultipleReceive(I2C_MasterConfigType my_I2C, uint8 n, I2C_RepeatedStartType RepeatedStart);
 
 uint16 MasterRepeatStartSingleTransmit(I2C_MasterConfigType my_I2C);
 uint16 MasterRepeatStartMultibleTransmit(I2C_MasterConfigType my_I2C, uint8 n);
@@ -158,7 +158,7 @@ static void MasterMultibleReceiveLoop(uint32 base,uint8 n, Queue_uint8_DYNAMIC_T
 }
 
 
-uint16 I2C_MasterSingleTransmit(I2C_MasterConfigType my_I2C){
+uint16 I2C_MasterSingleTransmit(I2C_MasterConfigType my_I2C, I2C_RepeatedStartType RepeatedStart){
     uint32 base, RegisterCheck;
     // Check if the I2C is Configured as Master
     if(I2C_MasterModulesUsed & (1 << my_I2C.I2C_num)){
@@ -172,10 +172,13 @@ uint16 I2C_MasterSingleTransmit(I2C_MasterConfigType my_I2C){
     REG_CLEAR_BIT_PTR(base + I2C_MSA_REG_OFFSET, 0);
     /* Write the Data*/
     REG_WRITE_32_BIT_PTR((base + I2C_MDR_REG_OFFSET), my_I2C.Data->remove(my_I2C.Data));
-    /* Check if the I2C BUS is free */
-    do{
-        RegisterCheck = (*(volatile uint32 *)(base + I2C_MCS_REG_OFFSET));
-    }while(!(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK)));
+    /* Check if the I2C BUS is free,
+     * If this is a repeated start request do not check the bus busy because it's used by the I2C module */
+    if(RepeatedStart == I2C_RepeatedStart_OFF){
+        do{
+            RegisterCheck = (*(volatile uint32 *)(base + I2C_MCS_REG_OFFSET));
+        }while(!(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK)));
+    }
     /* 00111
      * STOP, RUN, START Bits are HIGH
      * ACK, HS are low
@@ -195,7 +198,7 @@ uint16 I2C_MasterSingleTransmit(I2C_MasterConfigType my_I2C){
     }
 }
 
-uint16 I2C_MasterSingleReceive(I2C_MasterConfigType my_I2C){
+uint16 I2C_MasterSingleReceive(I2C_MasterConfigType my_I2C, I2C_RepeatedStartType RepeatedStart){
     uint32 base, RegisterCheck;
     // Check if the I2C is Configured as Master
     if(! (I2C_MasterModulesUsed & (1 << my_I2C.I2C_num))){
@@ -208,9 +211,11 @@ uint16 I2C_MasterSingleReceive(I2C_MasterConfigType my_I2C){
     REG_WRITE_32_BIT_PTR((base + I2C_MSA_REG_OFFSET), my_I2C.Adderss << 1);
     REG_WRITE_BIT_PTR(base + I2C_MSA_REG_OFFSET, 0);
     /* Check if the I2C BUS is Busy or free */
-    do{
-        RegisterCheck = (*(volatile uint32 *)(base + I2C_MCS_REG_OFFSET));
-    }while(!(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK)));
+    if(RepeatedStart == I2C_RepeatedStart_OFF){
+        do{
+            RegisterCheck = (*(volatile uint32 *)(base + I2C_MCS_REG_OFFSET));
+        }while(!(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK)));
+    }
     /* 00111
      * STOP, RUN, START Bits are HIGH
      * ACK, HS are low
@@ -233,7 +238,7 @@ uint16 I2C_MasterSingleReceive(I2C_MasterConfigType my_I2C){
 }
 
 
-uint16 I2C_MasterTransmitMultibleBytes(I2C_MasterConfigType my_I2C, uint8 n){
+uint16 I2C_MasterTransmitMultibleBytes(I2C_MasterConfigType my_I2C, uint8 n, I2C_RepeatedStartType RepeatedStart ){
     uint32 base, RegisterCheck;
     uint8 i ;
     // Check if the I2C is Configured as Master
@@ -249,9 +254,11 @@ uint16 I2C_MasterTransmitMultibleBytes(I2C_MasterConfigType my_I2C, uint8 n){
     /* Write the Data*/
     REG_WRITE_32_BIT_PTR((base + I2C_MDR_REG_OFFSET), my_I2C.Data->remove(my_I2C.Data));
     /* BUSBUSY Checking "Check if the I2C BUS is free or used by another MASTER" */
-    do{
-        RegisterCheck = (*(volatile uint32 *)(base + I2C_MCS_REG_OFFSET));
-    }while(!(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK)));
+    if(RepeatedStart == I2C_RepeatedStart_OFF){
+        do{
+            RegisterCheck = (*(volatile uint32 *)(base + I2C_MCS_REG_OFFSET));
+        }while(!(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK)));
+    }
     /* 0_011
      * RUN, START Bits are HIGH
      * STOP, ACK, HS are low *
@@ -302,7 +309,7 @@ uint16 I2C_MasterTransmitMultibleBytes(I2C_MasterConfigType my_I2C, uint8 n){
 }
 
 
-uint16 I2C_MasterMultipleReceive(I2C_MasterConfigType my_I2C, uint8 n){
+uint16 I2C_MasterMultipleReceive(I2C_MasterConfigType my_I2C, uint8 n, I2C_RepeatedStartType RepeatedStart){
     uint32 base, RegisterCheck;
     uint8 i ;
     // Check if the I2C is Configured as Master
@@ -316,9 +323,11 @@ uint16 I2C_MasterMultipleReceive(I2C_MasterConfigType my_I2C, uint8 n){
     REG_WRITE_32_BIT_PTR((base + I2C_MSA_REG_OFFSET), my_I2C.Adderss << 1);
     REG_WRITE_BIT_PTR(base + I2C_MSA_REG_OFFSET, 0);
     /* BUSBUSY Checking "Check if the I2C BUS is free or used by another MASTER" */
-    do{
-        RegisterCheck = (*(volatile uint32 *)(base + I2C_MCS_REG_OFFSET));
-    }while(!(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK)));
+    if(RepeatedStart == I2C_RepeatedStart_OFF){
+        do{
+            RegisterCheck = (*(volatile uint32 *)(base + I2C_MCS_REG_OFFSET));
+        }while(!(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK)));
+    }
     /* 01011
      * RUN, START, ACK Bits are HIGH
      * STOP is low *

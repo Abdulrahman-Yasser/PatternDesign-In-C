@@ -53,6 +53,10 @@ typedef enum{
 }I2C_LoopBackType;
 
 typedef enum{
+    I2C_RepeatedStart_ON, I2C_RepeatedStart_OFF
+}I2C_RepeatedStartType;
+
+typedef enum{
     I2C_MasterModeTransmit, I2C_MasterModeReceive, I2C_MasterModeSTOP
 }I2C_MasterModeType;
 
