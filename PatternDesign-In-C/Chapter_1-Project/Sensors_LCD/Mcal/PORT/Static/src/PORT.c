@@ -176,36 +176,49 @@ void Port_Init(void){
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 1);
             break;
         case Port_PinMode_SSIn:
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 2);
             break;
         case Port_PinMode_SSI3:
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 1);
             break;
         case Port_PinMode_I2Cn:
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            /* SDA Supposed to be in OpenDrain Mode */
+            SetInternalAttach((uint32*)PortPtr, PinNum, ConfigPtr[i].PinInternalAttach);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 3);
             break;
         case Port_PinMode_M0PWMn:
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 4);
             break;
         case Port_PinMode_M1PWMn:
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 5);
             break;
         case Port_PinMode_IDXn_Phpn:
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 6);
             break;
         case Port_PinMode_TnCCPn_WTnCCPn:
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 7);
             break;
         case Port_PinMode_CANn:
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 8);
             break;
         case Port_PinMode_CAN0_Pin_F:
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 3);
             break;
         case Port_PinMode_USBn:
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 8);
             break;
         case Port_PinMode_NMI:
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 8);
             break;
         case Port_PinMode_ANALOG_COMPARATOR:
@@ -222,6 +235,7 @@ void Port_Init(void){
             *(volatile uint32 *)((volatile uint8 *)PortPtr + PORT_CTL_REG_OFFSET) &= ~(0x0000000F << (PinNum * 4));
             break;
         case Port_PinMode_UART1_RTS_CTS:
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 8);
             break;
         default:

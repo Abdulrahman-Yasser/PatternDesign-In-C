@@ -98,13 +98,8 @@ typedef struct{
 typedef struct{
     I2C_ChannelType I2C_num;
     uint8 Adderss;
-    Queue_uint8_DYNAMIC_Type* Data;
 }I2C_MasterConfigType;
 
-typedef struct{
-    I2C_ChannelType I2C_num;
-    Queue_uint8_DYNAMIC_Type* Data;
-}I2C_SlaveConfigType;
 
 #endif /* MCAL_I2C_STATIC_INC_I2C_TYPES_H_ */
 

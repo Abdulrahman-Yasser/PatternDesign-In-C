@@ -31,12 +31,12 @@
  *********************************************************************************************************************/
 void uart_init(void);
 
-void Poke_to_transmit(UART_ChannelType my_uart, uint8 OnlyOneChar);
-void Poke_to_receive(UART_ChannelType my_uart, uint8 OnlyOneChar);
+void UART_Poke_to_transmit(UART_ChannelType my_uart, uint8 Bytes_Cnt);
+void UART_Poke_to_receive(UART_ChannelType my_uart, uint8 Bytes_Cnt);
 
-void Push_to_Transmit(UART_ChannelType my_uart, uint8 x, uint8 must_be_pushed);
+void UART_Push_to_Transmit(UART_ChannelType my_uart, uint8 x, uint8 must_be_pushed);
 
-void Pop_the_Received(UART_ChannelType my_uart, uint8* data);
+void UART_Pop_the_Received(UART_ChannelType my_uart, uint8* data);
 
 
 

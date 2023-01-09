@@ -8,6 +8,7 @@
 #ifndef APP_MAIN_H_
 #define APP_MAIN_H_
 
+#include "../Mcal/I2C/Static/inc/I2C.h"
 #include "../Mcal/UART/Static/inc/UART.h"
 #include "../Mcal/DIO/Static/inc/DIO.h"
 #include "../Mcal/PORT/Static/inc/PORT.h"
@@ -16,6 +17,7 @@
 #include "../Mcal/SysTick/Static/inc/SysTick.h"
 
 
+#include "../Mcal/I2C/Dynamic/inc/I2C_Cfg.h"
 #include "../Mcal/UART/Dynamic/inc/UART_Cfg.h"
 #include "../Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
 #include "../Mcal/PORT/Dynamic/inc/PORT_Cfg.h"

@@ -17,9 +17,7 @@
  /**********************************************************************************************************************
   *  GLOBAL CONSTANT MACROS
   *********************************************************************************************************************/
-#define I2C_CONFIGURED_NUMBER 1
-#define I2C_MASTER_CONFIGURED_NUMBER 1
-#define I2C_SLAVE_CONFIGURED_NUMBER 1
+#define I2C_CONFIGURED_NUMBER 2
 
 
 #define I2C0_PREDEF_MACRO        Disable   //Enable EOT, Disable FIFO, No ISR
@@ -42,8 +40,6 @@
 
 
 extern const I2C_ConfigType I2C_Container[I2C_CONFIGURED_NUMBER];
-extern const I2C_MasterConfigType I2C_MasterContainer[I2C_MASTER_CONFIGURED_NUMBER];
-extern const I2C_SlaveConfigType I2C_SlaveContainer[I2C_SLAVE_CONFIGURED_NUMBER];
 
 
 #endif  /* I2C_CFG_H */
@@ -51,7 +47,3 @@ extern const I2C_SlaveConfigType I2C_SlaveContainer[I2C_SLAVE_CONFIGURED_NUMBER]
 /**********************************************************************************************************************
  *  END OF FILE: I2C_Cfg.h
  *********************************************************************************************************************/
-
-
-
-#include

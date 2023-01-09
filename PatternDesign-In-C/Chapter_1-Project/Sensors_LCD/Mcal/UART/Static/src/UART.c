@@ -40,9 +40,11 @@ static uint32 get_address(UART_ChannelType uart_n);
 
 void uart_transmit_one_char(UART_ChannelType my_uart);
 void uart_transmit_all_of_it(UART_ChannelType my_uart);
+void uart_transmit_some_of_it(UART_ChannelType my_uart, uint8 num);
 
 void uart_receive_one_char(UART_ChannelType my_uart);
 void uart_receive_all_of_it(UART_ChannelType my_uart);
+void uart_receive_some_of_it(UART_ChannelType my_uart, uint8 num);
 
 
 
@@ -120,7 +122,7 @@ void uart_receive_one_char(UART_ChannelType my_uart){
     uint8 data;
     base = get_address(my_uart);
 
-    /* it will stop when it has an Empty FIFO */
+    /* it will FREEZ when it has an Empty FIFO */
     do{
         Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
     }while((Register_Check & (1 << UART_FR_RXFE_MASK) ));
@@ -148,6 +150,24 @@ void uart_receive_all_of_it(UART_ChannelType my_uart){
         data = (*(volatile uint32 *)(base + UART_DATA_REG_OFFSET));
         UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]->insert(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask], data);
         Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
+    }
+}
+
+void uart_receive_some_of_it(UART_ChannelType my_uart, uint8 num){
+    uint32 base, Register_Check;
+    uint8 data, i;
+    base = get_address(my_uart);
+    /* it will stop when it has an Empty FIFO */
+    Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
+
+    for(i = 0; i < num; i++){
+        if(!(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]->isFull(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]))){
+            do{
+                Register_Check = (*(volatile uint32 *)(base + UART_FLAG_REG_OFFSET));
+            }while((Register_Check & (1 << UART_FR_RXFE_MASK) ));
+            data = (*(volatile uint32 *)(base + UART_DATA_REG_OFFSET));
+            UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]->insert(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask], data);
+        }
     }
 }
 
@@ -549,29 +569,31 @@ void uart_init(void){
 }
 
 
-void Poke_to_transmit(UART_ChannelType my_uart, uint8 OnlyOneChar){
-    if(OnlyOneChar == 1){
-        uart_transmit_one_char(my_uart);
-    }else if(OnlyOneChar > 1){
-        uart_transmit_some_of_it(my_uart, OnlyOneChar);
-    }else{
+void UART_Poke_to_transmit(UART_ChannelType my_uart, uint8 Bytes_Cnt){
+    if(Bytes_Cnt == 0){
         uart_transmit_all_of_it(my_uart);
+    }else if(Bytes_Cnt == 1){
+        uart_transmit_one_char(my_uart);
+    }else{
+        uart_transmit_some_of_it(my_uart, Bytes_Cnt);
     }
 }
 
-void Poke_to_receive(UART_ChannelType my_uart, uint8 OnlyOneChar){
-    if(OnlyOneChar){
+void UART_Poke_to_receive(UART_ChannelType my_uart, uint8 Bytes_Cnt){
+    if(Bytes_Cnt == 0){
+        uart_receive_all_of_it(my_uart);
+    }else if(Bytes_Cnt == 1){
         uart_receive_one_char(my_uart);
     }else{
-        uart_receive_all_of_it(my_uart);
+        uart_receive_some_of_it(my_uart, Bytes_Cnt);
     }
 }
 
-void Push_to_Transmit(UART_ChannelType my_uart, uint8 x, uint8 must_be_pushed){
+void UART_Push_to_Transmit(UART_ChannelType my_uart, uint8 x, uint8 must_be_pushed){
     if(must_be_pushed){
         /* it will be stuck here until the any ISR function remove an element to push it */
         while((UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]->isFull(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]))){
-//            Poke_to_transmit(my_uart, UART_TRANSMIT_RECEIVE_ONE_CHAR);
+//            UART_Poke_to_transmit(my_uart, UART_TRANSMIT_RECEIVE_ONE_CHAR);
         }
     }else{
         /* it will not push the element if the QUEUE is full, as simple as that */
@@ -583,7 +605,7 @@ void Push_to_Transmit(UART_ChannelType my_uart, uint8 x, uint8 must_be_pushed){
 }
 
 
-void Pop_the_Received(UART_ChannelType my_uart, uint8* data){
+void UART_Pop_the_Received(UART_ChannelType my_uart, uint8* data){
     uint8 i;
     for( i = 0; i < 100; i++){
         if(!UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask]->isEmpty(UART_Queue_Buffer[(2 * my_uart) + UART_Receive_Buffer_Mask])){
