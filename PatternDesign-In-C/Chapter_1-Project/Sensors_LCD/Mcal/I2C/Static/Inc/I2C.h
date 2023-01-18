@@ -30,8 +30,8 @@
 
 void I2C_init(void);
 
-void I2C_MasterPoke_to_transmit(I2C_ChannelType my_I2C, uint8 address, uint8 Bytes_Cnt);
-void I2C_MasterPoke_to_receive(I2C_ChannelType my_I2C, uint8 address, uint8 Bytes_Cnt);
+void I2C_MasterPoke_to_transmit(I2C_ChannelType my_I2C, uint8 slave_address, uint8 Bytes_Cnt);
+void I2C_MasterPoke_to_receive(I2C_ChannelType my_I2C, uint8 slave_address, uint8 Bytes_Cnt);
 
 void I2C_Push_to_Transmit(I2C_ChannelType my_I2C, uint8 x, uint8 must_be_pushed);
 

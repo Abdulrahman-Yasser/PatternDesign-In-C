@@ -117,10 +117,10 @@ static uint32 get_address(I2C_ChannelType I2C_n){
 * \Parameters (out): None
 * \Return value:   : None
 *******************************************************************************/
-static void MasterMultibleTransmitLoop(uint32 base,uint8 n, Queue_uint8_DYNAMIC_Type* Data){
+static void MasterMultibleTransmitLoop(uint32 base,uint8 bytesCount, Queue_uint8_DYNAMIC_Type* Data){
     uint32 RegisterCheck;
     uint8 i;
-    for(i = 0; i < n; i++){
+    for(i = 0; i < bytesCount; i++){
         /* 0_001 RUN Bit is HIGH, STOP and START are LOW
          * That would generate a Transmitting multiple bytes signal */
         REG_CLEAR_SPECIFIC_BIT_PTR((base + I2C_MCS_REG_OFFSET), 0X16);
@@ -727,13 +727,13 @@ void I2C_init(void){
 * \Parameters (out): None
 * \Return value:   : None
 *******************************************************************************/
-void I2C_MasterPoke_to_transmit(I2C_ChannelType my_I2C, uint8 address, uint8 Bytes_Cnt){
+void I2C_MasterPoke_to_transmit(I2C_ChannelType my_I2C, uint8 slave_address, uint8 Bytes_Cnt){
     if(Bytes_Cnt == 0){
-        I2C_MasterTransmitAllQueueBytes(my_I2C, address, (I2C_RepeatedStartType)I2C_RepeatedStart_OFF);
+        I2C_MasterTransmitAllQueueBytes(my_I2C, slave_address, (I2C_RepeatedStartType)I2C_RepeatedStart_OFF);
     }else if(Bytes_Cnt == 1){
-        I2C_MasterSingleTransmit(my_I2C, address , (I2C_RepeatedStartType)I2C_RepeatedStart_OFF);
+        I2C_MasterSingleTransmit(my_I2C, slave_address , (I2C_RepeatedStartType)I2C_RepeatedStart_OFF);
     }else{
-        I2C_MasterTransmitMultibleBytes(my_I2C, address, Bytes_Cnt, (I2C_RepeatedStartType)I2C_RepeatedStart_OFF);
+        I2C_MasterTransmitMultibleBytes(my_I2C, slave_address, Bytes_Cnt, (I2C_RepeatedStartType)I2C_RepeatedStart_OFF);
     }
 }
 
@@ -750,13 +750,13 @@ void I2C_MasterPoke_to_transmit(I2C_ChannelType my_I2C, uint8 address, uint8 Byt
 * \Parameters (out): None
 * \Return value:   : None
 *******************************************************************************/
-void I2C_MasterPoke_to_receive(I2C_ChannelType my_I2C, uint8 address, uint8 Bytes_Cnt){
+void I2C_MasterPoke_to_receive(I2C_ChannelType my_I2C, uint8 slave_address, uint8 Bytes_Cnt){
     if(Bytes_Cnt == 0){
-        I2C_MasterReceiveAllQueueBytes(my_I2C, address, (I2C_RepeatedStartType)I2C_RepeatedStart_OFF);
+        I2C_MasterReceiveAllQueueBytes(my_I2C, slave_address, (I2C_RepeatedStartType)I2C_RepeatedStart_OFF);
     }else if(Bytes_Cnt == 1){
-        I2C_MasterSingleReceive(my_I2C, address, (I2C_RepeatedStartType)I2C_RepeatedStart_OFF);
+        I2C_MasterSingleReceive(my_I2C, slave_address, (I2C_RepeatedStartType)I2C_RepeatedStart_OFF);
     }else{
-        I2C_MasterReceiveMultibleBytes(my_I2C, address, Bytes_Cnt, (I2C_RepeatedStartType)I2C_RepeatedStart_OFF);
+        I2C_MasterReceiveMultibleBytes(my_I2C, slave_address, Bytes_Cnt, (I2C_RepeatedStartType)I2C_RepeatedStart_OFF);
     }
 }
 
