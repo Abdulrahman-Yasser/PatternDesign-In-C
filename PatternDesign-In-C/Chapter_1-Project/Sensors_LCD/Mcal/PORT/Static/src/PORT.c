@@ -68,6 +68,8 @@ void SetInternalAttach(uint32* PortPtr_Var, uint8 PinNum_Var, Port_PinInternalAt
         (*(volatile uint32*)((uint32)PortPtr_Var + PORT_PULL_DOWN_REG_OFFSET)) |= (1 << PinNum_Var);
     }else{
         /* For OpenDrain the Direction register must be input */
+        (*(volatile uint32*)((uint32)PortPtr_Var + PORT_PULL_UP_REG_OFFSET)) &= ~(1 << PinNum_Var);
+        (*(volatile uint32*)((uint32)PortPtr_Var + PORT_PULL_DOWN_REG_OFFSET)) &= ~(1 << PinNum_Var);
         (*(volatile uint32*)((uint32)PortPtr_Var + PORT_DIR_REG_OFFSET)) &= ~(1 << PinNum_Var);
         (*(volatile uint32*)((uint32)PortPtr_Var + PORT_OPEN_DRAIN_REG_OFFSET)) |= 1 << PinNum_Var;
     }

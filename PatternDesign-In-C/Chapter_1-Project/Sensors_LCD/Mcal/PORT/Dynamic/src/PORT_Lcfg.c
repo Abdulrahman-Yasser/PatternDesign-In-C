@@ -23,10 +23,8 @@ const Port_ConfigType ConfigPtr[configured_pins] =
 {
   {Port_Pin_B1, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma},
   {Port_Pin_B0, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma},
-  {Port_Pin_B2, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma},
-  {Port_Pin_B3, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_OpenDrain, Port_PinOutputCurrent_2ma},
-  {Port_Pin_A6, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma},
-  {Port_Pin_A7, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_OpenDrain, Port_PinOutputCurrent_2ma}
+  {Port_Pin_A6, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma},  // SCL
+  {Port_Pin_A7, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_OpenDrain, Port_PinOutputCurrent_2ma}  // SDA
 };
 
 /* For initializing the whole pins */
