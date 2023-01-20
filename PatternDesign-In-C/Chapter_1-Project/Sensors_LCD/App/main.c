@@ -36,32 +36,30 @@ void Test_I2C_AlwaysFullBuffer_NoISR_Configs(void){
 
     while(1){
         Send_Msg_I2C0("Hello !! ");
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
         Send_Msg_I2C0("my name is abdulrahman yasser");
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
-        I2C_MasterPoke_to_transmit(I2C_NUM_0, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
+        i = I2C_MasterPoke_to_transmit(I2C_NUM_1, I2c_test_Slave_Address, 0X72, 1);
     }
 }
 
@@ -69,7 +67,7 @@ void Test_I2C_AlwaysFullBuffer_NoISR_Configs(void){
 
 void Send_Msg_I2C0(char* msg){
     while(*msg != '\0'){
-        I2C_Push_to_Transmit(I2C_NUM_0, *msg, 0);
+        I2C_Push_to_Transmit(I2C_NUM_1, *msg, 0);
         msg++;
     }
 }

@@ -23,7 +23,7 @@ typedef enum {
 }Port_PinModeType;
 
 typedef enum{
-    Port_PinInternal_PullUp, Port_PinInternal_PullDown, Port_PinInternal_OpenDrain
+    Port_PinInternal_PullUp, Port_PinInternal_PullDown, Port_PinInternal_OpenDrain, Port_PinInternal_HW
 }Port_PinInternalAttatchType;
 
 typedef enum{

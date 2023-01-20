@@ -31,5 +31,10 @@ void transmit(void);
 void Send_Msg(char* msg);
 uint8* Rcv_Msg(UART_ChannelType my_uart);
 
+/*
+ * ================================== I2C TEST =========================================
+ */
+#define I2c_test_Slave_Address 0x02
+
 
 #endif /* APP_MAIN_H_ */

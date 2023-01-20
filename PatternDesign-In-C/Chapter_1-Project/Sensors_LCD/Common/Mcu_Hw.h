@@ -706,5 +706,19 @@ WatchDog Timer Registers
 #define SYSCTL_RCGCUART         (*((volatile uint32 *)0x400FE618))
 
 
+//*****************************************************************************
+//
+// UART registers (UART7)
+//
+//*****************************************************************************
+
+#define PWM0_BASE_ADDERSS       0x40028000
+#define PWM_BASE_ADDERSS        0x40029000
+#define SYSCTL_RCGCPWM_R        0x400FE640
+//#define SYSCTL_RCGC0_REG        0x400FE040
+//#define SYSCTL_RCGC0_REG_PWM    0x400FE100
+#define SYSCTL_RCC_REG_PWM      0x400FE060
+#define SYSCTL_RCC2_REG_PWM     0x400FE070
+
 
  #endif
