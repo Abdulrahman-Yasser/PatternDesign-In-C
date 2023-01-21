@@ -29,7 +29,7 @@ typedef enum{
 typedef enum{
     PWM_GEN_ZERO, PWM_GEN_LOAD, PWM_GEN_CMPAU,
     PWM_GEN_CMPAD, PWM_GEN_CMPBU, PWM_GEN_CMPBD
-}PWM_GeneratorType;
+}PWM_GeneratorEventsType;
 
 typedef struct{
     PWM_actionsType PWM_GEN_ZERO;

@@ -18,7 +18,7 @@
 #define REG_WRITE_BIT_PTR(REG, CNT)     ( (*((volatile uint32 *)(REG))) |= 1<<CNT)
 #define REG_CLEAR_BIT_PTR(REG, CNT)     ( (*((volatile uint32 *)(REG))) &= ~(1<<CNT))
 
-#define REG_READ_PTR(y, x)         (y = (*((volatile unsigned uint32 *)(x))))
+#define REG_READ_PTR(x, REG)              (x = ( (*((volatile uint32 *)(REG))) ) )
 
 
 

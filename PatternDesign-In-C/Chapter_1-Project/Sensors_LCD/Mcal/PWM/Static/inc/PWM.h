@@ -16,34 +16,37 @@
 #define SYSCTL_PWMDIV_VALUE          0X00        /* PWM DIVISION VALUE */
 
 
-void pwm_clock_init(void);
 
 void pwm_init(void);
 
-void PWM_UpdateThresholds(uint32 ThreshLow, uint32 ThreshHigh, PWM_ChannelType PWM_BlockNum);
+uint8 pwm_update_comparator_a(PWM_ChannelType channel, uint32 value);
 
-void pwm_update_comparators(uint32 Comp_A, uint32 Comp_B, PWM_ChannelType PWM_BlockNum);
+uint8 pwm_update_comparator_b(PWM_ChannelType channel, uint32 value);
 
-void pwm_update_comparators_percentage(uint32 Comp_A_percentage, uint32 Comp_B_percentage, PWM_ChannelType PWM_BlockNum);
+uint8 pwm_update_comparator_a_percentage(PWM_ChannelType channel, uint32 value);
 
-void pwm_update_DutyCycle(uint32 DesiredDutyCycle, PWM_ChannelType PWM_BlockNum);
+uint8 pwm_update_comparator_b_percentage(PWM_ChannelType channel, uint32 value);
 
-void pwm_update_DutyCycle_Percentage(uint32 DesiredDutyCycle_Percentage, PWM_ChannelType PWM_BlockNum);
+uint8 pwm_update_generation_a(PWM_ChannelType channel, PWM_GeneratorEventsType Event, PWM_actionsType Action);
 
-void pwm_update_generation_b(PWM_ChannelType *block, PWM_actionsType generate_values);
+uint8 pwm_update_generation_b(PWM_ChannelType channel, PWM_GeneratorEventsType Event, PWM_actionsType Action);
 
-void pwm_update_generation_a(PWM_ChannelType *block, PWM_actionsType generate_values);
+uint8 PWM_UpdateThresholds(PWM_ChannelType channel, uint32 ThreshLow, uint32 ThreshHigh);
 
-void pwm_update_load(PWM_ChannelType *block, uint32 value);
+uint8 pwm_AutomaticDutyCycle(PWM_ChannelType channel, uint32 DesiredDutyCycle, uint8 Channel_A_or_B);
 
-void pwm_change_mode(PWM_ChannelType *block, PWM_CountMode_t value);
+uint8 pwm_update_load(PWM_ChannelType channel, uint32 value);
 
-void pwm_disable(PWM_ChannelType *block, uint8 bins);
+uint8 pwm_change_mode(PWM_ChannelType channel, PWM_CountModeType value);
 
-void pwm_stop(PWM_ChannelType *block, uint8 bins);
+uint8 pwm_disable(PWM_ChannelType channel, uint8 bins);
 
-void pwm_enable(PWM_ChannelType *block, uint8 bins);
+uint8 pwm_stop(PWM_ChannelType channel, uint8 bins);
 
+uint8 pwm_enable(PWM_ChannelType channel, uint8 bins);
 
+uint8 PWM_UpdateThresholds(PWM_ChannelType channel, uint32 ThreshLow, uint32 ThreshHigh);
+
+uint8 pwm_AutomaticDutyCycle(PWM_ChannelType channel, uint32 DesiredDutyCycle, uint8 Channel_A_or_B);
 
 #endif /* MCAL_PWM_STATIC_INC_PWM_H_ */

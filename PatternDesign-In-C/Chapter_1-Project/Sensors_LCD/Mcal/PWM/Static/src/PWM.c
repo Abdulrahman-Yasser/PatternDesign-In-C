@@ -26,19 +26,37 @@
  *  Variables Definitions
  *********************************************************************************************************************/
 
-uint16 Low_thresholds[8];
-uint16 High_thresholds[8];
+/**********************************************************************************************************************
+ *  LOCAL VARIABLES
+ *********************************************************************************************************************/
 
+static uint16 Low_thresholds[8];
+static uint16 High_thresholds[8];
+static uint16 Load_Values[8];
 static uint16 PWM_ModulesUsed = 0;
 
+/**********************************************************************************************************************
+ *  LOCAL Functions Definition
+ *********************************************************************************************************************/
+
+static void pwm_clock_init(void);
+
+/**********************************************************************************************************************
+ *  LOCAL Functions Implementation
+ *********************************************************************************************************************/
+
 void pwm_clock_init(){
-    SYSCTL_RCC_REG |= SYSCTL_RCC1_USEPWM_MASK;
-    SYSCTL_RCC_REG &= ~(0x7 << SYSCTL_RCC1_PWMDIV_BIT_POS);
-    SYSCTL_RCC_REG |= (SYSCTL_PWMDIV_VALUE << SYSCTL_RCC1_PWMDIV_BIT_POS);
+    REG_WRITE_32_BIT_PTR( SYSCTL_RCC_REG_PWM , SYSCTL_RCC1_USEPWM_MASK);
+    REG_CLEAR_SPECIFIC_BIT_PTR( SYSCTL_RCC_REG_PWM , (0x7 << SYSCTL_RCC1_PWMDIV_BIT_POS));
+    REG_WRITE_32_BIT_PTR( SYSCTL_RCC_REG_PWM , (SYSCTL_PWMDIV_VALUE << SYSCTL_RCC1_PWMDIV_BIT_POS));
 }
 
+/**********************************************************************************************************************
+ *  GLOBAL FUNCTIONS
+ *********************************************************************************************************************/
+
 void pwm_init(void){
-    uint8 i, j;
+    uint8 i;
     uint32 base;
     volatile uint32 delay;
     PWM_ChannelType my_channel;
@@ -48,12 +66,12 @@ void pwm_init(void){
          * Giving the right values for the base and the channel
          * Making sure that the PWM pin exist
          */
-        if(PWM_Container[i].pwm_block >= 0 && PWM_Container[i].pwm_block <= 3){
+        if(PWM_Container[i].pwm_block <= 3){
             base = PWM0_BASE_ADDERSS;
             my_channel = PWM_Container[i].pwm_block;
         }else if(PWM_Container[i].pwm_block > 3 && PWM_Container[i].pwm_block <= 7){
             base = PWM0_BASE_ADDERSS;
-            my_channel = PWM_Container[i].pwm_block % 4;
+            my_channel = (PWM_ChannelType)((uint8)PWM_Container[i].pwm_block % 4);
         }else{
             continue;
         }
@@ -81,6 +99,7 @@ void pwm_init(void){
             PWM_ModulesUsed |= (1 << my_channel);
             Low_thresholds[my_channel] = PWM_Container[i].low_threshold;
             High_thresholds[my_channel] = PWM_Container[i].high_threshold;
+            Load_Values[my_channel] = PWM_Container[i].load_value;
         }
         /*
          * 4
@@ -119,8 +138,8 @@ void pwm_init(void){
              * if we are not using any threshold or there is a problem in the threshold values
              * ,just write the values
              */
-            REG_WRITE_ALL_32_BIT_PTR( (base + PWM_0_CMPA_R +  (0x40 * my_channel) ) , PWM_Container[i].compare_a_value);
-            REG_WRITE_ALL_32_BIT_PTR( (base + PWM_0_CMPB_R +  (0x40 * my_channel) ) , PWM_Container[i].compare_b_value);
+            REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPA_OFFSET +  (0x40 * my_channel) ) , PWM_Container[i].compare_a_value);
+            REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPB_OFFSET +  (0x40 * my_channel) ) , PWM_Container[i].compare_b_value);
         }
 
         /*
@@ -166,22 +185,26 @@ uint8 pwm_update_comparator_a(PWM_ChannelType channel, uint32 value){
     uint8 return_value = RETURN_FINE;
     if(value > High_thresholds[channel]){
         value = High_thresholds[channel];
-        return_value = RETURN ERROR;
+        return_value = RETURN_ERROR;
     }else if(value < Low_thresholds[channel]){
         value = Low_thresholds[channel];
-        return_value = RETURN ERROR;
+        return_value = RETURN_ERROR;
+    }else if(value > Load_Values[channel]){
+        value = Load_Values[channel];
+        return_value = RETURN_ERROR;
     }else{
+
     }
 
     if(channel < 4){
         base = PWM0_BASE_ADDERSS;
     }else{
         base = PWM1_BASE_ADDERSS;
-        channel = channel % 4;
+        channel = (PWM_ChannelType)((uint8)channel % 4);
     }
 
     REG_CLEAR_BIT_PTR((base + PWM_N_CTL_OFFSET +  (0x40 * channel)), 0);
-    REG_WRITE_ALL_32_BIT_PTR( (base + PWM_0_CMPA_R +  (0x40 * channel) ) , value);
+    REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel) ) , value);
     REG_WRITE_BIT_PTR( (base + PWM_N_CTL_OFFSET +  ((0x40 * channel)) ) , 0);
 
     return return_value;
@@ -192,166 +215,332 @@ uint8 pwm_update_comparator_b(PWM_ChannelType channel, uint32 value){
     uint8 return_value = RETURN_FINE;
     if(value > High_thresholds[channel]){
         value = High_thresholds[channel];
-        return_value = RETURN ERROR;
+        return_value = RETURN_ERROR;
     }else if(value < Low_thresholds[channel]){
         value = Low_thresholds[channel];
-        return_value = RETURN ERROR;
+        return_value = RETURN_ERROR;
+    }else if(value > Load_Values[channel]){
+        value = Load_Values[channel];
+        return_value = RETURN_ERROR;
     }else{
+
     }
 
     if(channel < 4){
         base = PWM0_BASE_ADDERSS;
     }else{
         base = PWM1_BASE_ADDERSS;
-        channel = channel % 4;
+        channel = (PWM_ChannelType)((uint8)channel % 4);
     }
 
     REG_CLEAR_BIT_PTR((base + PWM_N_CTL_OFFSET +  (0x40 * channel)), 0);
-    REG_WRITE_ALL_32_BIT_PTR( (base + PWM_0_CMPB_R +  (0x40 * channel) ) , value);
+    REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel) ) , value);
     REG_WRITE_BIT_PTR( (base + PWM_N_CTL_OFFSET +  ((0x40 * channel)) ) , 0);
 
     return return_value;
 }
 
 uint8 pwm_update_comparator_a_percentage(PWM_ChannelType channel, uint32 value){
-    int temp = 0;
+    uint32 temp = 0, base;
+    uint8 return_value = RETURN_FINE;
+
+    /*
+     * making sure that the value is less than 100
+     */
     if(value > 100){
-        return;
+        return_value = RETURN_ERROR;
+        value = 100;
     }
+
+    /*
+     * Writing the value in the range between LowThreshold : HighThreshold
+     */
     if(High_thresholds[channel] > 0){
-        temp = (High_threshold[channel] - Low_threshold[channel]) * value / 100;
-        temp = temp + Low_threshold[channel];
-    }
-    if (block->pwm_block_num <= 3){
-        REG_CLEAR_BIT_PTR((PWM0_BASE_ADDERSS + PWM_N_CTL_OFFSET +  (0x40 * channel)), 0);
-        REG_WRITE_ALL_32_BIT_PTR( (PWM0_BASE_ADDERSS + PWM_0_CMPA_R +  (0x40 * channel) ) , value);
-        REG_WRITE_BIT_PTR( (PWM0_BASE_ADDERSS + PWM_N_CTL_OFFSET +  ((0x40 * channel)) ) , 0);
+        temp = (High_thresholds[channel] - Low_thresholds[channel]) * value / 100;
+        temp = temp + Low_thresholds[channel];
     }else{
-        REG_CLEAR_BIT_PTR((PWM1_BASE_ADDERSS + PWM_N_CTL_OFFSET +  (0x40 * channel)), 0);
-        REG_WRITE_ALL_32_BIT_PTR( (PWM1_BASE_ADDERSS + PWM_0_CMPA_R +  (0x40 * channel) ) , value);
-        REG_WRITE_BIT_PTR( (PWM1_BASE_ADDERSS + PWM_N_CTL_OFFSET +  ((0x40 * channel)) ) , 0);
+        temp = Load_Values[channel] * value / 100;
     }
+
+    /*
+     * Getting the base address and the Channel address
+     */
+    if(channel < 4){
+        base = PWM0_BASE_ADDERSS;
+    }else{
+        base = PWM1_BASE_ADDERSS;
+        channel = (PWM_ChannelType)((uint8)channel % 4);
+    }
+
+    REG_CLEAR_BIT_PTR((base + PWM_N_CTL_OFFSET +  (0x40 * channel)), 0);
+    REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel) ) , temp);
+    REG_WRITE_BIT_PTR( (base + PWM_N_CTL_OFFSET +  ((0x40 * channel)) ) , 0);
+    return return_value;
 }
 
-void pwm_update_comparator_b_percentage(PWM_generator_config_t *block, uint32 value){
-    int temp = 0;
+uint8 pwm_update_comparator_b_percentage(PWM_ChannelType channel, uint32 value){
+    uint32 temp = 0, base;
+    uint8 return_value = RETURN_FINE;
+
+    /*
+     * making sure that the value is less than 100
+     */
     if(value > 100){
-        return;
+        return_value = RETURN_ERROR;
+        value = 100;
     }
-    temp = (block->high_threshold - block->low_threshold) * value / 100;
-    temp = temp + block->low_threshold;
-    block->compare_b_value = temp;
-    if (block->pwm_block_num <= 3){
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) &= ~(1 << 0);
-        HWREG(PWM0_base_R + PWM_0_CMPB_R + (0x40 * block->pwm_block_num)) = block->compare_b_value;
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) |= (1 << 0);
+
+    /*
+     * Writing the value in the range between LowThreshold : HighThreshold
+     */
+    if(High_thresholds[channel] > 0){
+        temp = (High_thresholds[channel] - Low_thresholds[channel]) * value / 100;
+        temp = temp + Low_thresholds[channel];
     }else{
-        HWREG(PWM1_base_R + PWM_0_CTL_R +  (0x40 * (block->pwm_block_num%4))) &= ~(1 << 0);
-        HWREG(PWM1_base_R + PWM_0_CMPB_R + (0x40 * (block->pwm_block_num%4))) = block->compare_b_value;
-        HWREG(PWM1_base_R + PWM_0_CTL_R +  (0x40 * (block->pwm_block_num%4))) |= (1 << 0);
+        temp = Load_Values[channel] * value / 100;
     }
+
+    /*
+     * Getting the base address and the Channel address
+     */
+    if(channel < 4){
+        base = PWM0_BASE_ADDERSS;
+    }else{
+        base = PWM1_BASE_ADDERSS;
+        channel = (PWM_ChannelType)((uint8)channel % 4);
+    }
+
+    /*
+     * Writing the value
+     */
+    REG_CLEAR_BIT_PTR((base + PWM_N_CTL_OFFSET +  (0x40 * channel)), 0);
+    REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel) ) , temp);
+    REG_WRITE_BIT_PTR( (base + PWM_N_CTL_OFFSET +  ((0x40 * channel)) ) , 0);
+    return return_value;
 }
 
-void pwm_update_generation_a(PWM_generator_config_t *block, PWM_generations_t generate_values){
-    if (block->pwm_block_num <= 3){
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) &= ~(1 << 0);
-        HWREG(PWM0_base_R + PWM_0_GENA_R + (0x40 * block->pwm_block_num)) |= (generate_values.PWM_GEN_ZERO << 0);
-        HWREG(PWM0_base_R + PWM_0_GENA_R + (0x40 * block->pwm_block_num)) |= (generate_values.PWM_GEN_LOAD << 2);
-        HWREG(PWM0_base_R + PWM_0_GENA_R + (0x40 * block->pwm_block_num)) |= (generate_values.PWM_GEN_CMPAU << 4);
-        HWREG(PWM0_base_R + PWM_0_GENA_R + (0x40 * block->pwm_block_num)) |= (generate_values.PWM_GEN_CMPAD << 6);
-        HWREG(PWM0_base_R + PWM_0_GENA_R + (0x40 * block->pwm_block_num)) |= (generate_values.PWM_GEN_CMPBU << 8);
-        HWREG(PWM0_base_R + PWM_0_GENA_R + (0x40 * block->pwm_block_num)) |= (generate_values.PWM_GEN_CMPBD << 10);
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) |= (1 << 0);
+uint8 pwm_update_generation_a(PWM_ChannelType channel, PWM_GeneratorEventsType Event, PWM_actionsType Action){
+    uint32  base;
+    uint8 return_value = RETURN_FINE;
+
+    /*
+     * Getting the base address and the Channel address
+     */
+    if(channel < 4){
+        base = PWM0_BASE_ADDERSS;
     }else{
-        HWREG(PWM1_base_R + PWM_0_CTL_R +  (0x40 * (block->pwm_block_num%4))) &= ~(1 << 0);
-        HWREG(PWM1_base_R + PWM_0_GENA_R + (0x40 * (block->pwm_block_num%4))) |= (generate_values.PWM_GEN_ZERO << 0);
-        HWREG(PWM1_base_R + PWM_0_GENA_R + (0x40 * (block->pwm_block_num%4))) |= (generate_values.PWM_GEN_LOAD << 2);
-        HWREG(PWM1_base_R + PWM_0_GENA_R + (0x40 * (block->pwm_block_num%4))) |= (generate_values.PWM_GEN_CMPAU << 4);
-        HWREG(PWM1_base_R + PWM_0_GENA_R + (0x40 * (block->pwm_block_num%4))) |= (generate_values.PWM_GEN_CMPAD << 6);
-        HWREG(PWM1_base_R + PWM_0_GENA_R + (0x40 * (block->pwm_block_num%4))) |= (generate_values.PWM_GEN_CMPBU << 8);
-        HWREG(PWM1_base_R + PWM_0_GENA_R + (0x40 * (block->pwm_block_num%4))) |= (generate_values.PWM_GEN_CMPBD << 10);
-        HWREG(PWM1_base_R + PWM_0_CTL_R +  (0x40 * (block->pwm_block_num%4))) |= (1 << 0);
+        base = PWM1_BASE_ADDERSS;
+        channel = (PWM_ChannelType)((uint8)channel % 4);
     }
+
+    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0) ;
+    REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (0x3) << Event*2);
+    REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (Action) << Event*2);
+    REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) ,  0);
+    return return_value;
 }
 
 
-void pwm_update_generation_b(PWM_generator_config_t *block, PWM_generations_t generate_values){
-    if (block->pwm_block_num <= 3){
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) &= ~(1 << 0);
-        HWREG(PWM0_base_R + PWM_0_GENB_R + (0x40 * block->pwm_block_num)) |= (generate_values.PWM_GEN_ZERO << 0);
-        HWREG(PWM0_base_R + PWM_0_GENB_R + (0x40 * block->pwm_block_num)) |= (generate_values.PWM_GEN_LOAD << 2);
-        HWREG(PWM0_base_R + PWM_0_GENB_R + (0x40 * block->pwm_block_num)) |= (generate_values.PWM_GEN_CMPAU << 4);
-        HWREG(PWM0_base_R + PWM_0_GENB_R + (0x40 * block->pwm_block_num)) |= (generate_values.PWM_GEN_CMPAD << 6);
-        HWREG(PWM0_base_R + PWM_0_GENB_R + (0x40 * block->pwm_block_num)) |= (generate_values.PWM_GEN_CMPBU << 8);
-        HWREG(PWM0_base_R + PWM_0_GENB_R + (0x40 * block->pwm_block_num)) |= (generate_values.PWM_GEN_CMPBD << 10);
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) |= (1 << 0);
+uint8 pwm_update_generation_b(PWM_ChannelType channel, PWM_GeneratorEventsType Event, PWM_actionsType Action){
+    uint32  base;
+    uint8 return_value = RETURN_FINE;
+
+    /*
+     * Getting the base address and the Channel address
+     */
+    if(channel < 4){
+        base = PWM0_BASE_ADDERSS;
     }else{
-        HWREG(PWM1_base_R + PWM_0_CTL_R +  (0x40 * (block->pwm_block_num%4))) &= ~(1 << 0);
-        HWREG(PWM1_base_R + PWM_0_GENB_R + (0x40 * (block->pwm_block_num%4))) |= (generate_values.PWM_GEN_ZERO << 0);
-        HWREG(PWM1_base_R + PWM_0_GENB_R + (0x40 * (block->pwm_block_num%4))) |= (generate_values.PWM_GEN_LOAD << 2);
-        HWREG(PWM1_base_R + PWM_0_GENB_R + (0x40 * (block->pwm_block_num%4))) |= (generate_values.PWM_GEN_CMPAU << 4);
-        HWREG(PWM1_base_R + PWM_0_GENB_R + (0x40 * (block->pwm_block_num%4))) |= (generate_values.PWM_GEN_CMPAD << 6);
-        HWREG(PWM1_base_R + PWM_0_GENB_R + (0x40 * (block->pwm_block_num%4))) |= (generate_values.PWM_GEN_CMPBU << 8);
-        HWREG(PWM1_base_R + PWM_0_GENB_R + (0x40 * (block->pwm_block_num%4))) |= (generate_values.PWM_GEN_CMPBD << 10);
-        HWREG(PWM1_base_R + PWM_0_CTL_R +  (0x40 * (block->pwm_block_num%4))) |= (1 << 0);
+        base = PWM1_BASE_ADDERSS;
+        channel = (PWM_ChannelType)((uint8)channel % 4);
     }
+
+    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
+    REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (0x3) << Event*2);
+    REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (Action) << Event*2);
+    REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
+    return return_value;
 }
 
-void pwm_update_load(PWM_generator_config_t *block, uint32 value){
-    if (block->pwm_block_num <= 3){
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) &= ~(1 << 0);
-        HWREG(PWM0_base_R + PWM_0_LOAD_R + (0x40 * block->pwm_block_num)) = value;
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) |= (1 << 0);
+uint8 pwm_update_load(PWM_ChannelType channel, uint32 value){
+    uint32  base;
+    uint8 return_value = RETURN_FINE;
+
+    Load_Values[channel] = value;
+    /*
+     * Getting the base address and the Channel address
+     */
+    if(channel < 4){
+        base = PWM0_BASE_ADDERSS;
     }else{
-        HWREG(PWM1_base_R + PWM_0_CTL_R +  (0x40 * (block->pwm_block_num%4))) &= ~(1 << 0);
-        HWREG(PWM1_base_R + PWM_0_LOAD_R + (0x40 * (block->pwm_block_num%4))) = value;
-        HWREG(PWM1_base_R + PWM_0_CTL_R +  (0x40 * (block->pwm_block_num%4))) |= (1 << 0);
+        base = PWM1_BASE_ADDERSS;
+        channel = (PWM_ChannelType)((uint8)channel % 4);
     }
+
+    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
+    REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_LOAD_OFFSET +  (0x40 * channel) ) , value);
+    REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
+    return return_value;
 }
 
-void pwm_change_mode(PWM_generator_config_t *block, PWM_CountMode_t value){
-    if (block->pwm_block_num <= 3){
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) &= ~(1 << 0);
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) |= (value << 1);
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) |= (1 << 0);
+uint8 PWM_UpdateThresholds(PWM_ChannelType channel, uint32 ThreshLow, uint32 ThreshHigh){
+    uint32  base, temp1, temp2;
+    uint8 return_value = RETURN_FINE;
+
+    /*
+     * Getting the base address and the Channel address
+     */
+
+    High_thresholds[channel] = ThreshHigh;
+    Low_thresholds[channel] = ThreshLow;
+
+    if(channel < 4){
+        base = PWM0_BASE_ADDERSS;
     }else{
-        HWREG(PWM1_base_R + PWM_0_CTL_R +  (0x40 * (block->pwm_block_num%4))) &= ~(1 << 0);
-        HWREG(PWM1_base_R + PWM_0_CTL_R +  (0x40 * (block->pwm_block_num%4))) |= (value << 1);
-        HWREG(PWM1_base_R + PWM_0_CTL_R +  (0x40 * (block->pwm_block_num%4))) |= (1 << 0);
+        base = PWM1_BASE_ADDERSS;
+        channel = (PWM_ChannelType)((uint8)channel % 4);
     }
+
+    REG_READ_PTR(temp1, base + PWM_N_CMPA_OFFSET + (0x40 * channel));
+    REG_READ_PTR(temp2, base + PWM_N_CMPB_OFFSET + (0x40 * channel));
+    if(temp1 > ThreshHigh){
+        REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel) ) , temp1);
+    }
+    if(temp1 < ThreshLow){
+        REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel) ) , temp1);
+    }
+    if(temp2 > ThreshHigh){
+        REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel) ) , temp2);
+    }
+    if(temp2 < ThreshLow){
+        REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel) ) , temp2);
+    }
+    return return_value;
 }
 
-void pwm_disable(PWM_generator_config_t *block, uint8 bins){
+uint8 pwm_AutomaticDutyCycle(PWM_ChannelType channel, uint32 DesiredDutyCycle, uint8 Channel_A_or_B){
+    uint32  base, temp1, temp2;
+    uint8 return_value = RETURN_FINE;
+
+    temp1 = Load_Values[channel];
+    /*
+     * Getting the base address and the Channel address
+     */
+    if(channel < 4){
+        base = PWM0_BASE_ADDERSS;
+    }else{
+        base = PWM1_BASE_ADDERSS;
+        channel = (PWM_ChannelType)((uint8)channel % 4);
+    }
+
+    temp2 = temp1 * DesiredDutyCycle / 100;
+    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
+    /*
+     * make it just down counter
+     */
+    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 1);
+    /*
+     * Change the generation events to fit the duty cycles easily
+     * Change the Compare Register to fit the Duty Cycle Usage
+     */
+    if(Channel_A_or_B == 0){
+        REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_ZERO*2);
+        REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
+        REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_CMPAD*2);
+        REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_HIGH) << PWM_GEN_CMPAD*2);
+
+        REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel) ) , temp2);
+    }else if (Channel_A_or_B == 1){
+        REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_ZERO*2);
+        REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
+        REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_CMPAD*2);
+        REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_HIGH) << PWM_GEN_CMPAD*2);
+
+        REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel) ) , temp2);
+    }
+    REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
+    return return_value;
+}
+
+uint8 pwm_change_mode(PWM_ChannelType channel, PWM_CountModeType value){
+    uint32  base;
+    uint8 return_value = RETURN_FINE;
+
+    /*
+     * Getting the base address and the Channel address
+     */
+    if(channel < 4){
+        base = PWM0_BASE_ADDERSS;
+    }else{
+        base = PWM1_BASE_ADDERSS;
+        channel = (PWM_ChannelType)((uint8)channel % 4);
+    }
+
+    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
+    REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_CTL_OFFSET + ((0x40 * channel)) ) , (0x3) << 1);
+    REG_WRITE_32_BIT_PTR( (base + PWM_N_CTL_OFFSET + ((0x40 * channel)) ) , (value) << 1);
+    REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
+    return return_value;
+}
+
+uint8 pwm_disable(PWM_ChannelType channel, uint8 bins){
+    uint32  base;
+    uint8 return_value = RETURN_FINE;
+
+    /*
+     * Getting the base address and the Channel address
+     */
+    if(channel < 4){
+        base = PWM0_BASE_ADDERSS;
+    }else{
+        base = PWM1_BASE_ADDERSS;
+        channel = (PWM_ChannelType)((uint8)channel % 4);
+    }
+
     bins = bins & 0x3;
-    if (block->pwm_block_num <= 3){
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) &= ~(1 << 0);
-        HWREG(PWM0_base_R + PWM_ENABLE_R +  (0x40 * block->pwm_block_num)) &= ~(bins << (block->pwm_block_num * 2));
-    }else{
-        HWREG(PWM1_base_R + PWM_0_CTL_R ) &= ~(1 << 0);
-        HWREG(PWM1_base_R + PWM_ENABLE_R ) &= ~(bins << ((block->pwm_block_num%4) * 2));
-    }
+    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
+    REG_CLEAR_SPECIFIC_BIT_PTR(base + PWM_ENABLE_OFFSET +  (0x40 * channel) , bins << (channel * 2));
+    return return_value;
 }
 
-void pwm_stop(PWM_generator_config_t *block, uint8 bins){
-    bins = bins & 0x3;
-    if (block->pwm_block_num <= 3){
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) &= ~(1 << 0);
-        HWREG(PWM0_base_R + PWM_ENABLE_R +  (0x40 * block->pwm_block_num)) &= ~(bins << (block->pwm_block_num * 2));
-        HWREG(PWM0_base_R + PWM_0_CTL_R +  (0x40 * block->pwm_block_num)) |= (1 << 0);
+uint8 pwm_stop(PWM_ChannelType channel, uint8 bins){
+    uint32  base;
+    uint8 return_value = RETURN_FINE;
+
+    /*
+     * Getting the base address and the Channel address
+     */
+    if(channel < 4){
+        base = PWM0_BASE_ADDERSS;
     }else{
-        HWREG(PWM1_base_R + PWM_0_CTL_R ) &= ~(1 << 0);
-        HWREG(PWM1_base_R + PWM_ENABLE_R ) &= ~(bins << ((block->pwm_block_num%4) * 2));
-        HWREG(PWM1_base_R + PWM_0_CTL_R ) |= (1 << 0);
+        base = PWM1_BASE_ADDERSS;
+        channel = (PWM_ChannelType)((uint8)channel % 4);
     }
+
+    bins = bins & 0x3;
+    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
+    REG_CLEAR_SPECIFIC_BIT_PTR(base + PWM_ENABLE_OFFSET +  (0x40 * channel) , bins << (channel * 2));
+    REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
+    return return_value;
 }
 
-void pwm_enable(PWM_generator_config_t *block, uint8 bins){
-    bins = bins & 0x3;
-    if (block->pwm_block_num <= 3){
-        HWREG(PWM0_base_R + PWM_0_CTL_R) |= (1 << 0);
-        HWREG(PWM0_base_R + PWM_ENABLE_R) |= (bins << (block->pwm_block_num * 2));
+uint8 pwm_enable(PWM_ChannelType channel, uint8 bins){
+    uint32  base;
+    uint8 return_value = RETURN_FINE;
+
+    /*
+     * Getting the base address and the Channel address
+     */
+    if(channel < 4){
+        base = PWM0_BASE_ADDERSS;
     }else{
-        HWREG(PWM1_base_R + PWM_0_CTL_R) |= (1 << 0);
-        HWREG(PWM1_base_R + PWM_ENABLE_R) |= (bins << ((block->pwm_block_num%4) * 2));
+        base = PWM1_BASE_ADDERSS;
+        channel = (PWM_ChannelType)((uint8)channel % 4);
     }
+
+    bins = bins & 0x3;
+    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
+    REG_WRITE_32_BIT_PTR(base + PWM_ENABLE_OFFSET +  (0x40 * channel) , bins << (channel * 2));
+    REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
+    return return_value;
 }
