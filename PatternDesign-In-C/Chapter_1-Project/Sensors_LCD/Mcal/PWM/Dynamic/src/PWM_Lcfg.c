@@ -17,6 +17,8 @@
 
 
 const PWM_ConfigType PWM_Container[PWM_CONFIGURED_NUMBER] = {
-                                                             {}
+                                                             {
+
+                                                             }
 }
 

@@ -21,9 +21,15 @@ typedef enum{
 
 
 typedef enum{
-    PWM_NUM_0_0, PWM_NUM_0_1, PWM_NUM_1_0, PWM_NUM_1_1,
-    PWM_NUM_2_0, PWM_NUM_2_1, PWM_NUM_3_0, PWM_NUM_4_1, PWM_NUM_NotUsed
+    PWM_NUM_0_0, PWM_NUM_0_1, PWM_NUM_0_2, PWM_NUM_0_3,
+    PWM_NUM_1_0, PWM_NUM_1_1, PWM_NUM_1_2, PWM_NUM_1_3,
+    PWM_Num_NotUsed
 }PWM_ChannelType;
+
+typedef enum{
+    PWM_GEN_ZERO, PWM_GEN_LOAD, PWM_GEN_CMPAU,
+    PWM_GEN_CMPAD, PWM_GEN_CMPBU, PWM_GEN_CMPBD
+}PWM_GeneratorType;
 
 typedef struct{
     PWM_actionsType PWM_GEN_ZERO;
@@ -35,21 +41,19 @@ typedef struct{
 }PWM_generationsType;
 
 
-typedef struct{
-    PWM_ChannelType pwm_block_num;
-    uint32 compare_value;
-    PWM_generationsType generate_values;
-}PWM_ChannelConfigType;
-
 
 /*
  * each PWM Pin will have it's own
  * Comparator register and action values
  */
 typedef struct{
-    PWM_ChannelConfigType pwm_block_num[2];
+    PWM_ChannelType pwm_block;
     uint8 pwmdiv;
     uint32 load_value;
+    PWM_generationsType Generates_A;
+    PWM_generationsType Generates_B;
+    uint32 compare_a_value;
+    uint32 compare_b_value;
     PWM_CountModeType count_mode;
     uint32 high_threshold;
     uint32 low_threshold;

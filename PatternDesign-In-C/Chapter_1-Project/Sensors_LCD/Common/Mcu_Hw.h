@@ -708,12 +708,42 @@ WatchDog Timer Registers
 
 //*****************************************************************************
 //
-// UART registers (UART7)
+// UART registers (PWM)
 //
 //*****************************************************************************
 
 #define PWM0_BASE_ADDERSS       0x40028000
-#define PWM_BASE_ADDERSS        0x40029000
+#define PWM1_BASE_ADDERSS        0x40029000
+
+#define PWM_CTL_OFFSET              0x000
+#define PWM_SYNC_OFFSET             0x004
+#define PWM_ENABLE_OFFSET           0x008
+#define PWM_INVERT_OFFSET           0x00C
+#define PWM_FAULT_OFFSET            0x010
+#define PWM_INTEN_OFFSET            0x014
+#define PWM_RIS_OFFSET              0x018
+#define PWM_ISC_OFFSET              0x01C
+#define PWM_STATUS_OFFSET           0x020
+#define PWM_FAULTVAL_OFFSET         0x024
+#define PWM_ENUPD_OFFSET            0x028
+
+#define PWM_N_CTL_OFFSET                 0x040
+#define PWM_N_INTEN_OFFSET               0x044
+#define PWM_N_OFFSETIS_OFFSET            0x048
+#define PWM_N_ISC_OFFSET                 0x04C
+#define PWM_N_LOAD_OFFSET                0x050
+#define PWM_N_COUNT_OFFSET               0x054
+#define PWM_N_CMPA_OFFSET                0x058
+#define PWM_N_CMPB_OFFSET                0x05C
+#define PWM_N_GENA_OFFSET                0x060
+#define PWM_N_GENB_OFFSET                0x064
+#define PWM_N_DBCTL_OFFSET               0x068
+#define PWM_N_DBRISE_OFFSET              0x06C
+#define PWM_N_DBFALL_OFFSET              0x070
+#define PWM_N_FLTSRC0_OFFSET             0x074
+#define PWM_N_FLTSRC1_OFFSET             0x078
+#define PWM_N_MINFLTPER_OFFSET           0x07C
+
 #define SYSCTL_RCGCPWM_R        0x400FE640
 //#define SYSCTL_RCGC0_REG        0x400FE040
 //#define SYSCTL_RCGC0_REG_PWM    0x400FE100
