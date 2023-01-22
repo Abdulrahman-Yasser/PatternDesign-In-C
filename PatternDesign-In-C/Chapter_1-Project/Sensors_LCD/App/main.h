@@ -15,7 +15,7 @@
 #include "../Mcal/IntCtrl/Static/inc/IntCtrl.h"
 #include "../Mcal/GPT/Static/inc/GPT.h"
 #include "../Mcal/SysTick/Static/inc/SysTick.h"
-
+#include "../Mcal/PWM/Static/inc/PWM.h"
 
 #include "../Mcal/I2C/Dynamic/inc/I2C_Cfg.h"
 #include "../Mcal/UART/Dynamic/inc/UART_Cfg.h"
@@ -24,6 +24,7 @@
 #include "../Mcal/IntCtrl/Dynamic/inc/IntCtrl_Cfg.h"
 #include "../Mcal/GPT/Dynamic/inc/GPT_Cfg.h"
 #include "../Mcal/SysTick/Dynamic/inc/SysTick_CFG.h"
+#include "../Mcal/PWM/Dynamic/inc/PWM_Cfg.h"
 
 
 void App_Init(void);

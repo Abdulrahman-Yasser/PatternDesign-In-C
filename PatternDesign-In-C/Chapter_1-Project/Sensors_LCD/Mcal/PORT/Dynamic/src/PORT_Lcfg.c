@@ -21,8 +21,8 @@
   *********************************************************************************************************************/
 const Port_ConfigType ConfigPtr[configured_pins] =
 {
-  {Port_Pin_A6, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},  // SCL
-  {Port_Pin_A7, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_OpenDrain, Port_PinOutputCurrent_2ma}  // SDA
+  {Port_Pin_B4, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_M0PWMn, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},  // SCL
+  {Port_Pin_B5, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_M0PWMn, Port_PinInternal_OpenDrain, Port_PinOutputCurrent_2ma}  // SDA
 };
 
 /* For initializing the whole pins */

@@ -18,3 +18,8 @@ void WriteUsingBB(uint32* Ptr, uint32 Value){
         }
     }
 }
+
+void Delay_ms(unsigned long long n){
+    volatile unsigned long long  count = 0;
+    while(count++ < (762 * n) );
+}

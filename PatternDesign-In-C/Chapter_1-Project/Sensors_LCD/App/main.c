@@ -21,13 +21,35 @@ void Send_Msg_I2C1(char* msg);
 
 void Test_I2C_AlwaysFullBuffer_NoISR_Configs(void);
 
+/*================================================ PWM TEST ================================================*/
+void Test_PWM_Generation_NoISR_Configs(void);
+
+
 int main(void){
-    Test_I2C_AlwaysFullBuffer_NoISR_Configs();
+    Test_PWM_Generation_NoISR_Configs();
 }
 
 /*================================================ I2C TEST ================================================*/
+void Test_PWM_Generation_NoISR_Configs(void){
+    int i = 0;
+
+    Port_Init();
+    Gpt_Init();
+    IntCtrl_Init();
+    pwm_init();
+    pwm_enable(PWM_NUM_0_1, 0x3);
+    while(1){
+        Delay_ms(50);
+        pwm_AutomaticDutyCycle(PWM_NUM_0_1, i, 0);
+        i++;
+        if(i > 100){
+            i = 0;
+        }
+    }
+}
+    /*================================================ I2C TEST ================================================*/
 void Test_I2C_AlwaysFullBuffer_NoISR_Configs(void){
-    int i, j;
+    int i;
 
     Port_Init();
     Gpt_Init();

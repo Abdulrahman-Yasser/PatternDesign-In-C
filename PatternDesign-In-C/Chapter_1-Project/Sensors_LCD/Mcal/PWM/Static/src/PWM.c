@@ -45,7 +45,9 @@ static void pwm_clock_init(void);
  *  LOCAL Functions Implementation
  *********************************************************************************************************************/
 
-void pwm_clock_init(){
+void pwm_clock_init(void){
+    volatile uint32 delay;
+
     REG_WRITE_32_BIT_PTR( SYSCTL_RCC_REG_PWM , SYSCTL_RCC1_USEPWM_MASK);
     REG_CLEAR_SPECIFIC_BIT_PTR( SYSCTL_RCC_REG_PWM , (0x7 << SYSCTL_RCC1_PWMDIV_BIT_POS));
     REG_WRITE_32_BIT_PTR( SYSCTL_RCC_REG_PWM , (SYSCTL_PWMDIV_VALUE << SYSCTL_RCC1_PWMDIV_BIT_POS));
@@ -61,8 +63,41 @@ void pwm_init(void){
     volatile uint32 delay;
     PWM_ChannelType my_channel;
     for(i = 0;i < PWM_CONFIGURED_NUMBER; i++){
+
+    /*
+     * Saving the values in a program life time variable, to make sure
+     *  that there is no wrong value would enter by the user
+     */
+        Low_thresholds[ PWM_Container[i].pwm_block ] = PWM_Container[i].low_threshold;
+        High_thresholds[ PWM_Container[i].pwm_block ] = PWM_Container[i].high_threshold;
+        Load_Values[ PWM_Container[i].pwm_block ] = PWM_Container[i].load_value;
+
+
         /*
          * 1
+         * Making sure that the channel was not initialized before
+         * then save it's threshold to make sure the user does not exceed it after the initialization,
+         * we will check whether the user going to exceed it in the run time or not
+         */
+        if( (PWM_ModulesUsed & (1 << PWM_Container[i].pwm_block) ) ){
+            // the channel already initialized
+        }else{
+            if(PWM_ModulesUsed == 0){
+                pwm_clock_init();
+            }
+            if(PWM_Container[i].pwm_block < 4){
+                /* PWM 0 */
+                REG_WRITE_32_BIT_PTR(SYSCTL_RCGCPWM_R, 0x01);
+            }else{
+                /* PWM 1 */
+                REG_WRITE_32_BIT_PTR(SYSCTL_RCGCPWM_R, 0x02);
+            }
+            REG_READ_PTR(delay, SYSCTL_RCC_REG_PWM);
+            PWM_ModulesUsed |= (1 << PWM_Container[i].pwm_block);
+        }
+
+        /*
+         * 2
          * Giving the right values for the base and the channel
          * Making sure that the PWM pin exist
          */
@@ -75,31 +110,13 @@ void pwm_init(void){
         }else{
             continue;
         }
+
         /*
-         * 2
+         * 3
          * Make sure that we do not exceed our High Threshold (if it has a value )
          */
         if(PWM_Container[i].high_threshold > 0 && PWM_Container[i].high_threshold > PWM_Container[i].load_value){
             continue;
-        }
-        /*
-         * 3
-         * Making sure that the channel was not initialized before
-         * then save it's threshold to make sure the user does not exceed it after the initialization,
-         * we will check whether the user going to exceed it in the run time or not
-         */
-        if( (PWM_ModulesUsed & (1 << my_channel) ) ){
-            // the channel already initialized
-        }else{
-            REG_WRITE_32_BIT_PTR(SYSCTL_RCGCPWM_R, 0x01);
-            REG_READ_PTR(delay, SYSCTL_RCC_REG_PWM);
-            if(PWM_ModulesUsed == 0){
-                pwm_clock_init();
-            }
-            PWM_ModulesUsed |= (1 << my_channel);
-            Low_thresholds[my_channel] = PWM_Container[i].low_threshold;
-            High_thresholds[my_channel] = PWM_Container[i].high_threshold;
-            Load_Values[my_channel] = PWM_Container[i].load_value;
         }
         /*
          * 4
@@ -433,7 +450,7 @@ uint8 pwm_AutomaticDutyCycle(PWM_ChannelType channel, uint32 DesiredDutyCycle, u
         channel = (PWM_ChannelType)((uint8)channel % 4);
     }
 
-    temp2 = temp1 * DesiredDutyCycle / 100;
+    temp2 = (temp1 * DesiredDutyCycle / 100) - 2;
     REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
     /*
      * make it just down counter
@@ -443,20 +460,46 @@ uint8 pwm_AutomaticDutyCycle(PWM_ChannelType channel, uint32 DesiredDutyCycle, u
      * Change the generation events to fit the duty cycles easily
      * Change the Compare Register to fit the Duty Cycle Usage
      */
-    if(Channel_A_or_B == 0){
-        REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_ZERO*2);
-        REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
-        REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_CMPAD*2);
-        REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_HIGH) << PWM_GEN_CMPAD*2);
+    if(DesiredDutyCycle != 100){
+        if(Channel_A_or_B == 0){
+            REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_LOAD*2);
+            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (PWM_action_Do_Nothing) << PWM_GEN_LOAD*2);
+            REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_ZERO*2);
+            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
+            REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_CMPAD*2);
+            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_HIGH) << PWM_GEN_CMPAD*2);
 
-        REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel) ) , temp2);
-    }else if (Channel_A_or_B == 1){
-        REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_ZERO*2);
-        REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
-        REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_CMPAD*2);
-        REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_HIGH) << PWM_GEN_CMPAD*2);
+            REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel) ) , temp2);
+        }else if (Channel_A_or_B == 1){
+            REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_LOAD*2);
+            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (PWM_action_Do_Nothing) << PWM_GEN_LOAD*2);
+            REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_ZERO*2);
+            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
+            REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_CMPBD*2);
+            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_HIGH) << PWM_GEN_CMPBD*2);
 
-        REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel) ) , temp2);
+            REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel) ) , temp2);
+        }
+    }else{
+        if(Channel_A_or_B == 0){
+            REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_CMPAD*2);
+            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAD*2);
+            REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_LOAD*2);
+            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_HIGH) << PWM_GEN_LOAD*2);
+            REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_ZERO*2);
+            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
+
+            REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel) ) , temp2);
+        }else if (Channel_A_or_B == 1){
+            REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_CMPBD*2);
+            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBD*2);
+            REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_ZERO*2);
+            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
+            REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (0x3) << PWM_GEN_LOAD*2);
+            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel)) ) , (PWM_ACTION_HIGH) << PWM_GEN_LOAD*2);
+
+            REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel) ) , temp2);
+        }
     }
     REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
     return return_value;
@@ -540,7 +583,7 @@ uint8 pwm_enable(PWM_ChannelType channel, uint8 bins){
 
     bins = bins & 0x3;
     REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
-    REG_WRITE_32_BIT_PTR(base + PWM_ENABLE_OFFSET +  (0x40 * channel) , bins << (channel * 2));
+    REG_WRITE_32_BIT_PTR((base + PWM_ENABLE_OFFSET) , bins << (channel * 2));
     REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel) , 0);
     return return_value;
 }

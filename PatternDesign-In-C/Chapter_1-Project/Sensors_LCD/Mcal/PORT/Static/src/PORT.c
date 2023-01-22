@@ -76,6 +76,7 @@ void SetInternalAttach(uint32* PortPtr_Var, uint8 PinNum_Var, Port_PinInternalAt
 }
 
 void SetAlternativeFunction(uint32* PortPtr_Var, uint8 Pin, uint8 Value){
+    REG_WRITE_BIT_PTR(((uint32)PortPtr_Var + PORT_COMMIT_REG_OFFSET), Pin);
     REG_WRITE_BIT_PTR(((uint32)PortPtr_Var + PORT_ALT_FUNC_REG_OFFSET), Pin);
     (*(volatile uint32*)((uint32)PortPtr_Var + PORT_CTL_REG_OFFSET)) &= ~(0xf << Pin*4);
     REG_WRITE_32_BIT_PTR(((uint32)PortPtr_Var + PORT_CTL_REG_OFFSET), (Value << Pin*4));
@@ -193,12 +194,12 @@ void Port_Init(void){
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 3);
             break;
         case Port_PinMode_M0PWMn:
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 4);
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             break;
         case Port_PinMode_M1PWMn:
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 5);
+            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             break;
         case Port_PinMode_IDXn_Phpn:
             REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);

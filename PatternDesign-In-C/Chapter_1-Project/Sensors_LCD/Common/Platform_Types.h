@@ -45,4 +45,8 @@ typedef enum{
 /* For using the bit-band region */
 void WriteUsingBB(uint32* Ptr, uint32 Value);
 
+/* For delays in ms */
+void Delay_ms(unsigned long long n);
+
+
 #endif
