@@ -1,0 +1,17 @@
+/*
+ * Stack_Cfg.h
+ *
+ *  Created on: Dec 26, 2022
+ *      Author: abduy
+ */
+
+#ifndef COMMON_DATASTRUCTURE_STACK_DYNAMIC_INC_STACK_CFG_H_
+#define COMMON_DATASTRUCTURE_STACK_DYNAMIC_INC_STACK_CFG_H_
+
+
+
+#define STACK_BUFFER_SIZE_STATIC            16
+
+
+
+#endif /* COMMON_DATASTRUCTURE_STACK_DYNAMIC_INC_STACK_CFG_H_ */
