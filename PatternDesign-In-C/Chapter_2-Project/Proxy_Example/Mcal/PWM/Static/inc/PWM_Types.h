@@ -21,12 +21,10 @@ typedef enum{
 
 
 typedef enum{
-    PWM_SUB_CHANNEL_A = 1,PWM_SUB_CHANNEL_B, PWM_SUB_CHANNEL_BOTH
-}PWM_SubChannelType;
-
-typedef enum{
-    PWM_NUM_0_0, PWM_NUM_0_1, PWM_NUM_0_2, PWM_NUM_0_3,
-    PWM_NUM_1_0, PWM_NUM_1_1, PWM_NUM_1_2, PWM_NUM_1_3,
+    PWM_NUM_0_0_A, PWM_NUM_0_0_B, PWM_NUM_0_1_A, PWM_NUM_0_1_B,
+    PWM_NUM_0_2_A, PWM_NUM_0_2_B, PWM_NUM_0_3_A, PWM_NUM_0_3_B,
+    PWM_NUM_1_0_A, PWM_NUM_1_0_B, PWM_NUM_1_1_A, PWM_NUM_1_1_B,
+    PWM_NUM_1_2_A, PWM_NUM_1_2_B, PWM_NUM_1_3_A, PWM_NUM_1_3_B,
     PWM_Num_NotUsed
 }PWM_ChannelType;
 
@@ -52,7 +50,6 @@ typedef struct{
  */
 typedef struct{
     PWM_ChannelType pwm_block;
-    PWM_SubChannelType SubChannel;
     uint8 pwmdiv;
     uint32 load_value;
     PWM_generationsType Generates_A;

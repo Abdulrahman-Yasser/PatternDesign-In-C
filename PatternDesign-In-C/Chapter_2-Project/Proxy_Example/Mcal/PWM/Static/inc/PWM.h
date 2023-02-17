@@ -19,25 +19,25 @@
 
 void pwm_init(void);
 
-uint8 pwm_update_comparator(PWM_ChannelType channel, PWM_SubChannelType A_or_B, uint32 value);
+uint8 pwm_update_comparator(PWM_ChannelType channel, uint32 value);
 
-uint8 pwm_update_comparator_percentage(PWM_ChannelType channel, PWM_SubChannelType A_or_B, uint32 value);
+uint8 pwm_update_comparator_percentage(PWM_ChannelType channel, uint32 value);
 
-uint8 pwm_update_generation(PWM_ChannelType channel, PWM_SubChannelType A_or_B, PWM_GeneratorEventsType Event, PWM_actionsType Action);
+uint8 pwm_update_generation(PWM_ChannelType channel, PWM_GeneratorEventsType Event, PWM_actionsType Action);
 
 uint8 PWM_UpdateThresholds(PWM_ChannelType channel, uint32 ThreshLow, uint32 ThreshHigh);
 
-uint8 pwm_AutomaticDutyCycle(PWM_ChannelType channel, PWM_SubChannelType Channel_A_or_B, uint32 DesiredDutyCycle);
+uint8 pwm_AutomaticDutyCycle(PWM_ChannelType channel, uint32 DesiredDutyCycle);
 
 uint8 pwm_update_load(PWM_ChannelType channel, uint32 value);
 
 uint8 pwm_changeCount_mode(PWM_ChannelType channel, PWM_CountModeType value);
 
-uint8 pwm_disable(PWM_ChannelType channel, PWM_SubChannelType Pins);
+uint8 pwm_disable(PWM_ChannelType channel);
 
-uint8 pwm_stop(PWM_ChannelType channel, PWM_SubChannelType Pins);
+uint8 pwm_stop(PWM_ChannelType channel);
 
-uint8 pwm_enable(PWM_ChannelType channel, PWM_SubChannelType Pins);
+uint8 pwm_enable(PWM_ChannelType channel);
 
 
 
