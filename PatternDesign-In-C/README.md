@@ -11,7 +11,12 @@
 
 ## Steps you need to do if you are using CCS or another ide
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+
+![1](https://user-images.githubusercontent.com/63866803/222526259-960e4c60-2f62-4480-9530-2af350e88dee.png)
+![2](https://user-images.githubusercontent.com/63866803/222526260-67a399bc-ef22-4bd9-aed1-154a2a38027c.png)
+![3](https://user-images.githubusercontent.com/63866803/222526262-faab5933-2d10-4353-be9a-31c2206a61de.png)
+![4](https://user-images.githubusercontent.com/63866803/222526247-cfd451e3-874e-4ac8-9acc-5a64db1d3ebf.png)
+![5](https://user-images.githubusercontent.com/63866803/222526257-3f7cf3d4-8698-46eb-add7-a1c8a523ed5b.png)
 
 
 ## 🛠 Skills
