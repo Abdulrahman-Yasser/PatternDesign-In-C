@@ -24,4 +24,35 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>General_Common</name>
+			<type>2</type>
+			<location>D:/_Study_A/Courses projects/PatternDesign-In-C/General_Common</location>
+		</link>
+		<link>
+			<name>General_HAL</name>
+			<type>2</type>
+			<location>D:/_Study_A/Courses projects/PatternDesign-In-C/General_HAL</location>
+		</link>
+		<link>
+			<name>General_Mcal</name>
+			<type>2</type>
+			<location>D:/_Study_A/Courses projects/PatternDesign-In-C/General_Mcal</location>
+		</link>
+	</linkedResources>
+	<variableList>
+		<variable>
+			<name>Common</name>
+			<value>file:/D:/_Study_A/Courses%20projects/PatternDesign-In-C/General_Common</value>
+		</variable>
+		<variable>
+			<name>HAL</name>
+			<value>file:/D:/_Study_A/Courses%20projects/PatternDesign-In-C/General_HAL</value>
+		</variable>
+		<variable>
+			<name>MCAL</name>
+			<value>file:/D:/_Study_A/Courses%20projects/PatternDesign-In-C/General_Mcal</value>
+		</variable>
+	</variableList>
 </projectDescription>
