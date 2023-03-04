@@ -28,6 +28,8 @@
 #include "../../General_Mcal/SysTick/Dynamic/inc/SysTick_CFG.h"
 #include "../../General_Mcal/PWM/Dynamic/inc/PWM_Cfg.h"
 
+#include "../../General_HAL/LCD/Static/inc/LCD.h"
+#include "../../General_HAL/LCD/Dynamic/inc/LCD_Cfg.h"
 
 void App_Init(void);
 void transmit(void);

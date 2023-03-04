@@ -6,6 +6,27 @@
 #include "main.h"
 
 /*================================================ UART TEST ================================================*/
+
+void Test_I2C_LCD(void);
+void Test_I2C_LCD(void){
+
+    Port_Init();
+    Gpt_Init();
+    IntCtrl_Init();
+    I2C_init();
+
+    LCD_Handler_Type* LCD_1;
+    LCD_1 = LCD_Create(LCD_Interface_I2C, 0);
+
+    while(1){
+        LCD_1->LCD_Write_Data(LCD_1, "HELLO");
+        Delay_ms(1000);
+        LCD_1->LCD_Write_Cmd(LCD_1, LCD_I2C_INST_CLEAR);
+        Delay_ms(1000);
+    }
+}
+
+/*================================================ UART TEST ================================================*/
 /* UART5 -> PE5 TX, PE4 RX   */
 /* UART7 -> PE1 TX, PE0 RX   */
 void Send_Msg_UART5(char* msg);
@@ -26,7 +47,7 @@ void Test_PWM_Generation_NoISR_Configs(void);
 
 
 int main(void){
-    Test_PWM_Generation_NoISR_Configs();
+    Test_I2C_LCD();
 }
 
 /*================================================ I2C TEST ================================================*/
@@ -37,10 +58,10 @@ void Test_PWM_Generation_NoISR_Configs(void){
     Gpt_Init();
     IntCtrl_Init();
     pwm_init();
-    pwm_enable(PWM_NUM_0_1_A);
+    pwm_enable(PWM_NUM_0_0_A);
     while(1){
         Delay_ms(50);
-        pwm_AutomaticDutyCycle(PWM_NUM_0_1_A, i);
+        pwm_AutomaticDutyCycle(PWM_NUM_0_0_A, i);
         i++;
         if(i > 100){
             i = 0;
@@ -49,12 +70,12 @@ void Test_PWM_Generation_NoISR_Configs(void){
 }
     /*================================================ I2C TEST ================================================*/
 void Test_I2C_AlwaysFullBuffer_NoISR_Configs(void){
-    int i;
 
     Port_Init();
     Gpt_Init();
     IntCtrl_Init();
     I2C_init();
+    int i;
 
     while(1){
         Send_Msg_I2C0("Hello !! ");

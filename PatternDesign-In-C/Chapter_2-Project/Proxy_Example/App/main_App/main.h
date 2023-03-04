@@ -18,7 +18,7 @@
 #include "../../General_Mcal/PWM/Static/inc/PWM.h"
 #include "../../General_Mcal/I2C/Static/inc/I2C.h"
 
-#include "../../../../General_Mcal/UART/Dynamic/inc/UART_Cfg.h"
+#include "../../General_Mcal/UART/Dynamic/inc/UART_Cfg.h"
 #include "../../General_Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
 #include "../../General_Mcal/PORT/Dynamic/inc/PORT_Cfg.h"
 #include "../../General_Mcal/IntCtrl/Dynamic/inc/IntCtrl_Cfg.h"

@@ -11,7 +11,7 @@ void Sensor_Init(Sensor_Type* const me, SENSOR_READ_TYPE (*GetValueFunction)(Sen
 void Sensor_Cleanup(Sensor_Type* const me) ;
 
 SENSOR_READ_TYPE GetValueFunction_Digital(Sensor_Type* const me);
-    SENSOR_READ_TYPE GetValueFunction_Analog(Sensor_Type* const me);
+SENSOR_READ_TYPE GetValueFunction_Analog(Sensor_Type* const me);
 
 
 /* Constructor */

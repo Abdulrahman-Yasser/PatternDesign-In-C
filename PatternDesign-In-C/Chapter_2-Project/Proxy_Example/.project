@@ -26,19 +26,24 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>Common</name>
+			<type>2</type>
+			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_Common</location>
+		</link>
+		<link>
 			<name>General_Common</name>
 			<type>2</type>
-			<location>D:/_Study_A/Courses projects/PatternDesign-In-C/General_Common</location>
+			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_Common</location>
 		</link>
 		<link>
-			<name>General_HAL</name>
+			<name>HAL</name>
 			<type>2</type>
-			<location>D:/_Study_A/Courses projects/PatternDesign-In-C/General_HAL</location>
+			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_HAL</location>
 		</link>
 		<link>
-			<name>General_Mcal</name>
+			<name>MCAL</name>
 			<type>2</type>
-			<location>D:/_Study_A/Courses projects/PatternDesign-In-C/General_Mcal</location>
+			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_Mcal</location>
 		</link>
 	</linkedResources>
 	<variableList>
@@ -47,12 +52,24 @@
 			<value>file:/D:/_Study_A/Courses%20projects/PatternDesign-In-C/General_Common</value>
 		</variable>
 		<variable>
+			<name>Common_2</name>
+			<value>file:/F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_Common</value>
+		</variable>
+		<variable>
 			<name>HAL</name>
 			<value>file:/D:/_Study_A/Courses%20projects/PatternDesign-In-C/General_HAL</value>
 		</variable>
 		<variable>
+			<name>HAL_2</name>
+			<value>file:/F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_HAL</value>
+		</variable>
+		<variable>
 			<name>MCAL</name>
 			<value>file:/D:/_Study_A/Courses%20projects/PatternDesign-In-C/General_Mcal</value>
+		</variable>
+		<variable>
+			<name>MCAL_2</name>
+			<value>file:/F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_Mcal</value>
 		</variable>
 	</variableList>
 </projectDescription>
