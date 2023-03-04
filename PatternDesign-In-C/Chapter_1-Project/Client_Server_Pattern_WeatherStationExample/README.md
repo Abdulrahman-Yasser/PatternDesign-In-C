@@ -1,5 +1,5 @@
 
-# Pattern 1 : Client-Server Pattern
+# Pattern 1 : classic Client-Server Pattern
 
 
 ## Project Description
