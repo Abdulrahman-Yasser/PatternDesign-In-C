@@ -1,0 +1,7 @@
+/App/
+/General_Common/
+/General_HAL/
+/General_Mcal/
+/sources.mk
+/subdir_rules.mk
+/subdir_vars.mk
