@@ -1,5 +1,5 @@
 
-# Pattern 2 : Client-Server Pattern
+# Pattern 2 : Client-Server Pattern Push-pop approach
 
 
 ## Project Description
