@@ -24,7 +24,7 @@ void WeatherData_Queue_Create(void);
 
 void WeatherData_Queue_Push(WeatherData_Queue_Element_Type* element);
 
-WeatherData_Queue_Element_Type* WeatherData_Queue_Pop(void);
+WeatherData_Queue_Element_Type* weatherData_Queue_Pop(void);
 
 uint8 WeatherData_Queue_GetSize(void);
 

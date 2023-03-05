@@ -6,8 +6,8 @@
  */
 
 #include "../inc/Observable.h"
-#include "../../../../General_Common/Compiler.h"
-
+#include "../../General_Common/Compiler.h"
+#include "../../ObserverPattern_Cfg.h"
 
 Observable_Type* Observable_Create(void){
     Observable_Type *me;

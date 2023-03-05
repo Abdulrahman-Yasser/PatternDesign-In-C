@@ -10,7 +10,7 @@
 #include "../inc/WeatherData_Queue.h"
 
 #include "../../../Observable/inc/Observable.h"
-
+#include <stdlib.h>
 
 
 struct {
@@ -20,11 +20,11 @@ struct {
     Observable_Type *my_Observable;
 }WeatherData_Queue;
 
-void PrivateSubscribe(void(*FunPtr)(void));
-void PrivateUnSubscribe(void(*FunPtr)(void));
-void PrivaateNotify(void(*FunPtr)(void));
+void PrivateSubscribe(Observer *o);
+void PrivateUnSubscribe(Observer *o);
+void PrivaateNotify(void);
 
-void PrivateSubscribe(void(*FunPtr)(void)){
+void PrivateSubscribe(Observer *o){
     /* add the function in the notification handler */
     NotificationHandle *pNH;
     pNH = WeatherData_Queue.my_Observable->itsNotificationHandler;
@@ -38,18 +38,18 @@ void PrivateSubscribe(void(*FunPtr)(void)){
         pNH->itsNotificationHandle = NotificationHandle_Create();
         pNH = pNH->itsNotificationHandle;
     }
-    pNH->UpdateFunPtr = FunPtr;
+    pNH->FunPtr = o->UpdateFuncPtr;
     ++WeatherData_Queue.my_Observable->nSubscribers;
 }
 
-void PrivateUnSubscribe(void(*FunPtr)(void)){
+void PrivateUnSubscribe(Observer *o){
     NotificationHandle *pNH, *pBack;
     pNH = pBack = WeatherData_Queue.my_Observable->itsNotificationHandler;
 
     if(pNH == Null_Ptr){
         return ;
     }else{
-        if(pNH->UpdateFunPtr == FunPtr){
+        if(pNH->FunPtr == o->UpdateFuncPtr){
             WeatherData_Queue.my_Observable->itsNotificationHandler = pNH->itsNotificationHandle;
             free(pNH);
             --WeatherData_Queue.my_Observable->nSubscribers;
@@ -57,7 +57,7 @@ void PrivateUnSubscribe(void(*FunPtr)(void)){
             while(pNH != Null_Ptr){
                 pBack = pNH;
                 pNH = pNH->itsNotificationHandle;
-                if(pNH->UpdateFunPtr == FunPtr){
+                if(pNH->FunPtr == o->UpdateFuncPtr){
                     pBack->itsNotificationHandle = pNH->itsNotificationHandle;
                     free(pNH);
                     --WeatherData_Queue.my_Observable->nSubscribers;
@@ -68,9 +68,13 @@ void PrivateUnSubscribe(void(*FunPtr)(void)){
     }
 }
 
-void PrivaateNotify(void(*FunPtr)(void)){
-    for(int i = 0; i < WeatherData_Queue.my_Observable->nSubscribers; i++){
-        WeatherData_Queue.my_Observable->itsNotificationHandler->UpdateFunPtr();
+void PrivaateNotify(void){
+    int i;
+    WeatherData_Queue_Element_Type *ele;
+    ele = (WeatherData_Queue_Element_Type*)malloc(sizeof(WeatherData_Queue_Element_Type));
+    ele = weatherData_Queue_Pop();
+    for(i = 0; i < WeatherData_Queue.my_Observable->nSubscribers; i++){
+        WeatherData_Queue.my_Observable->itsNotificationHandler->FunPtr(ele->temp, ele->smoke, ele->light);
     }
 }
 
@@ -81,7 +85,7 @@ void weatherData_Queue_Create(void){
     WeatherData_Queue.temp =  Queue_Create_DYNAMIC_uint8(8);
     WeatherData_Queue.my_Observable = Observable_Create();
     WeatherData_Queue.my_Observable->Subscribe = PrivateSubscribe;
-    WeatherData_Queue.my_Observable->nSubscribers = PrivateUnSubscribe;
+    WeatherData_Queue.my_Observable->unSubscribe = PrivateUnSubscribe;
     WeatherData_Queue.my_Observable->Notify = PrivaateNotify;
 }
 
@@ -89,12 +93,7 @@ void weatherData_Queue_Push(WeatherData_Queue_Element_Type* element){
     WeatherData_Queue.light->insert(WeatherData_Queue.light, element->light);
     WeatherData_Queue.smoke->insert(WeatherData_Queue.smoke, element->smoke);
     WeatherData_Queue.temp->insert(WeatherData_Queue.temp, element->temp);
-    /*
-     * Notify the Clients
-     */
-    /*
-     * Notification functions
-     */
+    PrivaateNotify();
 }
 
 WeatherData_Queue_Element_Type* weatherData_Queue_Pop(void){

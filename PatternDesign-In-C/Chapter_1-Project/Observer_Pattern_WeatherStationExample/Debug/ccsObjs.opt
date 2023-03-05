@@ -4,7 +4,6 @@
 "./App/HAL_Patterns/Client/src/StatisticsDisplay_Client.obj"
 "./App/HAL_Patterns/Observable/src/NotificationHandler.obj"
 "./App/HAL_Patterns/Observable/src/Observable.obj"
-"./App/HAL_Patterns/Observer/src/Observable.obj"
 "./App/HAL_Patterns/Server/DataStructure/src/WeatherData_Queue.obj"
 "./App/HAL_Patterns/Server/src/WeatherStation_Server.obj"
 "./App/HAL_Patterns/System_App/src/System_App.obj"

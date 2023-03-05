@@ -8,10 +8,12 @@
 #ifndef APP_HAL_PATTERNS_OBSERVABLE_INC_NOTIFICATIONHANDLER_H_
 #define APP_HAL_PATTERNS_OBSERVABLE_INC_NOTIFICATIONHANDLER_H_
 
+#include "../../ObserverPattern_Cfg.h"
+
 typedef struct NotificationHandle NotificationHandle;
 
 struct NotificationHandle{
-    void (*UpdateFunPtr)(void);
+    Update_t FunPtr;
     NotificationHandle *itsNotificationHandle;
 };
 

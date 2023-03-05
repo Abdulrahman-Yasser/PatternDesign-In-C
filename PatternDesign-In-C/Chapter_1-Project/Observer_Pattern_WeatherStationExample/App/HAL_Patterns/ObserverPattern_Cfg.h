@@ -9,7 +9,6 @@
 #define APP_HAL_PATTERNS_OBSERVERPATTERN_CFG_H_
 
 
-#define UpdateFunc void(*Ptr)(int temp, int smoke, int light)
-
+typedef void (*Update_t)(int, int, int);
 
 #endif /* APP_HAL_PATTERNS_OBSERVERPATTERN_CFG_H_ */

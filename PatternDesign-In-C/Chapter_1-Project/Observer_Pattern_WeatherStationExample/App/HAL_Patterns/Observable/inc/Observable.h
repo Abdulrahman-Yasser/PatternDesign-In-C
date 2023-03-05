@@ -9,13 +9,15 @@
 #define APP_HAL_PATTERNS_OBSERVABLE_INC_OBSERVABLE_H_
 
 #include "NotificationHandler.h"
+#include "../../ObserverPattern_Cfg.h"
+#include "../../Observer/inc/Observer.h"
 
 typedef struct{
     int nSubscribers;
     NotificationHandle *itsNotificationHandler;
-    void (*Subscribe)(void(*Fun)(void));
-    void (*unSubscribe)(void(*Fun)(void));
-    void (*Notify)(void(*Fun)(void));
+    void (*Subscribe)(Observer* o);
+    void (*unSubscribe)(Observer* o);
+    void (*Notify)(void);
 }Observable_Type;
 
 Observable_Type* Observable_Create(void);

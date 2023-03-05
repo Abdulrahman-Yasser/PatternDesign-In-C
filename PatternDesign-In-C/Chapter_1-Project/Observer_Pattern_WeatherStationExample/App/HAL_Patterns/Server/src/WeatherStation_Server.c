@@ -8,7 +8,6 @@
 
 #include "../inc/WeatherStation_Server.h"
 
-
 void WeatherStation_Push(void){
     uint8 smokeValue = SmokeHandler->GetValue(SmokeHandler);
     uint8 lightValue = LightHandler->GetValue(LightHandler);
