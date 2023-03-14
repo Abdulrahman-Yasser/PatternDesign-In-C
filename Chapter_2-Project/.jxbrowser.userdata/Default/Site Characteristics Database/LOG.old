@@ -1,3 +1,6 @@
-2023/03/02-15:52:10.466 1ac4 Reusing MANIFEST F:\Courses-Books-AND-Educational\PatternDesign-In-C\Chapter_2-Project\.jxbrowser.userdata\Default\Site Characteristics Database/MANIFEST-000001
-2023/03/02-15:52:10.468 1ac4 Recovering log #6
-2023/03/02-15:52:10.468 1ac4 Reusing old log F:\Courses-Books-AND-Educational\PatternDesign-In-C\Chapter_2-Project\.jxbrowser.userdata\Default\Site Characteristics Database/000006.log 
+2023/03/07-01:52:15.277 19b8 Log #6: 4 ops saved to Table #7 OK
+2023/03/07-01:52:15.279 19b8 Archiving F:\PatternDesign-In-C\Chapter_2-Project\.jxbrowser.userdata\Default\Site Characteristics Database/000006.log: OK
+2023/03/07-01:52:15.295 19b8 Table #4: 2 entries OK
+2023/03/07-01:52:15.295 19b8 Table #7: 4 entries OK
+2023/03/07-01:52:15.300 19b8 Archiving F:\PatternDesign-In-C\Chapter_2-Project\.jxbrowser.userdata\Default\Site Characteristics Database/MANIFEST-000001: OK
+2023/03/07-01:52:15.307 19b8 **** Repaired leveldb F:\PatternDesign-In-C\Chapter_2-Project\.jxbrowser.userdata\Default\Site Characteristics Database; recovered 2 files; 398 bytes. Some data may have been lost. ****
