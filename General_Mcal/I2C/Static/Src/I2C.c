@@ -52,15 +52,14 @@ static uint16 I2C_Wait_Untill_Its_End(uint32 base);
 static void MasterMultibleTransmitLoop(uint32 base,uint8 n, Queue_uint8_DYNAMIC_Type* Data);
 static void MasterMultibleReceiveLoop(uint32 base,uint8 n, Queue_uint8_DYNAMIC_Type* Data);
 
-uint16 I2C_MasterSingleTransmit(I2C_ChannelType my_I2C, uint8 Slave_Address);
-uint16 I2C_MasterTransmitMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Address, uint8 Slave_memory_Address, uint8 bytes_Counts);
+static uint16 I2C_MasterSingleTransmit(I2C_ChannelType my_I2C, uint8 Slave_Address);
+static uint16 I2C_MasterTransmitMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Address, uint8 Slave_memory_Address, uint8 bytes_Counts);
 
-uint16 I2C_MasterSingleReceive(I2C_ChannelType my_I2C, uint8 Slave_Address);
-uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Address, uint8 Slave_memory_Address, uint8 bytes_Counts);
+static uint16 I2C_MasterSingleReceive(I2C_ChannelType my_I2C, uint8 Slave_Address);
+static uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Address, uint8 Slave_memory_Address, uint8 bytes_Counts);
 
-
-void I2C_SlaveTransmit_one_Byte(I2C_ChannelType my_I2C);
-void I2C_SlaveReceive_one_Byte(I2C_ChannelType my_I2C);
+static void I2C_SlaveTransmit_one_Byte(I2C_ChannelType my_I2C);
+static void I2C_SlaveReceive_one_Byte(I2C_ChannelType my_I2C);
 
 
 
@@ -124,7 +123,7 @@ static uint16 I2C_Wait_Untill_Its_End(uint32 base){
 static void MasterMultibleTransmitLoop(uint32 base,uint8 bytesCount, Queue_uint8_DYNAMIC_Type* Data){
     uint32 RegisterCheck;
     uint8 i;
-    for(i = 0; i < bytesCount; i++){
+    for(i = 0; i < bytesCount-1; i++){
         /* 1
          * Write the Data */
         /* Write the Data, Freeze if the Queue is Empty
@@ -219,7 +218,7 @@ static void MasterMultibleReceiveLoop(uint32 base,uint8 n, Queue_uint8_DYNAMIC_T
 * \Return value:   : uint16     I2C_RETURN_ERROR
 *                               I2C_RETURN_FINE
 *******************************************************************************/
-uint16 I2C_MasterSingleTransmit(I2C_ChannelType my_I2C, uint8 Slave_Address){
+static uint16 I2C_MasterSingleTransmit(I2C_ChannelType my_I2C, uint8 Slave_Address){
     uint32 base, RegisterCheck;
     // Check if the I2C is Configured as Master
     if(! (I2C_MasterModulesUsed & (1 << my_I2C)) ){
@@ -286,7 +285,7 @@ uint16 I2C_MasterSingleTransmit(I2C_ChannelType my_I2C, uint8 Slave_Address){
 * \Return value:   : uint16     I2C_RETURN_ERROR
 *                               I2C_RETURN_FINE
 *******************************************************************************/
-uint16 I2C_MasterTransmitMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Address, uint8 Slave_memory_Address, uint8 bytes_Counts){
+static uint16 I2C_MasterTransmitMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Address, uint8 Slave_memory_Address, uint8 bytes_Counts){
     uint32 base, RegisterCheck;
     // Check if the I2C is Configured as Master
     if(! (I2C_MasterModulesUsed & (1 << my_I2C))){
@@ -314,7 +313,7 @@ uint16 I2C_MasterTransmitMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Addre
     }while(! RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK));
 
     /* you will just check if the user wants to send anything in the queue, he will need to write 0 here */
-    if(bytes_Counts == 0){
+    if(bytes_Counts > 16){
         bytes_Counts = I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]->getSize(I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]);
     }
     /* 4
@@ -389,7 +388,7 @@ uint16 I2C_MasterTransmitMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Addre
 * \Return value:   : uint16     I2C_RETURN_ERROR
 *                               I2C_RETURN_FINE
 *******************************************************************************/
-uint16 I2C_MasterSingleReceive(I2C_ChannelType my_I2C, uint8 Slave_Address){
+static uint16 I2C_MasterSingleReceive(I2C_ChannelType my_I2C, uint8 Slave_Address){
     uint32 base, RegisterCheck;
     // Check if the I2C is Configured as Master
     if(! (I2C_MasterModulesUsed & (1 << my_I2C))){
@@ -453,7 +452,7 @@ uint16 I2C_MasterSingleReceive(I2C_ChannelType my_I2C, uint8 Slave_Address){
 * \Return value:   : uint16     I2C_RETURN_ERROR
 *                               I2C_RETURN_FINE
 *******************************************************************************/
-uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Address, uint8 Slave_memory_Address, uint8 bytes_Counts){
+static uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Address, uint8 Slave_memory_Address, uint8 bytes_Counts){
     uint32 base, RegisterCheck;
     // Check if the I2C is Configured as Master
     if(! (I2C_MasterModulesUsed & (1 << my_I2C))){
@@ -482,10 +481,6 @@ uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Addres
         RegisterCheck = (*(volatile uint32 *)(base + I2C_MCS_REG_OFFSET));
     }while(! RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK));
 
-    /* you will just check if the user wants to send anything in the queue, he will need to write 0 here */
-    if(bytes_Counts == 0){
-        bytes_Counts = I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]->getSize(I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]);
-    }
 
     /* 4
      * Write the master control signal
@@ -611,10 +606,10 @@ uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Addres
 }
 
 
-void I2C_SlaveTransmit_one_Byte(I2C_ChannelType my_I2C){
+static void I2C_SlaveTransmit_one_Byte(I2C_ChannelType my_I2C){
 
 }
-void I2C_SlaveReceive_one_Byte(I2C_ChannelType my_I2C){
+static void I2C_SlaveReceive_one_Byte(I2C_ChannelType my_I2C){
 
 }
 
@@ -838,9 +833,8 @@ void I2C_init(void){
 uint16 I2C_MasterPoke_to_transmit(I2C_ChannelType my_I2C, uint8 slave_address, uint8 Slave_memory_Address, uint8 Bytes_Cnt){
     uint16 err;
     if(Bytes_Cnt > 16){
-        return I2C_RETURN_ERROR;
-    }else if(Bytes_Cnt == 1){
-        err = I2C_MasterSingleTransmit(my_I2C, slave_address);
+        err = I2C_RETURN_ERROR;
+        I2C_MasterTransmitMultibleBytes(my_I2C, slave_address, Slave_memory_Address, Bytes_Cnt);
     }else{
         err = I2C_MasterTransmitMultibleBytes(my_I2C, slave_address, Slave_memory_Address, Bytes_Cnt);
     }
@@ -863,9 +857,8 @@ uint16 I2C_MasterPoke_to_transmit(I2C_ChannelType my_I2C, uint8 slave_address, u
 uint16 I2C_MasterPoke_to_receive(I2C_ChannelType my_I2C, uint8 slave_address, uint8 Slave_memory_Address, uint8 Bytes_Cnt){
     uint16 err;
     if(Bytes_Cnt > 16){
-        return I2C_RETURN_ERROR;
-    }else if(Bytes_Cnt == 1){
-        err = I2C_MasterSingleReceive(my_I2C, slave_address);
+        err = I2C_RETURN_ERROR;
+        I2C_MasterReceiveMultibleBytes(my_I2C, slave_address, Slave_memory_Address, Bytes_Cnt);
     }else{
         err = I2C_MasterReceiveMultibleBytes(my_I2C, slave_address, Slave_memory_Address, Bytes_Cnt);
     }
@@ -901,15 +894,14 @@ uint16 I2C_Push_to_Transmit(I2C_ChannelType my_I2C, uint8 x, uint8 must_be_pushe
 * \Parameters (out): data               The data that have been received and saved in the Queue
 * \Return value:   : None
 *******************************************************************************/
-uint16 I2C_Pop_the_Received(I2C_ChannelType my_I2C, uint8* data){
-    uint8 i = 0;
+uint16 I2C_Pop_the_Received(I2C_ChannelType my_I2C, uint8* data, uint8 iterator){
+    uint8 i;
     /* Check if the I2C Channel Queue is Empty or not */
     /* it will stuck here until there is some data */
-    while((I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]->isEmpty(I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]) ));
-    do{
+    for(i = 0; i < iterator; i++){
+        while((I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]->isEmpty(I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]) ));
         data[i] = I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]->remove(I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]);
-        i++;
-    }while(! (I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]->isEmpty(I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]) ));
+    }
 }
 
 

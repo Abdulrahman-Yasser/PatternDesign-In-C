@@ -21,7 +21,8 @@ void LCD_Init(LCD_Handler_Type* const me, uint8 LCD_ID,
               Std_BoolReturnType (*LCD_Write_CMD_arg)(LCD_Handler_Type* const me, uint8 cmd),
               Std_BoolReturnType (*LCD_Read_CMD_arg)(LCD_Handler_Type* const me, uint8 cmd),
               Std_BoolReturnType (*LCD_Write_DATA_arg)(LCD_Handler_Type* const me, LCD_CHAR_Type *Data),
-              Std_BoolReturnType (*LCD_Read_DATA_arg)(LCD_Handler_Type* const me, LCD_CHAR_Type *Data));
+              Std_BoolReturnType (*LCD_Read_DATA_arg)(LCD_Handler_Type* const me, LCD_CHAR_Type *Data),
+              Std_BoolReturnType (*LCD_Destroy_arg)(LCD_Handler_Type* const me));
 
 void LCD_CleanUp(LCD_Handler_Type* me);
 
@@ -35,11 +36,14 @@ Std_BoolReturnType LCD_I2C_Write_Cmd_Function(LCD_Handler_Type* const me, uint8 
 Std_BoolReturnType LCD_I2C_Read_Cmd_Function(LCD_Handler_Type* const me, uint8 cmd);
 Std_BoolReturnType LCD_I2C_Write_Data_Function(LCD_Handler_Type* const me, LCD_CHAR_Type *Data);
 Std_BoolReturnType LCD_I2C_Read_Data_Function(LCD_Handler_Type* const me, LCD_CHAR_Type *Data);
+Std_BoolReturnType LCD_I2C_Destroy_Function(LCD_Handler_Type* const me);
+
 
 Std_BoolReturnType LCD_DIO_Write_Cmd_Function(LCD_Handler_Type* const me, uint8 cmd);
 Std_BoolReturnType LCD_DIO_Read_Cmd_Function(LCD_Handler_Type* const me, uint8 cmd);
 Std_BoolReturnType LCD_DIO_Write_Data_Function(LCD_Handler_Type* const me, LCD_CHAR_Type *Data);
 Std_BoolReturnType LCD_DIO_Read_Data_Function(LCD_Handler_Type* const me, LCD_CHAR_Type *Data);
+Std_BoolReturnType LCD_DIO_Destroy_Function(LCD_Handler_Type* const me);
 
 /**********************************************************************************************************************
  *  Public Function Implementation
@@ -51,7 +55,7 @@ LCD_Handler_Type *LCD_Create(LCD_Interface_Type LCD_Interface_arg, uint8 LCD_ID)
     Delay_ms(15);
     if(me != Null_Ptr){
         if(LCD_Interface_arg == LCD_Interface_I2C){
-            LCD_Init(me, LCD_ID, LCD_I2C_Write_Cmd_Function, LCD_I2C_Read_Cmd_Function, LCD_I2C_Write_Data_Function, LCD_I2C_Read_Data_Function);
+            LCD_Init(me, LCD_ID, LCD_I2C_Write_Cmd_Function, LCD_I2C_Read_Cmd_Function, LCD_I2C_Write_Data_Function, LCD_I2C_Read_Data_Function, LCD_I2C_Destroy_Function);
             /* It must be 4-bit mode,to fit the RS, En, RW and 4-bits data */
             Delay_ms(50);
             me->LCD_Write_Cmd(me, 0x3);
@@ -68,7 +72,7 @@ LCD_Handler_Type *LCD_Create(LCD_Interface_Type LCD_Interface_arg, uint8 LCD_ID)
             me->LCD_Write_Cmd(me, Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Initial_EntryModeSet);
             me->LCD_Write_Cmd(me, LCD_I2C_INST_DISPLAY_ON_CURSOR_ON_BLK_OFF);
         }else if(LCD_Interface_arg == LCD_Interface_DIO){
-            LCD_Init(me, LCD_ID, LCD_DIO_Write_Cmd_Function, LCD_DIO_Read_Cmd_Function, LCD_DIO_Write_Data_Function, LCD_DIO_Read_Data_Function);
+            LCD_Init(me, LCD_ID, LCD_DIO_Write_Cmd_Function, LCD_DIO_Read_Cmd_Function, LCD_DIO_Write_Data_Function, LCD_DIO_Read_Data_Function, LCD_DIO_Destroy_Function);
             Delay_ms(50);
             me->LCD_Write_Cmd(me, 0x3);
             Delay_ms(5);
@@ -87,8 +91,10 @@ LCD_Handler_Type *LCD_Create(LCD_Interface_Type LCD_Interface_arg, uint8 LCD_ID)
     }
     return me;
 }
-void LCD_DIO_Destroy(LCD_Handler_Type* const me);
 
+void LCD_Destroy(LCD_Handler_Type* const me){
+    LCD_CleanUp(me);
+}
 /*
  * ====================================== LCD DIO ======================================
  */
@@ -142,6 +148,14 @@ Std_BoolReturnType LCD_DIO_Read_Data_Function(LCD_Handler_Type* const me, LCD_CH
     return my_return;
 }
 
+Std_BoolReturnType LCD_DIO_Destroy_Function(LCD_Handler_Type* const me){
+    /*
+     * whatever you want here
+     */
+    if(me != Null_Ptr){
+        LCD_CleanUp(me);
+    }
+}
 
 /*
  * ====================================== LCD I2C ======================================
@@ -208,6 +222,14 @@ Std_BoolReturnType LCD_I2C_Read_Data_Function(LCD_Handler_Type* const me, LCD_CH
 }
 
 
+Std_BoolReturnType LCD_I2C_Destroy_Function(LCD_Handler_Type* const me){
+    /*
+     * whatever you want here
+     */
+    if(me != Null_Ptr){
+        LCD_CleanUp(me);
+    }
+}
 
 
 /*
@@ -218,18 +240,19 @@ void LCD_Init(LCD_Handler_Type* const me, uint8 LCD_ID,
               Std_BoolReturnType (*LCD_Write_CMD_arg)(LCD_Handler_Type* const me, uint8 cmd),
               Std_BoolReturnType (*LCD_Read_CMD_arg)(LCD_Handler_Type* const me, uint8 cmd),
               Std_BoolReturnType (*LCD_Write_DATA_arg)(LCD_Handler_Type* const me, LCD_CHAR_Type *Data),
-              Std_BoolReturnType (*LCD_Read_DATA_arg)(LCD_Handler_Type* const me, LCD_CHAR_Type *Data)){
+              Std_BoolReturnType (*LCD_Read_DATA_arg)(LCD_Handler_Type* const me, LCD_CHAR_Type *Data),
+              Std_BoolReturnType (*LCD_Destroy_arg)(LCD_Handler_Type* const me)){
     me->LCD_ID = LCD_ID;
 
     me->LCD_Read_Cmd = LCD_Read_CMD_arg;
     me->LCD_Read_Data = LCD_Read_DATA_arg;
     me->LCD_Write_Cmd = LCD_Write_CMD_arg;
     me->LCD_Write_Data = LCD_Write_DATA_arg;
+    me->LCD_Destroy = LCD_Destroy_arg;
 }
 
 void LCD_CleanUp(LCD_Handler_Type* me){
     me->LCD_ID = 0;
-
     me->LCD_Read_Cmd = Null_Ptr;
     me->LCD_Read_Data = Null_Ptr;
     me->LCD_Write_Cmd = Null_Ptr;

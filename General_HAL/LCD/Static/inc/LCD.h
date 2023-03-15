@@ -74,7 +74,7 @@
 /* LCD_ID must be the array address that contains the lcd configuration */
 
 LCD_Handler_Type *LCD_Create(LCD_Interface_Type LCD_Interface_arg, uint8 LCD_ID);
-void LCD_DIO_Destroy(LCD_Handler_Type* const me);
+void LCD_Destroy(LCD_Handler_Type* const me);
 
 
 #endif /* HAL_LCD_STATIC_INC_LCD_H_ */

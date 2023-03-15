@@ -47,6 +47,7 @@ struct LCD_Handler{
     Std_BoolReturnType (*LCD_Read_Cmd)(LCD_Handler_Type* const me, uint8 cmd);
     Std_BoolReturnType (*LCD_Write_Data)(LCD_Handler_Type* const me, LCD_CHAR_Type *Data);
     Std_BoolReturnType (*LCD_Read_Data)(LCD_Handler_Type* const me, LCD_CHAR_Type *Data);
+    Std_BoolReturnType (*LCD_Destroy)(LCD_Handler_Type* const me);
 };
 
 
