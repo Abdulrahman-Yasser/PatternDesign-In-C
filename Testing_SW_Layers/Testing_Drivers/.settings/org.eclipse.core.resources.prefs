@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
+encoding//Debug/APP/Testing_DS1037/subdir_rules.mk=UTF-8
+encoding//Debug/APP/Testing_DS1037/subdir_vars.mk=UTF-8
 encoding//Debug/APP/Testing_LCD/subdir_rules.mk=UTF-8
 encoding//Debug/APP/Testing_LCD/subdir_vars.mk=UTF-8
 encoding//Debug/APP/subdir_rules.mk=UTF-8
@@ -23,6 +25,10 @@ encoding//Debug/General_HAL/MP3/Dynamic/src/subdir_rules.mk=UTF-8
 encoding//Debug/General_HAL/MP3/Dynamic/src/subdir_vars.mk=UTF-8
 encoding//Debug/General_HAL/MP3/Static/src/subdir_rules.mk=UTF-8
 encoding//Debug/General_HAL/MP3/Static/src/subdir_vars.mk=UTF-8
+encoding//Debug/General_HAL/RTC_I2C_DS1307/Dynamic/src/subdir_rules.mk=UTF-8
+encoding//Debug/General_HAL/RTC_I2C_DS1307/Dynamic/src/subdir_vars.mk=UTF-8
+encoding//Debug/General_HAL/RTC_I2C_DS1307/Static/src/subdir_rules.mk=UTF-8
+encoding//Debug/General_HAL/RTC_I2C_DS1307/Static/src/subdir_vars.mk=UTF-8
 encoding//Debug/General_HAL/RTC_I2C_DS3231/Dynamic/src/subdir_rules.mk=UTF-8
 encoding//Debug/General_HAL/RTC_I2C_DS3231/Dynamic/src/subdir_vars.mk=UTF-8
 encoding//Debug/General_HAL/RTC_I2C_DS3231/Static/src/subdir_rules.mk=UTF-8

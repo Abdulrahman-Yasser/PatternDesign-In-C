@@ -187,11 +187,11 @@ void Port_Init(void){
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 1);
             break;
         case Port_PinMode_I2Cn:
+            SetAlternativeFunction((uint32*)PortPtr, PinNum, 3);
             REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
-            SetPinDirection((uint32*)PortPtr, PinNum, Port_PinDir_IN);
+//            SetPinDirection((uint32*)PortPtr, PinNum, Port_PinDir_IN);
             /* SDA Supposed to be in OpenDrain Mode */
             SetInternalAttach((uint32*)PortPtr, PinNum, ConfigPtr[i].PinInternalAttach);
-            SetAlternativeFunction((uint32*)PortPtr, PinNum, 3);
             break;
         case Port_PinMode_M0PWMn:
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 4);
