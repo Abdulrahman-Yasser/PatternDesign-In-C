@@ -10,6 +10,7 @@
 
 #include "Testing_LCD/Testing_LCD.h"
 
+#include "Testing_I2C/Testing_I2C.h"
 
 
 #endif /* APP_MAIN_H_ */

@@ -781,11 +781,7 @@ void I2C_init(void){
 
 uint16 I2C_MasterPoke_to_transmit(I2C_ChannelType my_I2C, uint8 slave_address, uint8 Slave_memory_Address, uint8 Bytes_Cnt){
     uint16 err;
-    if(Bytes_Cnt > 1){
-        I2C_MasterTransmitMultibleBytes(my_I2C, slave_address, Slave_memory_Address, Bytes_Cnt);
-    }else{
-        err = I2C_MasterSingleTransmit(my_I2C, slave_address, Slave_memory_Address);
-    }
+    err = I2C_MasterTransmitMultibleBytes(my_I2C, slave_address, Slave_memory_Address, Bytes_Cnt);
     return err;
 }
 
@@ -831,7 +827,7 @@ uint16 I2C_Push_to_Transmit(I2C_ChannelType my_I2C, uint8 x, uint8 must_be_pushe
             chances++;
             if(chances == 60){
                 err = I2C_RETURN_ERROR;
-                break;
+//                break;
             }
         }
         I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]->insert(I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask], x);

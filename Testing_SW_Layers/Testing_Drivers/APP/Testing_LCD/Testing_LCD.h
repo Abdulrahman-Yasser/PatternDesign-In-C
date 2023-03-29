@@ -15,6 +15,7 @@
 #include "../../General_Mcal/PORT/Static/inc/PORT.h"
 #include "../../General_Mcal/I2C/Static/inc/I2C.h"
 #include "../../General_Mcal/GPT/Static/inc/GPT.h"
+#include "../../General_Mcal/IntCtrl/Static/inc/IntCtrl.h"
 
 
 void App_Initializations(void);

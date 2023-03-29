@@ -18,8 +18,11 @@ void App_Initializations(void){
     IntCtrl_Init();
 }
 
-void LCD_Initializations(void){
-    LCD_Create(LCD_Interface_I2C, 0);
+void Loop(void){
+    LCD_Handler_Type* me;
+    me = LCD_Create(LCD_Interface_I2C, 0);
+    while(1){
+    }
 }
 
 
