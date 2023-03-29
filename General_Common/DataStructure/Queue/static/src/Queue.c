@@ -635,7 +635,11 @@ uint8 Queue_isFull_uint8_d(Queue_uint8_DYNAMIC_Type* const me){
 
 /* Operation isEmpty() */
 uint8 Queue_isEmpty_uint8_d(Queue_uint8_DYNAMIC_Type *const me){
-    return (me->head == me->tail);
+    if(me->head == me->tail){
+        return 1;
+    }else{
+        return 0;
+    }
 }
 
 /* Operation getSize() */

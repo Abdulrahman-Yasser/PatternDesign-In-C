@@ -8,6 +8,11 @@
 - [Chapter 5 : Design Patterns for State Machines](Chapter_4-Project/)
 - [Chapter 6 : Safety and Reliability Pattern](Chapter_5-Project/)
 
+## Some tested drivers to make sure that it works fine : 
+- [Testing LCD](Testing_SW_Layers/Testing_Drivers/APP/Testing_LCD/)
+- [Testing I2C](Testing_SW_Layers/Testing_Drivers/APP/Testing_I2C/)
+- [Testing I2C 2 ](Testing_SW_Layers/Testing_Drivers/APP/Testing_I2C_2/)
+- [Testing DS1037](Testing_SW_Layers/Testing_Drivers/APP/Testing_DS1037/)
 
 ## Steps you need to do if you are using CCS or another ide
 
