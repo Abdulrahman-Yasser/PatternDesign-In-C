@@ -39,7 +39,7 @@ static void Testing_DS1307_LoopApp(void){
     while(1){
         my_TimeContainer = RTC_DS1307_getTime();
         my_DateContainer = RTC_DS1307_getDate();
-        Delay_ms(200);
+        Delay_ms(1000);
     }
 }
 

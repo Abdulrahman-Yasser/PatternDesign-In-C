@@ -26,10 +26,10 @@ static void Testing_I2C_2_Write_1_byte(uint8 data, uint8 slave_mem_address){
 
 
 static uint8 Testing_I2C_2_Read_1_byte(uint8 slave_mem_address){
-    uint8 data[2];
+    uint8 data;
     I2C_MasterPoke_to_receive(Testing_I2C_2_USED, Testing_I2C_2_SLAVE_ADDRESS, slave_mem_address, 1);
-    I2C_Pop_the_Received(Testing_I2C_2_USED, data, 1);
-    return data[0];
+    I2C_Pop_the_Received(Testing_I2C_2_USED, &data, 1);
+    return data;
 }
 
 
@@ -40,7 +40,7 @@ void Testing_I2C_2_Initialization(void){
 }
 
 void Testing_I2C_2_Loop(void){
-    uint8 data = 0;
+    uint8 data = 0, read_data;
     while(1){
         data = 1;
         Testing_I2C_2_Write_1_byte(data, data);
@@ -52,6 +52,7 @@ void Testing_I2C_2_Loop(void){
         Testing_I2C_2_Write_1_byte(data, data);
         Delay_ms(100);
         data = data << 1;
+        read_data = Testing_I2C_2_Read_1_byte(0x19);
         Testing_I2C_2_Write_1_byte(data, data);
         Delay_ms(100);
         data = data << 1;
@@ -64,8 +65,10 @@ void Testing_I2C_2_Loop(void){
         Testing_I2C_2_Write_1_byte(data, data);
         Delay_ms(100);
         Testing_I2C_2_Write_1_byte(0xff, 0xff);
+        read_data = Testing_I2C_2_Read_1_byte(0xff);
         Delay_ms(1000);
         Testing_I2C_2_Write_1_byte(0x00, 0x00);
+        read_data = Testing_I2C_2_Read_1_byte(0x00);
         Delay_ms(1000);
     }
 }

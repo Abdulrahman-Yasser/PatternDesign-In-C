@@ -151,9 +151,12 @@ Std_BoolReturnType LCD_DIO_Destroy_Function(LCD_Handler_Type* const me){
     /*
      * whatever you want here
      */
+    Std_BoolReturnType r = E_TRUE;
     if(me != Null_Ptr){
         LCD_CleanUp(me);
     }
+    free(me);
+    return r;
 }
 
 /*
@@ -225,9 +228,12 @@ Std_BoolReturnType LCD_I2C_Destroy_Function(LCD_Handler_Type* const me){
     /*
      * whatever you want here
      */
+    Std_BoolReturnType r = E_TRUE;
     if(me != Null_Ptr){
         LCD_CleanUp(me);
     }
+    free(me);
+    return r;
 }
 
 

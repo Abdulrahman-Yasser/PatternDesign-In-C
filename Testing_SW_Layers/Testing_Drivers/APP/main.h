@@ -14,4 +14,6 @@
 
 #include "Testing_I2C_2/Testing_I2C_2.h"
 
+#include "Testing_DS1037/Testing_DS1307.h"
+
 #endif /* APP_MAIN_H_ */
