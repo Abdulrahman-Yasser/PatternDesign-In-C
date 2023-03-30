@@ -1,7 +1,7 @@
 
 # Testing I2C 2: 
 This code uses I2C LCD Serial Interface Module as a GPIO expander <br>
-the code shift the blinking LED every 100ms then turn on all the LEDs then stare over again. <br>
+the code shift the blinking LED every 100ms then turn on all the LEDs then start over again. <br>
 
 ## video : 
 [running the code](https://youtu.be/tL7dZ1ShdCI) <br>
