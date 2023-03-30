@@ -4,7 +4,7 @@ This code uses I2C LCD module interface as a GPIO expander <br>
 the code shift the blinking LED every 100ms then turn on all the LEDs then stare over again. <br>
 
 ## video : 
-[Link for explaining the Running code](https://youtu.be/tL7dZ1ShdCI) <br>
+[running the code](https://youtu.be/tL7dZ1ShdCI) <br>
 [Link for explaining the module Pin diagram](https://www.youtube.com/watch?v=DXjogGsJlhU)<br>
 
 ## Pins out for the module : 
