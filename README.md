@@ -10,11 +10,8 @@
 
 ## Some tested drivers to make sure that it works fine : 
 - [Testing LCD](Testing_SW_Layers/Testing_Drivers/APP/Testing_LCD/)
-
-- [Testing I2C](Testing_SW_Layers/Testing_Drivers/APP/Testing_I2C/)
-    <details><summary>Project's Details</summary>Using I2C LCD Serial Interface Module as GPIO expander and control LEDS with it</details>
-- [Testing I2C 2 ](Testing_SW_Layers/Testing_Drivers/APP/Testing_I2C_2/)
-    <details><summary>Project's Details</summary>Using I2C LCD Serial Interface Module as GPIO expander and control LEDS with it</details>
+- [Testing I2C](Testing_SW_Layers/Testing_Drivers/APP/Testing_I2C/)<details><summary>Project's Details</summary>Using I2C LCD Serial Interface Module as GPIO expander and control LEDS with it</details>
+- [Testing I2C 2 ](Testing_SW_Layers/Testing_Drivers/APP/Testing_I2C_2/)<details><summary>Project's Details</summary>Using I2C LCD Serial Interface Module as GPIO expander and control LEDS with it</details>
 - [Testing DS1037](Testing_SW_Layers/Testing_Drivers/APP/Testing_DS1037/)
 
 ## Steps you need to do if you are using CCS or another ide
