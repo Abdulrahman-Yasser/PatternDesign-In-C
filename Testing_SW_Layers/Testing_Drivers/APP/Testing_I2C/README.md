@@ -1,6 +1,6 @@
 
 # Testing I2C : 
-This code uses I2C LCD module interface as a GPIO expander. <br>
+This code uses I2C LCD Serial Interface Module as a GPIO expander. <br>
 the code TurnOn the LEDs every 1 sec. <br>
 
 ## video : 
