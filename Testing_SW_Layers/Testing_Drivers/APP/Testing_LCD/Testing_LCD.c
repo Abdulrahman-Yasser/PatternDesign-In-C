@@ -11,17 +11,27 @@
 #include "Testing_LCD.h"
 
 
-void App_Initializations(void){
+void TestingLCD_Initializations(void){
     Port_Init();
     Gpt_Init();
     I2C_init();
     IntCtrl_Init();
 }
 
-void Loop(void){
+void TestingLCD_Loop(void){
     LCD_Handler_Type* me;
     me = LCD_Create(LCD_Interface_I2C, 0);
+    LCD_CHAR_Type* hello = "Hello !!";
+    LCD_CHAR_Type* Goodbye = "GoodBye <3";
     while(1){
+        me->LCD_Write_Cmd(me, LCD_I2C_INST_CLEAR);
+        me->LCD_Write_Cmd(me, LCD_I2C_INST_CURSOR_GO_1ST_LINE);
+        me->LCD_Write_Data(me, hello);
+        Delay_ms(1000);
+        me->LCD_Write_Cmd(me, LCD_I2C_INST_CLEAR);
+        me->LCD_Write_Cmd(me, LCD_I2C_INST_CURSOR_GO_2ND_LINE);
+        me->LCD_Write_Data(me, Goodbye);
+        Delay_ms(1000);
     }
 }
 

@@ -18,8 +18,8 @@
 #include "../../General_Mcal/IntCtrl/Static/inc/IntCtrl.h"
 
 
-void App_Initializations(void);
-void LCD_Initializations(void);
+void TestingLCD_Initializations(void);
+void TestingLCD_Loop(void);
 
 
 

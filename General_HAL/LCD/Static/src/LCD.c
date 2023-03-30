@@ -11,7 +11,6 @@
 #include "../../General_Mcal/DIO/Static/inc/DIO.h"
 #include <stdlib.h>
 
-/* It may be 0x3F */
 #define LCD_SLAVE_ADDRESS 0x27
 
 /**********************************************************************************************************************
@@ -174,12 +173,12 @@ Std_BoolReturnType LCD_I2C_Write_Cmd_Function(LCD_Handler_Type* const me, uint8 
     data_t[2] = dataL | 0x0C;  // en =1, rs =0
     data_t[3] = dataL | 0x08;  // en =0, rs =0
 
-    I2C_Push_to_Transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, data_t[0], 1);
-    I2C_Push_to_Transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, data_t[1], 1);
-    I2C_Push_to_Transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, data_t[2], 1);
-    I2C_Push_to_Transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, data_t[3], 1);
+    I2C_Push_to_Transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, data_t[0], 0);
+    I2C_Push_to_Transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, data_t[1], 0);
+    I2C_Push_to_Transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, data_t[2], 0);
+    I2C_Push_to_Transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, data_t[3], 0);
 
-    I2C_MasterPoke_to_transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, LCD_SLAVE_ADDRESS, 0, 4);
+    my_return = I2C_MasterPoke_to_transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, LCD_SLAVE_ADDRESS, 0, 4);
     Delay_ms(1);
     return my_return;
 }

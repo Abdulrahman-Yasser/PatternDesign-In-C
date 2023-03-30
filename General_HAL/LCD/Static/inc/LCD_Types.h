@@ -13,9 +13,8 @@
 #include "../../General_Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
 #include "../../General_Mcal/I2C/Dynamic/inc/I2C_Cfg.h"
 
-typedef uint8 LCD_CHAR_Type;
+typedef sint8 LCD_CHAR_Type;
 
-typedef I2C_ChannelType LCD_I2C_Channel_Type;
 
 typedef enum{
     LCD_Interface_DIO, LCD_Interface_I2C
@@ -59,7 +58,7 @@ typedef struct LCD_I2C_Container LCD_I2C_Container_Type;
 
 
 struct LCD_I2C_Container{
-    LCD_I2C_Channel_Type LCD_I2C_Channel;
+    I2C_ChannelType LCD_I2C_Channel;
 
     LCD_Function_Set_Type LCD_I2C_Initial_FunctionSet;
     LCD_Entry_Mode_Type LCD_I2C_Initial_EntryModeSet;
