@@ -24,6 +24,13 @@
  *  GLOBAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
 
+void ADC_Init(void);
+
+void ADC_SoftwareTrigger_SC(ADC_SS_NumType mySampleSequencerNm);
+
+uint16 ADC_ReadResult(ADC_SS_NumType mySampleSequencer);
+
+
 
 #endif    /* ADC_H */
 

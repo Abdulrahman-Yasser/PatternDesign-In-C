@@ -27,7 +27,7 @@ static void Testing_I2C_Write_1_byte(uint8 data, uint8 slave_mem_address){
 
 static uint8 Testing_I2C_Read_1_byte(uint8 slave_mem_address){
     uint8 data[2];
-    I2C_MasterPoke_to_receive(TESTING_I2C_USED, TESTING_I2C_SLAVE_ADDRESS, slave_mem_address, 1);
+    I2C_MasterPoke_to_receive(TESTING_I2C_USED, TESTING_I2C_SLAVE_ADDRESS, slave_mem_address, 1, 0);
     I2C_Pop_the_Received(TESTING_I2C_USED, data, 1);
     return data[0];
 }

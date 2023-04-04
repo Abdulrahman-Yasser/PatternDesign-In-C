@@ -2,23 +2,21 @@
 #ifndef PLATFORM_TYPES_H
 #define PLATFORM_TYPES_H
 
+#define REG_ORING_WITH_VALUE(REG, VAL) (REG |= VAL)
+#define REG_ORING_VALUE_NO_CASTING(REG, VAL) (REG |= VAL)
+#define REG_ORING_ONE_BIT_NO_CASTING(REG, CNT) (REG |= 1<<CNT)
+#define REG_CLEAR_ONE_BIT_NO_CASTING(REG, CNT) (REG &= (~ (1<<CNT)))
 
+#define REG_ORING_POINTED_REG(REG, VAL)     ((*REG) |= VAL)
 
-#define REG_WRITE_ALL(REG, VAL) (REG |= VAL)
-#define REG_WRITE_32_BIT(REG, VAL) (REG |= VAL)
-#define REG_WRITE_BIT(REG, CNT) (REG |= 1<<CNT)
-#define REG_CLEAR_BIT(REG, CNT) (REG &= (~ (1<<CNT)))
+#define REG_CLEAR_CASTING_POINTED(REG)       ( (*((volatile uint32 *)(REG))) &= 0x00000000)
+#define REG_CLEAR_THOSE_BITS_CASTING_POINTED(REG, VAL)  ( (*((volatile uint32 *)(REG))) &= ~(VAL))
+#define REG_ORING_CASTING_POINTED(REG, VAL)  ( (*((volatile uint32 *)(REG))) |= VAL)
+#define REG_WRITE_CASTING_POINTED(REG, VAL)  ( (*((volatile uint32 *)(REG))) = VAL)
+#define REG_ORING_ONE_BIT_CASTING_POINTED(REG, CNT)     ( (*((volatile uint32 *)(REG))) |= 1<<CNT)
+#define REG_CLEAR_ONE_BIT_CASTING_POINTED(REG, CNT)     ( (*((volatile uint32 *)(REG))) &= ~(1<<CNT))
 
-#define REG_WRITE_ALL_PTR(REG, VAL)     ((*REG) |= VAL)
-
-#define REG_CLEAR_32_BIT_PTR(REG)       ( (*((volatile uint32 *)REG)) &= 0x00000000)
-#define REG_CLEAR_SPECIFIC_BIT_PTR(REG, VAL)  ( (*((volatile uint32 *)REG)) &= ~(VAL))
-#define REG_WRITE_32_BIT_PTR(REG, VAL)  ( (*((volatile uint32 *)REG)) |= VAL)
-#define REG_WRITE_ALL_32_BIT_PTR(REG, VAL)  ( (*((volatile uint32 *)REG)) = VAL)
-#define REG_WRITE_BIT_PTR(REG, CNT)     ( (*((volatile uint32 *)(REG))) |= 1<<CNT)
-#define REG_CLEAR_BIT_PTR(REG, CNT)     ( (*((volatile uint32 *)(REG))) &= ~(1<<CNT))
-
-#define REG_READ_PTR(x, REG)              (x = ( (*((volatile uint32 *)(REG))) ) )
+#define REG_READ_CASTING_POINTED(x, REG)              (x = ( (*((volatile uint32 *)(REG))) ) )
 
 
 
@@ -35,7 +33,7 @@ typedef signed long long      sint64;
 #define REG_CLR_PERIPH_BB_PTR(REG,BIT_NUM)      ( *(volatile uint32*)((uint8*)0x42000000 + ( (((uint8*)(REG)-(uint8*)0x40000000) * 32) + ((BIT_NUM) * 4))) = 0)
 
 typedef enum{
-    E_OK, E_NOK
+    E_NOK, E_OK
 }Std_ReturnType;
 
 typedef enum{

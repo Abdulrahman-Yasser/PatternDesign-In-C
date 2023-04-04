@@ -55,7 +55,7 @@ static void MasterMultibleReceiveLoop(uint32 base,uint8 n, Queue_uint8_DYNAMIC_T
 //static uint16 I2C_MasterSingleTransmit(I2C_ChannelType my_I2C, uint8 Slave_Address,  uint8 Slave_memory_Address);
 static uint16 I2C_MasterTransmitMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Address, uint8 Slave_memory_Address, uint8 bytes_Counts);
 
-static uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Address, uint8 Slave_memory_Address, uint8 bytes_Counts);
+static uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Address, uint8 bytes_Counts);
 
 //static void I2C_SlaveTransmit_one_Byte(I2C_ChannelType my_I2C);
 //static void I2C_SlaveReceive_one_Byte(I2C_ChannelType my_I2C);
@@ -129,14 +129,14 @@ static void MasterMultibleTransmitLoop(uint32 base,uint8 bytesCount, Queue_uint8
          * */
         while(Data->isEmpty(Data));
         my_data = Data->remove(Data);
-        REG_WRITE_ALL_32_BIT_PTR((base + I2C_MDR_REG_OFFSET), my_data);
+        REG_WRITE_CASTING_POINTED((base + I2C_MDR_REG_OFFSET), my_data);
         /* 2
          * Write the master control signal
          * 0_001
          * RUN Bit is HIGH, STOP and START are LOW
          * That would generate a Transmitting multiple bytes signal
          * */
-        REG_WRITE_ALL_32_BIT_PTR((base + I2C_MCS_REG_OFFSET), 1);
+        REG_WRITE_CASTING_POINTED((base + I2C_MCS_REG_OFFSET), 1);
         /* 3
          * BUSY Checking "if the I2C module is BUSY (Finished Transmission or not )"
          * Error Checking
@@ -147,8 +147,8 @@ static void MasterMultibleTransmitLoop(uint32 base,uint8 bytesCount, Queue_uint8
             if(RegisterCheck & (1 << I2C_MCS_ARBLST_MASK)){
             }else{
                 /* 0_100 */
-                REG_CLEAR_SPECIFIC_BIT_PTR((base + I2C_MCS_REG_OFFSET), 0X13);
-                REG_WRITE_BIT_PTR(base + I2C_MCS_REG_OFFSET, 2);
+                REG_CLEAR_THOSE_BITS_CASTING_POINTED((base + I2C_MCS_REG_OFFSET), 0X13);
+                REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_MCS_REG_OFFSET, 2);
             }
             return;
         }else{
@@ -167,7 +167,7 @@ static void MasterMultibleTransmitLoop(uint32 base,uint8 bytesCount, Queue_uint8
 * \Return value:   : None
 *******************************************************************************/
 static void MasterMultibleReceiveLoop(uint32 base,uint8 bytesCount, Queue_uint8_DYNAMIC_Type* Data){
-    uint32 RegisterCheck;
+    uint32 RegisterCheck, data_t;
     uint8 i;
     for(i = 0; i < bytesCount-1; i++){
 
@@ -178,7 +178,7 @@ static void MasterMultibleReceiveLoop(uint32 base,uint8 bytesCount, Queue_uint8_
          * STOP and START Bits are LOW
          * That would generate a Transmitting multiple bytes signal
          * */
-        REG_WRITE_ALL_32_BIT_PTR(base + I2C_MCS_REG_OFFSET, 0x9);
+        REG_WRITE_CASTING_POINTED(base + I2C_MCS_REG_OFFSET, 0x9);
 
         /*BUSY Checking "if the I2C module is BUSY (Finished Transmission or not )" */
         /* 5
@@ -194,15 +194,14 @@ static void MasterMultibleReceiveLoop(uint32 base,uint8 bytesCount, Queue_uint8_
                  * STOP Bits are HIGH
                  * RUN, START, HS are low *
                  * That would generate a STOP signal */
-                REG_CLEAR_SPECIFIC_BIT_PTR((base + I2C_MCS_REG_OFFSET), 0X18);
-                REG_WRITE_BIT_PTR(base + I2C_MCS_REG_OFFSET, 2);
+                REG_CLEAR_THOSE_BITS_CASTING_POINTED((base + I2C_MCS_REG_OFFSET), 0X18);
+                REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_MCS_REG_OFFSET, 2);
             }
             return ;
         }
+        REG_READ_CASTING_POINTED(data_t, I2C_MDR_REG_OFFSET + base);
         /* Read the Data, Freeze if the Queue is Full */
-        RegisterCheck = (uint32)(*(volatile uint32 *)(base + I2C_MDR_REG_OFFSET));
-        while(Data->isFull(Data));
-        Data->insert(Data, RegisterCheck);
+        Data->insert(Data, data_t);
     }
 }
 
@@ -233,8 +232,8 @@ static void MasterMultibleReceiveLoop(uint32 base,uint8 bytesCount, Queue_uint8_
 //    /* 1
 //     * Write the Slave's Address, Bit 0 'R/S' is LOW for transmit
 //     * */
-//    REG_WRITE_32_BIT_PTR((base + I2C_MSA_REG_OFFSET), Slave_Address << 1);
-//    REG_CLEAR_BIT_PTR(base + I2C_MSA_REG_OFFSET, 0);
+//    REG_ORING_CASTING_POINTED((base + I2C_MSA_REG_OFFSET), Slave_Address << 1);
+//    REG_CLEAR_ONE_BIT_CASTING_POINTED(base + I2C_MSA_REG_OFFSET, 0);
 //
 //    /* 2
 //     * Write the Data
@@ -258,7 +257,7 @@ static void MasterMultibleReceiveLoop(uint32 base,uint8 bytesCount, Queue_uint8_
 //     * STOP, ACK, HS are low
 //     * That would generate a MasterSingleTransmit signal
 //     * */
-////    REG_CLEAR_SPECIFIC_BIT_PTR((base + I2C_MCS_REG_OFFSET), 0X18);
+////    REG_CLEAR_THOSE_BITS_CASTING_POINTED((base + I2C_MCS_REG_OFFSET), 0X18);
 //
 //    /* 5
 //     * BUSY Checking "if the I2C module is BUSY (Finished Transmission or not )"
@@ -274,7 +273,7 @@ static void MasterMultibleReceiveLoop(uint32 base,uint8 bytesCount, Queue_uint8_
 //    (*(volatile uint32*)(base + I2C_MCS_REG_OFFSET)) = 0X5;
 //    error = I2C_Wait_Untill_Its_End(base);
 //    do{
-//        REG_READ_PTR(RegisterCheck, I2C_MCS_REG_OFFSET + base);
+//        REG_READ_CASTING_POINTED(RegisterCheck, I2C_MCS_REG_OFFSET + base);
 //    }while(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK));
 //    if(RegisterCheck & (1 << I2C_MCS_ERROR_MASK)){
 //        return I2C_RETURN_ERROR;
@@ -306,12 +305,12 @@ static uint16 I2C_MasterTransmitMultibleBytes(I2C_ChannelType my_I2C, uint8 Slav
     /* 1
      * Write the Slave's Address, Bit 0 'R/S' is LOW for transmit
      * */
-    REG_WRITE_32_BIT_PTR((base + I2C_MSA_REG_OFFSET), Slave_Address << 1);
-    REG_CLEAR_BIT_PTR(base + I2C_MSA_REG_OFFSET, 0);
+    REG_WRITE_CASTING_POINTED(base + I2C_MSA_REG_OFFSET, Slave_Address << 1);
+    REG_CLEAR_ONE_BIT_CASTING_POINTED(base + I2C_MSA_REG_OFFSET, 0);
     /* 2
      * Write the Slave_memory_Address the i2c will transmit in
      * */
-    REG_WRITE_32_BIT_PTR((base + I2C_MDR_REG_OFFSET), Slave_memory_Address);
+    REG_WRITE_CASTING_POINTED(base + I2C_MDR_REG_OFFSET, Slave_memory_Address);
     /* 3
      * BUSBUSY Checking "Check if the I2C BUS is free or used by another MASTER"
      * if that line does not exist and i wanted to make a repeated start it will stuck here.
@@ -333,8 +332,8 @@ static uint16 I2C_MasterTransmitMultibleBytes(I2C_ChannelType my_I2C, uint8 Slav
      * STOP, ACK, HS are low *
      * That would generate a Transmitting Single bytes signal
      * */
-    REG_CLEAR_SPECIFIC_BIT_PTR((base + I2C_MCS_REG_OFFSET), 0X14);
-    REG_WRITE_32_BIT_PTR((base + I2C_MCS_REG_OFFSET), 0X3);
+    REG_CLEAR_THOSE_BITS_CASTING_POINTED((base + I2C_MCS_REG_OFFSET), 0X1C);
+    REG_ORING_CASTING_POINTED((base + I2C_MCS_REG_OFFSET), 0X3);
     /* 5
      * BUSY Checking "if the I2C module is BUSY (Finished Transmission or not )"
      * Error Checking and handling
@@ -349,8 +348,8 @@ static uint16 I2C_MasterTransmitMultibleBytes(I2C_ChannelType my_I2C, uint8 Slav
              * STOP Bits are HIGH
              * RUN, START, HS are low *
              * That would generate a STOP signal */
-            REG_CLEAR_SPECIFIC_BIT_PTR((base + I2C_MCS_REG_OFFSET), 0X18);
-            REG_WRITE_BIT_PTR(base + I2C_MCS_REG_OFFSET, 2);
+            REG_CLEAR_THOSE_BITS_CASTING_POINTED((base + I2C_MCS_REG_OFFSET), 0X18);
+            REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_MCS_REG_OFFSET, 2);
         }
         return I2C_RETURN_ERROR;
     }
@@ -358,7 +357,9 @@ static uint16 I2C_MasterTransmitMultibleBytes(I2C_ChannelType my_I2C, uint8 Slav
      * Write the Data */
     /* Write the Data, Freeze if the Queue is Empty
      * */
-    if(bytes_Counts > 1){
+    if(bytes_Counts == 0){
+        return I2C_RETURN_FINE;
+    }else if(bytes_Counts > 1){
         MasterMultibleTransmitLoop(base, bytes_Counts, I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]);
     }
     /* 7
@@ -367,21 +368,21 @@ static uint16 I2C_MasterTransmitMultibleBytes(I2C_ChannelType my_I2C, uint8 Slav
     while(I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]->isEmpty(I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]));
 
     data = I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]->remove(I2C_Queue_Buffer[(2*my_I2C)+I2C_Transmit_Buffer_Mask]);
-    REG_WRITE_ALL_32_BIT_PTR((base + I2C_MDR_REG_OFFSET), data);
+    REG_WRITE_CASTING_POINTED((base + I2C_MDR_REG_OFFSET), data);
     /* 8
      * Write the master control signal
      * 0_101
      * RUN, STOP Bits are HIGH
      * START, HS are low *
      * That would generate a Last Transmission signal */
-    REG_WRITE_ALL_32_BIT_PTR((base + I2C_MCS_REG_OFFSET), 0X05);
+    REG_WRITE_CASTING_POINTED((base + I2C_MCS_REG_OFFSET), 0X05);
     /* 9
      * BUSY Checking "if the I2C module is BUSY (Finished Transmission or not )"
      * Error Checking
      * */
     RegisterCheck = I2C_Wait_Untill_Its_End(base);
     do{
-        REG_READ_PTR(RegisterCheck, I2C_MCS_REG_OFFSET + base);
+        REG_READ_CASTING_POINTED(RegisterCheck, I2C_MCS_REG_OFFSET + base);
     }while(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK));
     if(RegisterCheck & (1 << I2C_MCS_ERROR_MASK)){
         return I2C_RETURN_ERROR;
@@ -401,63 +402,14 @@ static uint16 I2C_MasterTransmitMultibleBytes(I2C_ChannelType my_I2C, uint8 Slav
 * \Return value:   : uint16     I2C_RETURN_ERROR
 *                               I2C_RETURN_FINE
 *******************************************************************************/
-static uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Address, uint8 Slave_memory_Address, uint8 bytes_Counts){
-    uint32 base, RegisterCheck;
+static uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave_Address, uint8 bytes_Counts){
+    uint32 base, RegisterCheck, data_t;
     // Check if the I2C is Configured as Master
     if(! (I2C_MasterModulesUsed & (1 << my_I2C))){
         /* error, the I2C module is not configured as a Master */
         return I2C_RETURN_ERROR;
     }
     base = get_address(my_I2C);
-
-    /* 1
-     * Write the Slave's Address, Bit 0 'R/S' is LOW for transmit
-     * */
-    REG_WRITE_32_BIT_PTR((base + I2C_MSA_REG_OFFSET), Slave_Address << 1);
-
-    /* 2
-     * Write the Slave_memory_Address the i2c will transmit in
-     * */
-    REG_WRITE_32_BIT_PTR((base + I2C_MDR_REG_OFFSET), Slave_memory_Address);
-
-    /* 3
-     * BUSBUSY Checking "Check if the I2C BUS is free or used by another MASTER"
-     * if that line does not exist and i wanted to make a repeated start it will stuck here.
-     * but because that condition it will check before.
-     * */
-//    do{
-//        RegisterCheck = (*(volatile uint32 *)(base + I2C_MCS_REG_OFFSET));
-//    }while(! RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK));
-
-
-    /* 4
-     * Write the master control signal
-     * 0_011
-     * RUN, START Bits are HIGH
-     * STOP is low *
-     * That would generate a Transmit signal just to transmit the slave_memory_address
-     * */
-    REG_WRITE_ALL_32_BIT_PTR(base + I2C_MCS_REG_OFFSET, 0x03);
-
-    /* 5
-     * BUSY Checking "if the I2C module is BUSY (Finished Transmission or not )"
-     * Error Checking and handling
-     * */
-    RegisterCheck = I2C_Wait_Untill_Its_End(base);
-
-    if(RegisterCheck & (1 << I2C_MCS_ERROR_MASK)){
-        /* Error Handling, it will return after that */
-        if(RegisterCheck & (1 << I2C_MCS_ARBLST_MASK)){
-        }else{
-            /* 0_100
-             * STOP Bits are HIGH
-             * RUN, START, HS are low *
-             * That would generate a STOP signal */
-            REG_CLEAR_SPECIFIC_BIT_PTR((base + I2C_MCS_REG_OFFSET), 0X18);
-            REG_WRITE_BIT_PTR(base + I2C_MCS_REG_OFFSET, 2);
-        }
-        return I2C_RETURN_ERROR;
-    }
     /*
      * ========================================== Here i will start receiving =======================================
      */
@@ -465,7 +417,7 @@ static uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave
     /* 6
      * Write the Slave's Address, Bit 0 'R/S' is High for Receiving
      * */
-    REG_WRITE_32_BIT_PTR((base + I2C_MSA_REG_OFFSET), (Slave_Address << 1) + 1);
+    REG_WRITE_CASTING_POINTED(base + I2C_MSA_REG_OFFSET, (Slave_Address << 1) + 1);
 
     /* 7
      * Write the master control signal Restart Signal
@@ -476,14 +428,14 @@ static uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave
          * ACK is low *
          * That would generate a single receive byte then stop receiving
          * */
-        REG_WRITE_ALL_32_BIT_PTR(base + I2C_MCS_REG_OFFSET, 0x07);
+        REG_WRITE_CASTING_POINTED(base + I2C_MCS_REG_OFFSET, 0x07);
     }else{
         /* 01011
          * RUN, START, ACK Bits are HIGH
          * STOP is low *
          * That would generate a Multiple receive signal that generates acknowledge
          * */
-        REG_WRITE_ALL_32_BIT_PTR(base + I2C_MCS_REG_OFFSET, 0x0B);
+        REG_WRITE_CASTING_POINTED(base + I2C_MCS_REG_OFFSET, 0x0B);
     }
 
     /* 8
@@ -499,8 +451,8 @@ static uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave
              * STOP Bits are HIGH
              * RUN, START, HS are low *
              * That would generate a STOP signal */
-            REG_CLEAR_SPECIFIC_BIT_PTR((base + I2C_MCS_REG_OFFSET), 0X18);
-            REG_WRITE_BIT_PTR(base + I2C_MCS_REG_OFFSET, 2);
+            REG_CLEAR_THOSE_BITS_CASTING_POINTED((base + I2C_MCS_REG_OFFSET), 0X18);
+            REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_MCS_REG_OFFSET, 2);
         }
         return I2C_RETURN_ERROR;
     }
@@ -508,13 +460,13 @@ static uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave
     /* 9
      * Read the Data, Freeze if the Queue is Full
      * */
-    REG_READ_PTR(RegisterCheck, base + I2C_MDR_REG_OFFSET);
-    while(I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask]->isFull(I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask]));
-    I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask]->insert(I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask], RegisterCheck);
+    REG_READ_CASTING_POINTED(data_t, base + I2C_MDR_REG_OFFSET);
+
+    I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask]->insert(I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask], data_t);
     bytes_Counts--;
     if(bytes_Counts == 0){
         do{
-            REG_READ_PTR(RegisterCheck, I2C_MCS_REG_OFFSET + base);
+            REG_READ_CASTING_POINTED(RegisterCheck, I2C_MCS_REG_OFFSET + base);
         }while(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK));
         return I2C_RETURN_FINE;
     }
@@ -530,14 +482,14 @@ static uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave
      * RUN, STOP is HIGH
      * START is low
      * That would generate a Master Last Receive Signal */
-    REG_CLEAR_SPECIFIC_BIT_PTR(base + I2C_MCS_REG_OFFSET, 0x1A);
-    REG_WRITE_32_BIT_PTR(base + I2C_MCS_REG_OFFSET, 0x5);
+    REG_WRITE_CASTING_POINTED(base + I2C_MCS_REG_OFFSET, 0x05);
 
     /* 12
      * BUSY Checking "if the I2C module is BUSY (Finished Transmission or not )"
      * Error Checking and handling
      * */
     RegisterCheck = I2C_Wait_Untill_Its_End(base);
+    REG_READ_CASTING_POINTED(data_t, base + I2C_MDR_REG_OFFSET);
     if(RegisterCheck & (1 << I2C_MCS_ERROR_MASK)){
         /* Error Handling, it will return after that */
         return I2C_RETURN_ERROR;
@@ -546,9 +498,10 @@ static uint16 I2C_MasterReceiveMultibleBytes(I2C_ChannelType my_I2C, uint8 Slave
     /* 13
      * Read the Data, Freeze if the Queue is Full
      * */
-    RegisterCheck = (uint32)(*(volatile uint32 *)(base + I2C_MDR_REG_OFFSET));
-    while(I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask]->isFull(I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask]));
-    I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask]->insert(I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask], RegisterCheck);
+    I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask]->insert(I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask], data_t);
+    do{
+        REG_READ_CASTING_POINTED(RegisterCheck, I2C_MCS_REG_OFFSET + base);
+    }while(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK));
     return I2C_RETURN_FINE;
 }
 
@@ -612,7 +565,7 @@ void I2C_init(void){
             /* the I2C module is already configured !!!! */
             continue;
         }else{
-            REG_WRITE_BIT(SYSCTL_RCGCI2C, (uint8)I2C_Container[i].I2C_num);
+            REG_ORING_ONE_BIT_NO_CASTING(SYSCTL_RCGCI2C, (uint8)I2C_Container[i].I2C_num);
             // For delay purpose
             RegisterCheck = (uint32)SYSCTL_RCGCI2C;
         }
@@ -638,26 +591,26 @@ void I2C_init(void){
             }
 
             // I2CMCR For SlaveDisable and MasterEnable
-            REG_WRITE_BIT_PTR(base + I2C_MCR_REG_OFFSET, 4);
-            REG_CLEAR_BIT_PTR(base + I2C_MCR_REG_OFFSET, 5);
+            REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_MCR_REG_OFFSET, 4);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(base + I2C_MCR_REG_OFFSET, 5);
 
             // I2CMCR For GlitchSupression
             if(I2C_Container[i].I2c_GlitchSupression == I2C_GlitchSuppression_ON){
-                REG_WRITE_BIT_PTR(base + I2C_MCR_REG_OFFSET, 6);
-                REG_WRITE_32_BIT_PTR((base + I2C_MCR2_REG_OFFSET), I2C_Container[i].I2C_GlitchFilterPulseWidth);
+                REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_MCR_REG_OFFSET, 6);
+                REG_ORING_CASTING_POINTED((base + I2C_MCR2_REG_OFFSET), I2C_Container[i].I2C_GlitchFilterPulseWidth);
             }else{
-                REG_CLEAR_BIT_PTR(base + I2C_MCR_REG_OFFSET, 6);
+                REG_CLEAR_ONE_BIT_CASTING_POINTED(base + I2C_MCR_REG_OFFSET, 6);
             }
 
             // I2CMCR For Loop Back
             if(I2C_Container[i].I2C_LoopBack == I2C_LoopBack_ON){
-                REG_WRITE_BIT_PTR(base + I2C_MCR_REG_OFFSET, 0);
+                REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_MCR_REG_OFFSET, 0);
             }else{
-                REG_CLEAR_BIT_PTR(base + I2C_MCR_REG_OFFSET, 0);
+                REG_CLEAR_ONE_BIT_CASTING_POINTED(base + I2C_MCR_REG_OFFSET, 0);
             }
 
             // Clock Low Time Out
-            REG_WRITE_32_BIT_PTR((base + I2C_MCLKOCNT_REG_OFFSET), I2C_Container[i].I2C_Clock_Low_Timeout_Count);
+            REG_ORING_CASTING_POINTED((base + I2C_MCLKOCNT_REG_OFFSET), I2C_Container[i].I2C_Clock_Low_Timeout_Count);
 
             // I2CIM For Setting the Master Interrupt mask Register
             for(j = 0; j < I2C_ALLOWED_INTERRUPTS_NUMBER; j++){
@@ -665,12 +618,12 @@ void I2C_init(void){
                 case I2C_MasterISR_None :
                     break;
                 case I2C_MasterISR_BusTimeout:
-                    REG_WRITE_BIT_PTR(base + I2C_MIMR_REG_OFFSET, 1);
+                    REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_MIMR_REG_OFFSET, 1);
                     break;
                 case I2C_MasterISR_TransactionComplete:
                 case I2C_MasterISR_ArbitrationLost:
                 case I2C_MasterISR_TransactionError:
-                    REG_WRITE_BIT_PTR(base + I2C_MIMR_REG_OFFSET, 0);
+                    REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_MIMR_REG_OFFSET, 0);
                     break;
                 default :
                     break;
@@ -697,14 +650,14 @@ void I2C_init(void){
                 break;
             case I2cSpeed_HS_3Mbps:
                 TimeCalculation = (CPU_CLOCK*10000/((6)*33300))-1;
-                REG_WRITE_BIT_PTR(base + I2C_MTPR_REG_OFFSET, 7);
+                REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_MTPR_REG_OFFSET, 7);
                 break;
             default :
                 break;
             }
             if(TimeCalculation > 0 && TimeCalculation <= 128){
-                REG_CLEAR_32_BIT_PTR((base + I2C_MTPR_REG_OFFSET));
-                REG_WRITE_32_BIT_PTR((base + I2C_MTPR_REG_OFFSET), (uint32)TimeCalculation);
+                REG_CLEAR_CASTING_POINTED((base + I2C_MTPR_REG_OFFSET));
+                REG_ORING_CASTING_POINTED((base + I2C_MTPR_REG_OFFSET), (uint32)TimeCalculation);
             }else{
                 /* error */
                 return ;
@@ -724,16 +677,16 @@ void I2C_init(void){
             I2C_Queue_Buffer[I2C_Container[i].I2C_Mode] = Queue_Create_DYNAMIC_uint8(16);
 
             // I2CMCR For SlaveEnable and MasterDisable
-            REG_WRITE_BIT_PTR(base + I2C_MCR_REG_OFFSET, 5);
-            REG_CLEAR_BIT_PTR(base + I2C_MCR_REG_OFFSET, 4);
+            REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_MCR_REG_OFFSET, 5);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(base + I2C_MCR_REG_OFFSET, 4);
 
             // Setting it's Address 0
-            REG_WRITE_32_BIT_PTR((base + I2C_SOAR_REG_OFFSET), (0x7F & I2C_Container[i].I2C_SlaveAddress1));
+            REG_ORING_CASTING_POINTED((base + I2C_SOAR_REG_OFFSET), (0x7F & I2C_Container[i].I2C_SlaveAddress1));
 
             // Setting it's Second Address "If used"
             if(I2C_Container[i].I2C_SlaveAddress2 > 0){
-                REG_WRITE_32_BIT_PTR((base + I2C_SOAR2_REG_OFFSET), (0x7F & I2C_Container[i].I2C_SlaveAddress2));
-                REG_WRITE_BIT_PTR(base + I2C_SOAR2_REG_OFFSET, 7);
+                REG_ORING_CASTING_POINTED((base + I2C_SOAR2_REG_OFFSET), (0x7F & I2C_Container[i].I2C_SlaveAddress2));
+                REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_SOAR2_REG_OFFSET, 7);
             }
 
 
@@ -744,13 +697,13 @@ void I2C_init(void){
                     break;
                 case I2C_SlaveISR_TransactionReceived:
                 case I2C_SlaveISR_TransactionRequested:
-                    REG_WRITE_BIT_PTR(base + I2C_SIMR_REG_OFFSET, 0);
+                    REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_SIMR_REG_OFFSET, 0);
                     break;
                 case I2C_SlaveISR_StartCondition:
-                    REG_WRITE_BIT_PTR(base + I2C_SIMR_REG_OFFSET, 1);
+                    REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_SIMR_REG_OFFSET, 1);
                     break;
                 case I2C_SlaveISR_StopCondition:
-                    REG_WRITE_BIT_PTR(base + I2C_SIMR_REG_OFFSET, 2);
+                    REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_SIMR_REG_OFFSET, 2);
                     break;
                 default :
                     break;
@@ -758,7 +711,7 @@ void I2C_init(void){
             }
 
             // Activate the Slave Operations
-            REG_WRITE_BIT_PTR(base + I2C_SCSR_REG_OFFSET, 0);
+            REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_SCSR_REG_OFFSET, 0);
         }
     }
 }
@@ -796,14 +749,120 @@ uint16 I2C_MasterPoke_to_transmit(I2C_ChannelType my_I2C, uint8 slave_address, u
 * \Parameters (out): None
 * \Return value:   : None
 *******************************************************************************/
-uint16 I2C_MasterPoke_to_receive(I2C_ChannelType my_I2C, uint8 slave_address, uint8 Slave_memory_Address, uint8 Bytes_Cnt){
+uint16 I2C_MasterPoke_to_receive(I2C_ChannelType my_I2C, uint8 slave_address, uint8 Slave_memory_Address, uint8 Bytes_Cnt, uint8 DirectReceive){
     uint16 err;
-    if(Bytes_Cnt > 0){
-        err = I2C_MasterReceiveMultibleBytes(my_I2C, slave_address, Slave_memory_Address, Bytes_Cnt);
+    if(DirectReceive == 1){
+        err = I2C_MasterReceiveMultibleBytes(my_I2C, slave_address, Bytes_Cnt);
+    }else if(DirectReceive == 0){
+        err = I2C_MasterTransmitMultibleBytes(my_I2C, slave_address, Slave_memory_Address, 0);
+        err = I2C_MasterReceiveMultibleBytes(my_I2C, slave_address, Bytes_Cnt);
     }
     return err;
 }
 
+
+//uint16 I2C_MasterPoke_to_receive_No_SlaveMemAddress(I2C_ChannelType my_I2C, uint8 slave_address, uint8 bytes_Counts){
+//    uint32 base, RegisterCheck, data_t;
+//    // Check if the I2C is Configured as Master
+//    if(! (I2C_MasterModulesUsed & (1 << my_I2C))){
+//        /* error, the I2C module is not configured as a Master */
+//        return I2C_RETURN_ERROR;
+//    }
+//    base = get_address(my_I2C);
+//
+//    /*
+//     * ========================================== Here i will start receiving =======================================
+//     */
+//
+//    /* 6
+//     * Write the Slave's Address, Bit 0 'R/S' is High for Receiving
+//     * */
+//    REG_ORING_CASTING_POINTED((base + I2C_MSA_REG_OFFSET), (slave_address << 1) + 1);
+//
+//    /* 7
+//     * Write the master control signal Restart Signal
+//     * */
+//    if(bytes_Counts== 1){
+//        /* 0_111
+//         * RUN, START, STOP Bits are HIGH
+//         * ACK is low *
+//         * That would generate a single receive byte then stop receiving
+//         * */
+//        REG_WRITE_CASTING_POINTED(base + I2C_MCS_REG_OFFSET, 0x07);
+//    }else{
+//        /* 01011
+//         * RUN, START, ACK Bits are HIGH
+//         * STOP is low *
+//         * That would generate a Multiple receive signal that generates acknowledge
+//         * */
+//        REG_WRITE_CASTING_POINTED(base + I2C_MCS_REG_OFFSET, 0x0B);
+//    }
+//
+//    /* 8
+//     * BUSY Checking "if the I2C module is BUSY (Finished Transmission or not )"
+//     * Error Checking and handling
+//     * */
+//    RegisterCheck = I2C_Wait_Untill_Its_End(base);
+//    REG_READ_CASTING_POINTED(data_t, base + I2C_MDR_REG_OFFSET);
+//    if(RegisterCheck & (1 << I2C_MCS_ERROR_MASK)){
+//        /* Error Handling, it will return after that */
+//        if(RegisterCheck & (1 << I2C_MCS_ARBLST_MASK)){
+//        }else{
+//            /* 0_100
+//             * STOP Bits are HIGH
+//             * RUN, START, HS are low *
+//             * That would generate a STOP signal */
+//            REG_CLEAR_THOSE_BITS_CASTING_POINTED((base + I2C_MCS_REG_OFFSET), 0X18);
+//            REG_ORING_ONE_BIT_CASTING_POINTED(base + I2C_MCS_REG_OFFSET, 2);
+//        }
+//        return I2C_RETURN_ERROR;
+//    }
+//
+//    /* 9
+//     * Read the Data, Freeze if the Queue is Full
+//     * */
+//    I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask]->insert(I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask], data_t);
+//    bytes_Counts--;
+//    if(bytes_Counts == 0){
+//        do{
+//            REG_READ_CASTING_POINTED(RegisterCheck, I2C_MCS_REG_OFFSET + base);
+//        }while(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK));
+//        return I2C_RETURN_FINE;
+//    }
+//
+//    /* 10
+//     * Receive byte_Count number of Data
+//     */
+//    MasterMultibleReceiveLoop(base, bytes_Counts, I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask]);
+//
+//    /* 11
+//     * Write the master control signal for the last byte
+//     * 00101
+//     * RUN, STOP is HIGH
+//     * START is low
+//     * That would generate a Master Last Receive Signal */
+//    REG_WRITE_CASTING_POINTED(base + I2C_MCS_REG_OFFSET, 0x5);
+//
+//    /* 12
+//     * BUSY Checking "if the I2C module is BUSY (Finished Transmission or not )"
+//     * Error Checking and handling
+//     * */
+//    RegisterCheck = I2C_Wait_Untill_Its_End(base);
+//    REG_READ_CASTING_POINTED(data_t, base + I2C_MDR_REG_OFFSET);
+//    if(RegisterCheck & (1 << I2C_MCS_ERROR_MASK)){
+//        /* Error Handling, it will return after that */
+//        return I2C_RETURN_ERROR;
+//    }
+//
+//    /* 13
+//     * Read the Data, Freeze if the Queue is Full
+//     * */
+//    I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask]->insert(I2C_Queue_Buffer[(2*my_I2C)+I2C_Receive_Buffer_Mask], data_t);
+//    do{
+//        REG_READ_CASTING_POINTED(RegisterCheck, I2C_MCS_REG_OFFSET + base);
+//    }while(RegisterCheck & (1 << I2C_MCS_BUSBSY_MASK));
+//    return I2C_RETURN_FINE;
+//}
 
 
 /******************************************************************************

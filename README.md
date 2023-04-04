@@ -12,7 +12,7 @@
 - [Testing LCD](Testing_SW_Layers/Testing_Drivers/APP/Testing_LCD/)<details><summary>Project's Details</summary>Using I2C LCD Serial Interface Module to control the LCD</details>
 - [Testing I2C](Testing_SW_Layers/Testing_Drivers/APP/Testing_I2C/)<details><summary>Project's Details</summary>Using I2C LCD Serial Interface Module as GPIO expander and control LEDS with it</details>
 - [Testing I2C 2 ](Testing_SW_Layers/Testing_Drivers/APP/Testing_I2C_2/)<details><summary>Project's Details</summary>Using I2C LCD Serial Interface Module as GPIO expander and control LEDS with it</details>
-- [Testing DS1037](Testing_SW_Layers/Testing_Drivers/APP/Testing_DS1037/)
+- [Testing DS1037](Testing_SW_Layers/Testing_Drivers/APP/Testing_DS1037/)<details><summary>Project's Details</summary>Using DS1037 i set the initial time and then read it every 3 second, this project test all the operations in my I2C driver .</details>
 
 ## Steps you need to do if you are using CCS or another ide
 

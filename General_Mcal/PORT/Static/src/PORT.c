@@ -76,10 +76,10 @@ void SetInternalAttach(uint32* PortPtr_Var, uint8 PinNum_Var, Port_PinInternalAt
 }
 
 void SetAlternativeFunction(uint32* PortPtr_Var, uint8 Pin, uint8 Value){
-    REG_WRITE_BIT_PTR(((uint32)PortPtr_Var + PORT_COMMIT_REG_OFFSET), Pin);
-    REG_WRITE_BIT_PTR(((uint32)PortPtr_Var + PORT_ALT_FUNC_REG_OFFSET), Pin);
+    REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr_Var + PORT_COMMIT_REG_OFFSET), Pin);
+    REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr_Var + PORT_ALT_FUNC_REG_OFFSET), Pin);
     (*(volatile uint32*)((uint32)PortPtr_Var + PORT_CTL_REG_OFFSET)) &= ~(0xf << Pin*4);
-    REG_WRITE_32_BIT_PTR(((uint32)PortPtr_Var + PORT_CTL_REG_OFFSET), (Value << Pin*4));
+    REG_ORING_CASTING_POINTED(((uint32)PortPtr_Var + PORT_CTL_REG_OFFSET), (Value << Pin*4));
 }
 
 void SetOutputCurrentValue(uint32* PortPtr_Var, uint8 PinNum_Var, Port_PinOutputCurrentType Current){
@@ -170,76 +170,76 @@ void Port_Init(void){
             (*(volatile uint32*)((uint32)PortPtr + PORT_COMMIT_REG_OFFSET)) |= 1 << PinNum;
             break;
         case Port_PinMode_ADC:
-            REG_CLEAR_BIT_PTR(((volatile uint8 *)PortPtr + PORT_ANALOG_MODE_SEL_REG_OFFSET) , PinNum);
-            REG_CLEAR_BIT_PTR(((volatile uint8 *)PortPtr + PORT_ALT_FUNC_REG_OFFSET) , PinNum);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(((volatile uint8 *)PortPtr + PORT_ANALOG_MODE_SEL_REG_OFFSET) , PinNum);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(((volatile uint8 *)PortPtr + PORT_ALT_FUNC_REG_OFFSET) , PinNum);
             *(volatile uint32 *)((volatile uint8 *)PortPtr + PORT_CTL_REG_OFFSET) &= ~(0x0000000F << (PinNum * 4));
             break;
         case Port_PinMode_UARTn:
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 1);
             break;
         case Port_PinMode_SSIn:
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 2);
             break;
         case Port_PinMode_SSI3:
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 1);
             break;
         case Port_PinMode_I2Cn:
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 3);
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
 //            SetPinDirection((uint32*)PortPtr, PinNum, Port_PinDir_IN);
             /* SDA Supposed to be in OpenDrain Mode */
             SetInternalAttach((uint32*)PortPtr, PinNum, ConfigPtr[i].PinInternalAttach);
             break;
         case Port_PinMode_M0PWMn:
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 4);
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             break;
         case Port_PinMode_M1PWMn:
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 5);
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             break;
         case Port_PinMode_IDXn_Phpn:
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 6);
             break;
         case Port_PinMode_TnCCPn_WTnCCPn:
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 7);
             break;
         case Port_PinMode_CANn:
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 8);
             break;
         case Port_PinMode_CAN0_Pin_F:
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 3);
             break;
         case Port_PinMode_USBn:
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 8);
             break;
         case Port_PinMode_NMI:
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 8);
             break;
         case Port_PinMode_ANALOG_COMPARATOR:
-            REG_CLEAR_BIT_PTR(((volatile uint8 *)PortPtr + PORT_ANALOG_MODE_SEL_REG_OFFSET) , PinNum);
-            REG_CLEAR_BIT_PTR(((volatile uint8 *)PortPtr + PORT_ALT_FUNC_REG_OFFSET) , PinNum);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(((volatile uint8 *)PortPtr + PORT_ANALOG_MODE_SEL_REG_OFFSET) , PinNum);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(((volatile uint8 *)PortPtr + PORT_ALT_FUNC_REG_OFFSET) , PinNum);
             *(volatile uint32 *)((volatile uint8 *)PortPtr + PORT_CTL_REG_OFFSET) &= ~(0x0000000F << (PinNum * 4));
             break;
         case Port_PinMode_TRD:
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 14);
             break;
         case Port_PinMode_USB0_DM_DP:
-            REG_CLEAR_BIT_PTR(((volatile uint8 *)PortPtr + PORT_ANALOG_MODE_SEL_REG_OFFSET) , PinNum);
-            REG_CLEAR_BIT_PTR(((volatile uint8 *)PortPtr + PORT_ALT_FUNC_REG_OFFSET) , PinNum);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(((volatile uint8 *)PortPtr + PORT_ANALOG_MODE_SEL_REG_OFFSET) , PinNum);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(((volatile uint8 *)PortPtr + PORT_ALT_FUNC_REG_OFFSET) , PinNum);
             *(volatile uint32 *)((volatile uint8 *)PortPtr + PORT_CTL_REG_OFFSET) &= ~(0x0000000F << (PinNum * 4));
             break;
         case Port_PinMode_UART1_RTS_CTS:
-            REG_WRITE_BIT_PTR(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);
             SetAlternativeFunction((uint32*)PortPtr, PinNum, 8);
             break;
         default:

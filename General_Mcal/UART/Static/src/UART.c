@@ -81,7 +81,7 @@ void uart_transmit_one_char(UART_ChannelType my_uart){
         }while((Register_Check & (1 << UART_FR_TXFF_MASK) ));
 
         data = UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]->remove(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]);
-        REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
+        REG_ORING_CASTING_POINTED((base + UART_DATA_REG_OFFSET),data);
     }
 }
 
@@ -96,7 +96,7 @@ void uart_transmit_all_of_it(UART_ChannelType my_uart){
         }while((Register_Check & (1 << UART_FR_TXFF_MASK) ));
 
         data = UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]->remove(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]);
-        REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
+        REG_ORING_CASTING_POINTED((base + UART_DATA_REG_OFFSET),data);
     }
 }
 
@@ -111,7 +111,7 @@ void uart_transmit_some_of_it(UART_ChannelType my_uart, uint8 num){
             }while((Register_Check & (1 << UART_FR_TXFF_MASK) ));
 
             data = UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]->remove(UART_Queue_Buffer[(2 * my_uart) + UART_Transmit_Buffer_Mask]);
-            REG_WRITE_32_BIT_PTR((base + UART_DATA_REG_OFFSET),data);
+            REG_ORING_CASTING_POINTED((base + UART_DATA_REG_OFFSET),data);
         }
     }
 }
@@ -237,7 +237,7 @@ void uart_init(void){
     *********************************/
     for(j = 0; j < UART_CONFIGURED_NUMBER; j++){
         ptr = get_address(UART_Container[j].uart_n);
-        REG_WRITE_BIT(SYSCTL_RCGCUART, (uint8)UART_Container[j].uart_n);
+        REG_ORING_ONE_BIT_NO_CASTING(SYSCTL_RCGCUART, (uint8)UART_Container[j].uart_n);
         /* For delay */
         k = (uint32)(*(volatile uint32 *)(SYSCTL_RCGCUART));
 
@@ -245,7 +245,7 @@ void uart_init(void){
         /*********************************
         *2)   Disable the UART Before any initialization, not necessary but it's more safe
         *********************************/
-        REG_CLEAR_32_BIT_PTR((ptr + UART_CTL_REG_OFFSET));
+        REG_CLEAR_CASTING_POINTED((ptr + UART_CTL_REG_OFFSET));
 
 
         /*********************************
@@ -256,45 +256,45 @@ void uart_init(void){
         // UART Works as Tx or Rx or both, with configuring HSE(High speed Enable) Flag
         switch(UART_Container[j].Uart_Mode){
         case UARTMode_Transmit:
-            REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 9);
-            REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 8);
-            REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 5);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 9);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 8);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 5);
             /* Initialize the Buffers for the UART */
             UART_Queue_Buffer[(2 * UART_Container[j].uart_n) + 1] = Queue_Create_DYNAMIC_uint8(30);   // Transmitting Buffer
             break;
         case UARTMode_Receive:
-            REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 8);
-            REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 9);
-            REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 5);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 8);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 9);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 5);
             /* Initialize the Buffers for the UART */
             UART_Queue_Buffer[2 * UART_Container[j].uart_n] = Queue_Create_DYNAMIC_uint8(30);       // Receiving Buffer
             break;
         case UARTMode_Transmit_Receive:
-            REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 8);
-            REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 9);
-            REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 5);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 8);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 9);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 5);
             /* Initialize the Buffers for the UART */
             UART_Queue_Buffer[(2 * UART_Container[j].uart_n) + 1] = Queue_Create_DYNAMIC_uint8(30);   // Transmitting Buffer
             UART_Queue_Buffer[2 * UART_Container[j].uart_n] = Queue_Create_DYNAMIC_uint8(30);       // Receiving Buffer
             break;
         case UARTMode_Transmit_HSE:
-            REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 9);
-            REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 8);
-            REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 5);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 9);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 8);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 5);
             /* Initialize the Buffers for the UART */
             UART_Queue_Buffer[(2 * UART_Container[j].uart_n) + 1] = Queue_Create_DYNAMIC_uint8(30);   // Transmitting Buffer
             break;
         case UARTMode_Receive_HSE:
-            REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 8);
-            REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 9);
-            REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 5);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 8);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 9);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 5);
             /* Initialize the Buffers for the UART */
             UART_Queue_Buffer[2 * UART_Container[j].uart_n] = Queue_Create_DYNAMIC_uint8(30);       // Receiving Buffer
             break;
         case UARTMode_Transmit_Receive_HSE:
-            REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 8);
-            REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 9);
-            REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 5);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 8);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 9);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 5);
             /* Initialize the Buffers for the UART */
             UART_Queue_Buffer[2 * UART_Container[j].uart_n] = Queue_Create_DYNAMIC_uint8(30);       // Receiving Buffer
             UART_Queue_Buffer[(2 * UART_Container[j].uart_n) + 1] = Queue_Create_DYNAMIC_uint8(30);   // Transmitting Buffer
@@ -305,9 +305,9 @@ void uart_init(void){
 
         // End of transmission Flag
         if(UART_Container[j].endOfTransmission == 0){
-            REG_CLEAR_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 4);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 4);
         }else if(UART_Container[j].endOfTransmission == 1){
-            REG_WRITE_BIT_PTR(ptr + UART_CTL_REG_OFFSET, 4);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_CTL_REG_OFFSET, 4);
         }
 
         /*********************************
@@ -317,12 +317,12 @@ void uart_init(void){
          *                  UARTFBRD (UART Fractional Baud-Rate Divisor)
          *********************************/
         temp2 = ( (float)(CPU_CLOCK*1000000) / (float)(16 * UART_Container[j].BaudRate) );
-        REG_CLEAR_32_BIT_PTR((ptr + UART_IBRD_REG_OFFSET));
-        REG_WRITE_32_BIT_PTR((ptr + UART_IBRD_REG_OFFSET), (uint32)temp2);
+        REG_CLEAR_CASTING_POINTED((ptr + UART_IBRD_REG_OFFSET));
+        REG_ORING_CASTING_POINTED((ptr + UART_IBRD_REG_OFFSET), (uint32)temp2);
         temp2 = (float)temp2 - (uint32)temp2;
         temp2 = (float)(temp2 * 64 + 0.5);
-        REG_CLEAR_32_BIT_PTR((ptr + UART_FBRD_REG_OFFSET));
-        REG_WRITE_32_BIT_PTR((ptr + UART_FBRD_REG_OFFSET), (uint32)temp2);
+        REG_CLEAR_CASTING_POINTED((ptr + UART_FBRD_REG_OFFSET));
+        REG_ORING_CASTING_POINTED((ptr + UART_FBRD_REG_OFFSET), (uint32)temp2);
 
         /*********************************
          *5)   Dealing with Data-Length, Parity, StopBits and FIFO Enable
@@ -331,23 +331,23 @@ void uart_init(void){
         switch(UART_Container[j].Data_Size){
         /* in case we will deal with 8-bit data, we write only in WLEN Bits */
         case UARTSize_EIGHT_BITS:
-            REG_WRITE_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 6);
-            REG_WRITE_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 5);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 6);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 5);
             break;
             /* in case we will deal with 7-bit data, we write only in WLEN Bits */
         case UARTSize_SEVEN_BITS:
-            REG_WRITE_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 6);
-            REG_CLEAR_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 5);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 6);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 5);
             break;
             /* in case we will deal with 6-bit data, we write only in WLEN Bits */
         case UARTSize_SIX_BITS:
-            REG_WRITE_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 5);
-            REG_CLEAR_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 6);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 5);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 6);
             break;
             /* in case we will deal with 5-bit data, we write only in WLEN Bits */
         case UARTSize_FIVE_BITS:
-            REG_CLEAR_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 5);
-            REG_CLEAR_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 6);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 5);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 6);
             break;
         default :
             break;
@@ -357,53 +357,53 @@ void uart_init(void){
          *   Dealing with Parity Selection
          *********************************/
         if(UART_Container[j].parity == UARTParity_NO_PARITY){
-            REG_CLEAR_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 1);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 1);
         }else if(UART_Container[j].parity == UARTParity_ODD){
-            REG_WRITE_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 1);
-            REG_CLEAR_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 2);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 1);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 2);
         }else if(UART_Container[j].parity == UARTParity_EVEN){
-            REG_WRITE_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 1);
-            REG_WRITE_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 2);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 1);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 2);
         }
 
         /*********************************
          *   Dealing with Stop Bits
          *********************************/
         if(UART_Container[j].StopBits_Num == UARTSTOPBIT_ONE){
-            REG_CLEAR_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 3);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 3);
         }else if(UART_Container[j].StopBits_Num == UARTSTOPBIT_TWO){
-            REG_WRITE_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 3);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 3);
         }
 
         /*********************************
          *   Dealing with the FIFO buffers
          *********************************/
         if(UART_Container[j].fifo_size_rx == UART_FIFO_NOTUSED && UART_Container[j].fifo_size_tx == UART_FIFO_NOTUSED){
-            REG_CLEAR_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 4);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 4);
         }else{
-            REG_WRITE_BIT_PTR(ptr + UART_LCRH_REG_OFFSET, 4);
+            REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_LCRH_REG_OFFSET, 4);
         }
 
         /*********************************
          *6)   Choose the FIFO buffers length
          *      Registers : UARTIFLS (UART Interrupt FIFO Level Select)
          *********************************/
-        REG_CLEAR_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET));
+        REG_CLEAR_CASTING_POINTED((ptr + UART_IFLS_REG_OFFSET));
         switch(UART_Container[j].fifo_size_tx){
         case UART_FIFO_NOTUSED:
         case UART_FIFO_7_8:
             break;
         case UART_FIFO_6_8:
-            REG_WRITE_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET),0x1);
+            REG_ORING_CASTING_POINTED((ptr + UART_IFLS_REG_OFFSET),0x1);
             break;
         case UART_FIFO_4_8:
-            REG_WRITE_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET),0x2);
+            REG_ORING_CASTING_POINTED((ptr + UART_IFLS_REG_OFFSET),0x2);
             break;
         case UART_FIFO_2_8:
-            REG_WRITE_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET),0x3);
+            REG_ORING_CASTING_POINTED((ptr + UART_IFLS_REG_OFFSET),0x3);
             break;
         case UART_FIFO_1_8:
-            REG_WRITE_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET),0x4);
+            REG_ORING_CASTING_POINTED((ptr + UART_IFLS_REG_OFFSET),0x4);
             break;
         default:
             break;
@@ -413,16 +413,16 @@ void uart_init(void){
         case UART_FIFO_1_8:
             break;
         case UART_FIFO_2_8:
-            REG_WRITE_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET),0x1 << 3);
+            REG_ORING_CASTING_POINTED((ptr + UART_IFLS_REG_OFFSET),0x1 << 3);
             break;
         case UART_FIFO_4_8:
-            REG_WRITE_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET),0x2 << 3);
+            REG_ORING_CASTING_POINTED((ptr + UART_IFLS_REG_OFFSET),0x2 << 3);
             break;
         case UART_FIFO_6_8:
-            REG_WRITE_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET),0x3 << 3);
+            REG_ORING_CASTING_POINTED((ptr + UART_IFLS_REG_OFFSET),0x3 << 3);
             break;
         case UART_FIFO_7_8:
-            REG_WRITE_32_BIT_PTR((ptr + UART_IFLS_REG_OFFSET),0x4 << 3);
+            REG_ORING_CASTING_POINTED((ptr + UART_IFLS_REG_OFFSET),0x4 << 3);
             break;
         default:
             break;
@@ -434,11 +434,11 @@ void uart_init(void){
          *********************************/
         for(i = 0; i < UART_ALLOWED_INTERRUPTS_NUMBER; i++){
             if(UART_Container[j].Uart_ISRMode[i] != UARTISRMode_None){
-                REG_WRITE_BIT_PTR(ptr + UART_IM_REG_OFFSET, UART_Container[j].Uart_ISRMode[i]);
+                REG_ORING_ONE_BIT_CASTING_POINTED(ptr + UART_IM_REG_OFFSET, UART_Container[j].Uart_ISRMode[i]);
             }
         }
 
-        REG_WRITE_BIT_PTR((ptr + UART_CTL_REG_OFFSET), 0);           //Enable UART
+        REG_ORING_ONE_BIT_CASTING_POINTED((ptr + UART_CTL_REG_OFFSET), 0);           //Enable UART
 
     }
     /*******************************************************
@@ -450,35 +450,35 @@ void uart_init(void){
     if(ptr & (1 << 0)){
         /* that could not be possible, we should use it either with predefined UART or a user-defined UART
          * so we going to shut it down to make a  . */
-        REG_CLEAR_BIT(SYSCTL_RCGCUART, 0);
+        REG_CLEAR_ONE_BIT_NO_CASTING(SYSCTL_RCGCUART, 0);
     }else{
-        REG_WRITE_BIT(SYSCTL_RCGCUART, 0);
+        REG_ORING_ONE_BIT_NO_CASTING(SYSCTL_RCGCUART, 0);
         /* just for delay purpose */
         ptr = (uint32)(*(volatile uint32 *)SYSCTL_RCGCUART);
     }
 
     /*  Clear most of Registers from any value it may got from the previous initialization */
-    REG_CLEAR_32_BIT_PTR((UART0_BASE_ADDRESS + UART_CTL_REG_OFFSET));
-    REG_CLEAR_32_BIT_PTR((UART0_BASE_ADDRESS + UART_IFLS_REG_OFFSET));
-    REG_CLEAR_32_BIT_PTR((UART0_BASE_ADDRESS + UART_IM_REG_OFFSET));
-    REG_CLEAR_32_BIT_PTR((UART0_BASE_ADDRESS + UART_LCRH_REG_OFFSET));
+    REG_CLEAR_CASTING_POINTED((UART0_BASE_ADDRESS + UART_CTL_REG_OFFSET));
+    REG_CLEAR_CASTING_POINTED((UART0_BASE_ADDRESS + UART_IFLS_REG_OFFSET));
+    REG_CLEAR_CASTING_POINTED((UART0_BASE_ADDRESS + UART_IM_REG_OFFSET));
+    REG_CLEAR_CASTING_POINTED((UART0_BASE_ADDRESS + UART_LCRH_REG_OFFSET));
 
     UART_Queue_Buffer[0] = Queue_Create_uint8(16);
     UART_Queue_Buffer[1] = Queue_Create_uint8(16);
 
     /* Rx Enable, Tx Enable, End-Of-Transmission Flag Enable,  */
-    REG_WRITE_32_BIT_PTR((UART0_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0x310);
+    REG_ORING_CASTING_POINTED((UART0_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0x310);
 
     /* 9600 Baud-Rate */
-    REG_CLEAR_32_BIT_PTR((UART0_BASE_ADDRESS + UART_IBRD_REG_OFFSET));
-    REG_WRITE_32_BIT_PTR((UART0_BASE_ADDRESS + UART_IBRD_REG_OFFSET),104);
-    REG_CLEAR_32_BIT_PTR((UART0_BASE_ADDRESS + UART_FBRD_REG_OFFSET));
-    REG_WRITE_32_BIT_PTR((UART0_BASE_ADDRESS + UART_FBRD_REG_OFFSET),11);
+    REG_CLEAR_CASTING_POINTED((UART0_BASE_ADDRESS + UART_IBRD_REG_OFFSET));
+    REG_ORING_CASTING_POINTED((UART0_BASE_ADDRESS + UART_IBRD_REG_OFFSET),104);
+    REG_CLEAR_CASTING_POINTED((UART0_BASE_ADDRESS + UART_FBRD_REG_OFFSET));
+    REG_ORING_CASTING_POINTED((UART0_BASE_ADDRESS + UART_FBRD_REG_OFFSET),11);
 
     /* 8-Bit Data-width, one stop bit, no parity check, Disable FIFO */
-    REG_WRITE_32_BIT_PTR((UART0_BASE_ADDRESS + UART_LCRH_REG_OFFSET), 0x60);
+    REG_ORING_CASTING_POINTED((UART0_BASE_ADDRESS + UART_LCRH_REG_OFFSET), 0x60);
 
-    REG_WRITE_BIT_PTR((UART0_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0);
+    REG_ORING_ONE_BIT_CASTING_POINTED((UART0_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0);
 #endif
 
 #if UART1_PREDEF_MACRO == Enable
@@ -487,40 +487,40 @@ void uart_init(void){
     if(ptr & (1 << 1)){
         /* that could not be possible, we should use it either with predefined UART or a user-defined UART
          * so we going to shut it down to make a  . */
-        REG_CLEAR_BIT(SYSCTL_RCGCUART, 1);
+        REG_CLEAR_ONE_BIT_NO_CASTING(SYSCTL_RCGCUART, 1);
     }else{
-        REG_WRITE_BIT(SYSCTL_RCGCUART, 1);
+        REG_ORING_ONE_BIT_NO_CASTING(SYSCTL_RCGCUART, 1);
         /* just for delay purpose */
         ptr = (uint32)(*(volatile uint32 *)SYSCTL_RCGCUART);
     }
 
     /*  Clear most of Registers from any value it may got from the previous initialization */
-    REG_CLEAR_32_BIT_PTR((UART1_BASE_ADDRESS + UART_CTL_REG_OFFSET));
-    REG_CLEAR_32_BIT_PTR((UART1_BASE_ADDRESS + UART_IFLS_REG_OFFSET));
-    REG_CLEAR_32_BIT_PTR((UART1_BASE_ADDRESS + UART_IM_REG_OFFSET));
-    REG_CLEAR_32_BIT_PTR((UART1_BASE_ADDRESS + UART_LCRH_REG_OFFSET));
+    REG_CLEAR_CASTING_POINTED((UART1_BASE_ADDRESS + UART_CTL_REG_OFFSET));
+    REG_CLEAR_CASTING_POINTED((UART1_BASE_ADDRESS + UART_IFLS_REG_OFFSET));
+    REG_CLEAR_CASTING_POINTED((UART1_BASE_ADDRESS + UART_IM_REG_OFFSET));
+    REG_CLEAR_CASTING_POINTED((UART1_BASE_ADDRESS + UART_LCRH_REG_OFFSET));
 
     UART_Queue_Buffer[2] = Queue_Create_uint8(16);
     UART_Queue_Buffer[3] = Queue_Create_uint8(16);
 
     /* 8-Bit Data-width, one stop bit, no parity check, Enable FIFO */
-    REG_WRITE_32_BIT_PTR((UART1_BASE_ADDRESS + UART_LCRH_REG_OFFSET), 0x70);
+    REG_ORING_CASTING_POINTED((UART1_BASE_ADDRESS + UART_LCRH_REG_OFFSET), 0x70);
 
     /* Rx Enable, Tx Enable, End-Of-Transmission Flag Disable,  */
-    REG_WRITE_32_BIT_PTR((UART1_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0x300);
+    REG_ORING_CASTING_POINTED((UART1_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0x300);
 
     /* FIFO Tx <= 14/16 empty,  Rx >= 14/16 empty*/
-    REG_WRITE_32_BIT_PTR((UART1_BASE_ADDRESS + UART_IFLS_REG_OFFSET), 0x4);
-    REG_WRITE_32_BIT_PTR((UART1_BASE_ADDRESS + UART_IFLS_REG_OFFSET), 0x0);
+    REG_ORING_CASTING_POINTED((UART1_BASE_ADDRESS + UART_IFLS_REG_OFFSET), 0x4);
+    REG_ORING_CASTING_POINTED((UART1_BASE_ADDRESS + UART_IFLS_REG_OFFSET), 0x0);
 
     /* 9600 Baud-Rate */
-    REG_CLEAR_32_BIT_PTR((UART1_BASE_ADDRESS + UART_IBRD_REG_OFFSET));
-    REG_WRITE_32_BIT_PTR((UART1_BASE_ADDRESS + UART_IBRD_REG_OFFSET),104);
-    REG_CLEAR_32_BIT_PTR((UART1_BASE_ADDRESS + UART_FBRD_REG_OFFSET));
-    REG_WRITE_32_BIT_PTR((UART1_BASE_ADDRESS + UART_FBRD_REG_OFFSET),11);
+    REG_CLEAR_CASTING_POINTED((UART1_BASE_ADDRESS + UART_IBRD_REG_OFFSET));
+    REG_ORING_CASTING_POINTED((UART1_BASE_ADDRESS + UART_IBRD_REG_OFFSET),104);
+    REG_CLEAR_CASTING_POINTED((UART1_BASE_ADDRESS + UART_FBRD_REG_OFFSET));
+    REG_ORING_CASTING_POINTED((UART1_BASE_ADDRESS + UART_FBRD_REG_OFFSET),11);
 
     /* Enable the UART to be ACTIVE */
-    REG_WRITE_BIT_PTR((UART1_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0);
+    REG_ORING_ONE_BIT_CASTING_POINTED((UART1_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0);
 #endif
 
 #if UART5_PREDEF_MACRO == Enable
@@ -529,42 +529,42 @@ void uart_init(void){
     if(ptr & (1 << 5)){
         /* that could not be possible, we should use it either with predefined UART or a user-defined UART
          * so we going to shut it down to make a  . */
-        REG_CLEAR_BIT(SYSCTL_RCGCUART, 5);
+        REG_CLEAR_ONE_BIT_NO_CASTING(SYSCTL_RCGCUART, 5);
     }else{
-        REG_WRITE_BIT(SYSCTL_RCGCUART, 5);
+        REG_ORING_ONE_BIT_NO_CASTING(SYSCTL_RCGCUART, 5);
         /* just for delay purpose */
         ptr = (uint32)(*(volatile uint32 *)SYSCTL_RCGCUART);
     }
 
     /*  Clear most of Registers from any value it may got from the previous initialization */
-    REG_CLEAR_32_BIT_PTR((UART5_BASE_ADDRESS + UART_CTL_REG_OFFSET));
-    REG_CLEAR_32_BIT_PTR((UART5_BASE_ADDRESS + UART_IFLS_REG_OFFSET));
-    REG_CLEAR_32_BIT_PTR((UART5_BASE_ADDRESS + UART_IM_REG_OFFSET));
-    REG_CLEAR_32_BIT_PTR((UART5_BASE_ADDRESS + UART_LCRH_REG_OFFSET));
+    REG_CLEAR_CASTING_POINTED((UART5_BASE_ADDRESS + UART_CTL_REG_OFFSET));
+    REG_CLEAR_CASTING_POINTED((UART5_BASE_ADDRESS + UART_IFLS_REG_OFFSET));
+    REG_CLEAR_CASTING_POINTED((UART5_BASE_ADDRESS + UART_IM_REG_OFFSET));
+    REG_CLEAR_CASTING_POINTED((UART5_BASE_ADDRESS + UART_LCRH_REG_OFFSET));
 
     UART_Queue_Buffer[10] = Queue_Create_uint8(50);
     UART_Queue_Buffer[11] = Queue_Create_uint8(50);
 
     /* Rx Enable, Tx Enable, End-Of-Transmission Flag Disable,  */
-    REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0x300);
+    REG_ORING_CASTING_POINTED((UART5_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0x300);
 
     /* 9600 Baud-Rate */
-    REG_CLEAR_32_BIT_PTR((UART5_BASE_ADDRESS + UART_IBRD_REG_OFFSET));
-    REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_IBRD_REG_OFFSET),104);
-    REG_CLEAR_32_BIT_PTR((UART5_BASE_ADDRESS + UART_FBRD_REG_OFFSET));
-    REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_FBRD_REG_OFFSET),11);
+    REG_CLEAR_CASTING_POINTED((UART5_BASE_ADDRESS + UART_IBRD_REG_OFFSET));
+    REG_ORING_CASTING_POINTED((UART5_BASE_ADDRESS + UART_IBRD_REG_OFFSET),104);
+    REG_CLEAR_CASTING_POINTED((UART5_BASE_ADDRESS + UART_FBRD_REG_OFFSET));
+    REG_ORING_CASTING_POINTED((UART5_BASE_ADDRESS + UART_FBRD_REG_OFFSET),11);
 
     /* 8-Bit Data-width, one stop bit, no parity check, Enable FIFO */
-    REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_LCRH_REG_OFFSET), 0x70);
+    REG_ORING_CASTING_POINTED((UART5_BASE_ADDRESS + UART_LCRH_REG_OFFSET), 0x70);
 
     /* Rx Interrupt Disable, Tx Interrupt Disable */
-    REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_IM_REG_OFFSET), 0x00);
+    REG_ORING_CASTING_POINTED((UART5_BASE_ADDRESS + UART_IM_REG_OFFSET), 0x00);
 
     /* FIFO Disable */
-    REG_WRITE_32_BIT_PTR((UART5_BASE_ADDRESS + UART_IFLS_REG_OFFSET), 0x00);
+    REG_ORING_CASTING_POINTED((UART5_BASE_ADDRESS + UART_IFLS_REG_OFFSET), 0x00);
 
     /* Enable UART */
-    REG_WRITE_BIT_PTR((UART5_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0);
+    REG_ORING_ONE_BIT_CASTING_POINTED((UART5_BASE_ADDRESS + UART_CTL_REG_OFFSET), 0);
 #endif
 }
 
@@ -627,12 +627,12 @@ extern void uart0_handler(void){
         uart_transmit_one_char(UART_NUM_0);
         /* Clear the MIS Flag */
         UART0_TX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
         uart_receive_one_char(UART_NUM_0);
         /* Clear the MIS Flag */
         UART0_RX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
@@ -645,12 +645,12 @@ extern void uart1_handler(void){
         uart_transmit_one_char(UART_NUM_1);
         /* Clear the MIS Flag */
         UART1_TX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
         uart_receive_one_char(UART_NUM_1);
         /* Clear the MIS Flag */
         UART1_RX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
@@ -663,12 +663,12 @@ extern void uart2_handler(void){
         uart_transmit_one_char(UART_NUM_2);
         /* Clear the MIS Flag */
         UART2_TX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
         uart_receive_one_char(UART_NUM_2);
         /* Clear the MIS Flag */
         UART2_RX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
@@ -681,12 +681,12 @@ extern void uart3_handler(void){
         uart_transmit_one_char(UART_NUM_3);
         /* Clear the MIS Flag */
         UART3_TX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
         uart_receive_one_char(UART_NUM_3);
         /* Clear the MIS Flag */
         UART3_RX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
@@ -699,12 +699,12 @@ extern void uart4_handler(void){
         uart_transmit_one_char(UART_NUM_4);
         /* Clear the MIS Flag */
         UART4_TX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
         uart_receive_one_char(UART_NUM_4);
         /* Clear the MIS Flag */
         UART4_RX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
@@ -717,12 +717,12 @@ extern void uart5_handler(void){
         uart_transmit_one_char(UART_NUM_5);
         /* Clear the MIS Flag */
         UART5_TX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
         uart_transmit_one_char(UART_NUM_5);
         /* Clear the MIS Flag */
         UART5_RX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
@@ -735,12 +735,12 @@ extern void uart6_handler(void){
         uart_transmit_one_char(UART_NUM_6);
         /* Clear the MIS Flag */
         UART6_TX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
     }else if(Register_Check & (1 << UART_MIS_RX_MASK)){
         uart_receive_one_char(UART_NUM_6);
         /* Clear the MIS Flag */
         UART6_RX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 
@@ -752,7 +752,7 @@ extern void uart7_handler(void){
     FLAGS_Check = (uint32)(*(volatile uint32 *)(base + UART_CTL_REG_OFFSET));
 
     if( (Register_Check & (1 << UART_MIS_TX_MASK ))){
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_TX_MASK);
         UART7_TX_ISR_CALLBACK();
         if( (FLAGS_Check & (1 << 4)) ){
             uart_transmit_one_char(UART_NUM_7);
@@ -787,7 +787,7 @@ extern void uart7_handler(void){
         uart_receive_one_char(UART_NUM_7);
         /* Clear the MIS Flag */
         UART7_RX_ISR_CALLBACK();
-        REG_WRITE_BIT_PTR((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
+        REG_ORING_ONE_BIT_CASTING_POINTED((base + UART_ICR_REG_OFFSET), UART_MIS_RX_MASK);
     }
 }
 

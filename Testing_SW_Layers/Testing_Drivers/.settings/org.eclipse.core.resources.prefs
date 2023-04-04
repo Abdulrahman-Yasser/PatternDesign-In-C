@@ -1,13 +1,13 @@
+=\=\=\=\=\=\=
+<<<<<<<=HEAD
+>>>>>>>=1bcca7f80ca900f376e5ae71225b682008eed353
 eclipse.preferences.version=1
 encoding//Debug/APP/Testing_DS1037/subdir_rules.mk=UTF-8
 encoding//Debug/APP/Testing_DS1037/subdir_vars.mk=UTF-8
 encoding//Debug/APP/Testing_I2C/subdir_rules.mk=UTF-8
 encoding//Debug/APP/Testing_I2C/subdir_vars.mk=UTF-8
-<<<<<<< HEAD
 encoding//Debug/APP/Testing_I2C_2/subdir_rules.mk=UTF-8
 encoding//Debug/APP/Testing_I2C_2/subdir_vars.mk=UTF-8
-=======
->>>>>>> 1bcca7f80ca900f376e5ae71225b682008eed353
 encoding//Debug/APP/Testing_LCD/subdir_rules.mk=UTF-8
 encoding//Debug/APP/Testing_LCD/subdir_vars.mk=UTF-8
 encoding//Debug/APP/subdir_rules.mk=UTF-8

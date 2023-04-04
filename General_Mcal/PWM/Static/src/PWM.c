@@ -46,9 +46,9 @@ static void pwm_clock_init(void);
 void pwm_clock_init(void){
     volatile uint32 delay;
 
-    REG_WRITE_32_BIT_PTR( SYSCTL_RCC_REG_PWM , SYSCTL_RCC1_USEPWM_MASK);
-    REG_CLEAR_SPECIFIC_BIT_PTR( SYSCTL_RCC_REG_PWM , (0x7 << SYSCTL_RCC1_PWMDIV_BIT_POS));
-    REG_WRITE_32_BIT_PTR( SYSCTL_RCC_REG_PWM , (SYSCTL_PWMDIV_VALUE << SYSCTL_RCC1_PWMDIV_BIT_POS));
+    REG_ORING_CASTING_POINTED( SYSCTL_RCC_REG_PWM , SYSCTL_RCC1_USEPWM_MASK);
+    REG_CLEAR_THOSE_BITS_CASTING_POINTED( SYSCTL_RCC_REG_PWM , (0x7 << SYSCTL_RCC1_PWMDIV_BIT_POS));
+    REG_ORING_CASTING_POINTED( SYSCTL_RCC_REG_PWM , (SYSCTL_PWMDIV_VALUE << SYSCTL_RCC1_PWMDIV_BIT_POS));
 }
 
 /**********************************************************************************************************************
@@ -83,12 +83,12 @@ void pwm_init(void){
             }
             if(PWM_Container[i].pwm_block < 8){
                 /* PWM 0 */
-                REG_WRITE_32_BIT_PTR(SYSCTL_RCGCPWM_R, 0x01);
+                REG_ORING_CASTING_POINTED(SYSCTL_RCGCPWM_R, 0x01);
             }else{
                 /* PWM 1 */
-                REG_WRITE_32_BIT_PTR(SYSCTL_RCGCPWM_R, 0x02);
+                REG_ORING_CASTING_POINTED(SYSCTL_RCGCPWM_R, 0x02);
             }
-            REG_READ_PTR(delay, SYSCTL_RCC_REG_PWM);
+            REG_READ_CASTING_POINTED(delay, SYSCTL_RCC_REG_PWM);
             PWM_ModulesUsed |= (1 << PWM_Container[i].pwm_block);
         }
 
@@ -111,7 +111,7 @@ void pwm_init(void){
          * 3
          * Disable the PWM Channel till the configuration is done
          */
-        REG_CLEAR_BIT_PTR((base + PWM_N_CTL_OFFSET +  (0x40 * my_channel/2)), 0);
+        REG_CLEAR_ONE_BIT_CASTING_POINTED((base + PWM_N_CTL_OFFSET +  (0x40 * my_channel/2)), 0);
 
         /*
          * 4
@@ -119,16 +119,16 @@ void pwm_init(void){
          * if we are using a high threshold that we should not exceed and a low threshold that we don't exceed
          */
         if(PWM_Container[i].compare_a_value > 0){
-            REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPA_OFFSET +  (0x40 * my_channel/2) ) , PWM_Container[i].compare_a_value);
+            REG_WRITE_CASTING_POINTED( (base + PWM_N_CMPA_OFFSET +  (0x40 * my_channel/2) ) , PWM_Container[i].compare_a_value);
         }
         if(PWM_Container[i].compare_b_value > 0){
-            REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPB_OFFSET +  (0x40 * my_channel/2) ) , PWM_Container[i].compare_b_value);
+            REG_WRITE_CASTING_POINTED( (base + PWM_N_CMPB_OFFSET +  (0x40 * my_channel/2) ) , PWM_Container[i].compare_b_value);
         }
         /*
          * 5
          * Writing the PWM Load value
          */
-        REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_LOAD_OFFSET + (0x40 * (my_channel/2)) ) , PWM_Container[i].load_value);
+        REG_WRITE_CASTING_POINTED( (base + PWM_N_LOAD_OFFSET + (0x40 * (my_channel/2)) ) , PWM_Container[i].load_value);
 
 
         /*
@@ -136,33 +136,33 @@ void pwm_init(void){
          * Writing the PWM Generator functions
          */
         if(PWM_Container[i].pwm_block % 2 == 0){
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_ZERO << 0));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_LOAD << 2));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPAU << 4));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPAD << 6));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPBU << 8));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPBD << 10));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_ZERO << 0));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_LOAD << 2));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPAU << 4));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPAD << 6));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPBU << 8));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPBD << 10));
         }else if(PWM_Container[i].pwm_block % 2 == 1){
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_ZERO << 0));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_LOAD << 2));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPAU << 4));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPAD << 6));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPBU << 8));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPBD << 10));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_ZERO << 0));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_LOAD << 2));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPAU << 4));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPAD << 6));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPBU << 8));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * my_channel/2)) ) , (PWM_Container[i].Generates.PWM_GEN_CMPBD << 10));
         }
 
         /*
          * 7
          * Writing the Counting mode either it was up or up/down
          */
-        REG_WRITE_32_BIT_PTR( (base + PWM_N_CTL_OFFSET +  ((0x40 * my_channel/2)) ) , (PWM_Container[i].count_mode) << 1);
+        REG_ORING_CASTING_POINTED( (base + PWM_N_CTL_OFFSET +  ((0x40 * my_channel/2)) ) , (PWM_Container[i].count_mode) << 1);
 
          /*
          * 8
          * Enable the PWM
          */
-        REG_WRITE_32_BIT_PTR((base + PWM_ENABLE_OFFSET) , 1 << (my_channel));
-        REG_WRITE_BIT_PTR( (base + PWM_N_CTL_OFFSET +  ((0x40 * my_channel/2)) ) , 0);
+        REG_ORING_CASTING_POINTED((base + PWM_ENABLE_OFFSET) , 1 << (my_channel));
+        REG_ORING_ONE_BIT_CASTING_POINTED( (base + PWM_N_CTL_OFFSET +  ((0x40 * my_channel/2)) ) , 0);
     }
 }
 
@@ -181,15 +181,15 @@ uint8 pwm_update_comparator_WithRespectForLoad(PWM_ChannelType channel, uint32 v
         channel = (PWM_ChannelType)((uint8)channel % 8);
     }
 
-    REG_CLEAR_BIT_PTR((base + PWM_N_CTL_OFFSET +  (0x40 * channel/2)), 0);
+    REG_CLEAR_ONE_BIT_CASTING_POINTED((base + PWM_N_CTL_OFFSET +  (0x40 * channel/2)), 0);
 
     if(channel % 2 == 0){
-        REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel/2) ) , value);
+        REG_WRITE_CASTING_POINTED( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel/2) ) , value);
     }else{
-        REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel/2) ) , value);
+        REG_WRITE_CASTING_POINTED( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel/2) ) , value);
     }
 
-    REG_WRITE_BIT_PTR( (base + PWM_N_CTL_OFFSET +  ((0x40 * channel/2)) ) , 0);
+    REG_ORING_ONE_BIT_CASTING_POINTED( (base + PWM_N_CTL_OFFSET +  ((0x40 * channel/2)) ) , 0);
 
     return return_value;
 }
@@ -222,15 +222,15 @@ uint8 pwm_update_comparator_percentage_WithRespectForLoad(PWM_ChannelType channe
         channel = (PWM_ChannelType)((uint8)channel % 8);
     }
 
-    REG_CLEAR_BIT_PTR((base + PWM_N_CTL_OFFSET +  (0x40 * channel/2)), 0);
+    REG_CLEAR_ONE_BIT_CASTING_POINTED((base + PWM_N_CTL_OFFSET +  (0x40 * channel/2)), 0);
 
     if(channel % 2 == 0){
-        REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel/2) ) , temp);
+        REG_WRITE_CASTING_POINTED( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel/2) ) , temp);
     }else{
-        REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel/2) ) , temp);
+        REG_WRITE_CASTING_POINTED( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel/2) ) , temp);
     }
 
-    REG_WRITE_BIT_PTR( (base + PWM_N_CTL_OFFSET +  ((0x40 * channel/2)) ) , 0);
+    REG_ORING_ONE_BIT_CASTING_POINTED( (base + PWM_N_CTL_OFFSET +  ((0x40 * channel/2)) ) , 0);
     return return_value;
 }
 
@@ -248,17 +248,17 @@ uint8 pwm_update_generation(PWM_ChannelType channel, PWM_GeneratorEventsType Eve
         channel = (PWM_ChannelType)((uint8)channel % 8);
     }
 
-    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0) ;
+    REG_CLEAR_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0) ;
 
     if(channel % 2 == 0){
-        REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (0x3) << Event*2);
-        REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (Action) << Event*2);
+        REG_CLEAR_THOSE_BITS_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (0x3) << Event*2);
+        REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (Action) << Event*2);
     }else{
-        REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (0x3) << Event*2);
-        REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (Action) << Event*2);
+        REG_CLEAR_THOSE_BITS_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (0x3) << Event*2);
+        REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (Action) << Event*2);
     }
 
-    REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) ,  0);
+    REG_ORING_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) ,  0);
     return return_value;
 }
 
@@ -280,58 +280,58 @@ uint8 pwm_AutomaticDutyCycle(PWM_ChannelType channel, uint32 DesiredDutyCycle){
 
     temp2 = (temp1 * DesiredDutyCycle / 100) - 2;
 
-    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
+    REG_CLEAR_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
     /*
      * make it just down counter
      */
-    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 1);
+    REG_CLEAR_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 1);
     /*
      * Change the generation events to fit the duty cycles easily
      * Change the Compare Register to fit the Duty Cycle Usage
      */
     if(DesiredDutyCycle != 100){
         if(channel % 2 == 0){
-            REG_CLEAR_32_BIT_PTR( base + PWM_N_GENA_OFFSET + (0x40 * channel/2));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_LOAD*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAU*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBU*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBD*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_ACTION_HIGH) << PWM_GEN_CMPAD*2);
+            REG_CLEAR_CASTING_POINTED( base + PWM_N_GENA_OFFSET + (0x40 * channel/2));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_LOAD*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAU*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBU*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBD*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_ACTION_HIGH) << PWM_GEN_CMPAD*2);
 
-            REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel/2) ) , temp2);
+            REG_WRITE_CASTING_POINTED( (base + PWM_N_CMPA_OFFSET +  (0x40 * channel/2) ) , temp2);
         }else{
-            REG_CLEAR_32_BIT_PTR( base + PWM_N_GENB_OFFSET + (0x40 * channel/2));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_LOAD*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAD*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAU*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBU*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_ACTION_HIGH) << PWM_GEN_CMPBD*2);
+            REG_CLEAR_CASTING_POINTED( base + PWM_N_GENB_OFFSET + (0x40 * channel/2));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_LOAD*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAD*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAU*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBU*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_ACTION_HIGH) << PWM_GEN_CMPBD*2);
 
-            REG_WRITE_ALL_32_BIT_PTR( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel/2) ) , temp2);
+            REG_WRITE_CASTING_POINTED( (base + PWM_N_CMPB_OFFSET +  (0x40 * channel/2) ) , temp2);
         }
     }else{
         if(channel % 2 == 0){
-            REG_CLEAR_32_BIT_PTR( base + PWM_N_GENA_OFFSET + (0x40 * channel/2));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAU*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAD*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBU*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBD*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_ACTION_HIGH) << PWM_GEN_LOAD*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_ZERO*2);
+            REG_CLEAR_CASTING_POINTED( base + PWM_N_GENA_OFFSET + (0x40 * channel/2));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAU*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAD*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBU*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBD*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_ACTION_HIGH) << PWM_GEN_LOAD*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENA_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_ZERO*2);
         }else{
-            REG_CLEAR_32_BIT_PTR( base + PWM_N_GENB_OFFSET + (0x40 * channel/2));
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAU*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAD*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBU*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBD*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
-            REG_WRITE_32_BIT_PTR( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_LOAD*2);
+            REG_CLEAR_CASTING_POINTED( base + PWM_N_GENB_OFFSET + (0x40 * channel/2));
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAU*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPAD*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBU*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_CMPBD*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_ACTION_LOW) << PWM_GEN_ZERO*2);
+            REG_ORING_CASTING_POINTED( (base + PWM_N_GENB_OFFSET + ((0x40 * channel/2)) ) , (PWM_action_Do_Nothing) << PWM_GEN_LOAD*2);
         }
     }
 
-    REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
+    REG_ORING_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
     return return_value;
 }
 
@@ -351,8 +351,8 @@ uint8 pwm_update_load(PWM_ChannelType channel, uint32 value){
         channel = (PWM_ChannelType)((uint8)channel % 8);
     }
 
-    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
-    REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
+    REG_CLEAR_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
+    REG_ORING_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
     return return_value;
 }
 
@@ -371,10 +371,10 @@ uint8 pwm_changeCount_mode(PWM_ChannelType channel, PWM_CountModeType value){
         channel = (PWM_ChannelType)((uint8)channel % 8);
     }
 
-    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
-    REG_CLEAR_SPECIFIC_BIT_PTR( (base + PWM_N_CTL_OFFSET + ((0x40 * channel/2)) ) , (0x3) << 1);
-    REG_WRITE_32_BIT_PTR( (base + PWM_N_CTL_OFFSET + ((0x40 * channel/2)) ) , (value) << 1);
-    REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
+    REG_CLEAR_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
+    REG_CLEAR_THOSE_BITS_CASTING_POINTED( (base + PWM_N_CTL_OFFSET + ((0x40 * channel/2)) ) , (0x3) << 1);
+    REG_ORING_CASTING_POINTED( (base + PWM_N_CTL_OFFSET + ((0x40 * channel/2)) ) , (value) << 1);
+    REG_ORING_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
     return return_value;
 }
 
@@ -392,8 +392,8 @@ uint8 pwm_disable(PWM_ChannelType channel){
         channel = (PWM_ChannelType)((uint8)channel % 8);
     }
 
-    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
-    REG_CLEAR_SPECIFIC_BIT_PTR(base + PWM_ENABLE_OFFSET , 1 << (channel));
+    REG_CLEAR_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
+    REG_CLEAR_THOSE_BITS_CASTING_POINTED(base + PWM_ENABLE_OFFSET , 1 << (channel));
     return return_value;
 }
 
@@ -411,9 +411,9 @@ uint8 pwm_stop(PWM_ChannelType channel){
         channel = (PWM_ChannelType)((uint8)channel % 8);
     }
 
-    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
-    REG_CLEAR_SPECIFIC_BIT_PTR(base + PWM_ENABLE_OFFSET , 1 << (channel));
-    REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
+    REG_CLEAR_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
+    REG_CLEAR_THOSE_BITS_CASTING_POINTED(base + PWM_ENABLE_OFFSET , 1 << (channel));
+    REG_ORING_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
     return return_value;
 }
 
@@ -431,8 +431,8 @@ uint8 pwm_enable(PWM_ChannelType channel){
         channel = (PWM_ChannelType)((uint8)channel % 8);
     }
 
-    REG_CLEAR_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
-    REG_WRITE_32_BIT_PTR(base + PWM_ENABLE_OFFSET , 1 << (channel));
-    REG_WRITE_BIT_PTR(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
+    REG_CLEAR_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
+    REG_ORING_CASTING_POINTED(base + PWM_ENABLE_OFFSET , 1 << (channel));
+    REG_ORING_ONE_BIT_CASTING_POINTED(base + PWM_N_CTL_OFFSET +  (0x40 * channel/2) , 0);
     return return_value;
 }

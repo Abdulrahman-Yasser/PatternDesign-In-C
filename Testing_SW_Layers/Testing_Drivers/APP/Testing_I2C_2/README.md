@@ -1,6 +1,6 @@
 
 # Testing I2C 2: 
-This code uses I2C LCD Serial Interface Module as a GPIO expander <br>
+This code uses Tiva-C connected via I2C with LCD Serial Interface Module as a GPIO expander. <br>
 the code shift the blinking LED every 100ms then turn on all the LEDs then start over again. <br>
 
 ## video : 

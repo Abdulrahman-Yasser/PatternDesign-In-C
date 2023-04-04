@@ -702,8 +702,6 @@ WatchDog Timer Registers
 #define I2C_PP_REG_OFFSET           0xFC0
 #define I2C_PC_REG_OFFSET           0xFC4
 
-#define SYSCTL_RCGCI2C          (*((volatile uint32 *)0x400FE620))
-#define SYSCTL_RCGCUART         (*((volatile uint32 *)0x400FE618))
 
 
 //*****************************************************************************
@@ -713,7 +711,7 @@ WatchDog Timer Registers
 //*****************************************************************************
 
 #define PWM0_BASE_ADDERSS       0x40028000
-#define PWM1_BASE_ADDERSS        0x40029000
+#define PWM1_BASE_ADDERSS       0x40029000
 
 #define PWM_CTL_OFFSET              0x000
 #define PWM_SYNC_OFFSET             0x004
@@ -744,11 +742,68 @@ WatchDog Timer Registers
 #define PWM_N_FLTSRC1_OFFSET             0x078
 #define PWM_N_MINFLTPER_OFFSET           0x07C
 
+
+//*****************************************************************************
+//
+// System Control registers (SYSCTL)
+//
+//*****************************************************************************
+
 #define SYSCTL_RCGCPWM_R        0x400FE640
-//#define SYSCTL_RCGC0_REG        0x400FE040
-//#define SYSCTL_RCGC0_REG_PWM    0x400FE100
 #define SYSCTL_RCC_REG_PWM      0x400FE060
 #define SYSCTL_RCC2_REG_PWM     0x400FE070
+#define SYSCTL_RCGCADC_BASE   0x400FE638
 
+#define SYSCTL_RCGCI2C          (*((volatile uint32 *)0x400FE620))
+#define SYSCTL_RCGCUART         (*((volatile uint32 *)0x400FE618))
+
+//*****************************************************************************
+//
+// UART registers (PWM)
+//
+//*****************************************************************************
+#define ADC0_BASE_ADDERSS       0x40038000
+#define ADC1_BASE_ADDERSS       0x40039000
+
+#define ADC_ACTSS_OFFSET    0x000
+#define ADC_RIS_OFFSET      0x004
+#define ADC_IM_OFFSET       0x008
+#define ADC_ISC_OFFSET      0x00C
+#define ADC_OSTAT_OFFSET    0x010
+#define ADC_EMUX_OFFSET     0x014
+#define ADC_USTAT_OFFSET    0x018
+#define ADC_TSSEL_OFFSET    0x01C
+#define ADC_SSPRI_OFFSET    0x020
+#define ADC_SPC_OFFSET      0x024
+#define ADC_PSSI_OFFSET     0x028
+#define ADC_SAC_OFFSET      0x030
+#define ADC_DCISC_OFFSET    0x034
+#define ADC_CTL_OFFSET      0x038
+#define ADC_SSMUXn_OFFSET   0x040
+#define ADC_SSCTLn_OFFSET   0x044
+#define ADC_SSFIFOn_OFFSET  0x048
+#define ADC_SSFSTATn_OFFSET 0x04C
+#define ADC_SSOPn_OFFSET    0x050
+#define ADC_SSDCn_OFFSET    0x054
+#define ADC_DCRIC_OFFSET    0xD00
+#define ADC_DCCTL0_OFFSET   0xE00
+#define ADC_DCCTL1_OFFSET   0xE04
+#define ADC_DCCTL2_OFFSET   0xE08
+#define ADC_DCCTL3_OFFSET   0xE0C
+#define ADC_DCCTL4_OFFSET   0xE10
+#define ADC_DCCTL5_OFFSET   0xE14
+#define ADC_DCCTL6_OFFSET   0xE18
+#define ADC_DCCTL7_OFFSET   0xE1C
+#define ADC_DCCMP0_OFFSET   0xE40
+#define ADC_DCCMP1_OFFSET   0xE44
+#define ADC_DCCMP2_OFFSET   0xE48
+#define ADC_DCCMP3_OFFSET   0xE4C
+#define ADC_DCCMP4_OFFSET   0xE50
+#define ADC_DCCMP5_OFFSET   0xE54
+#define ADC_DCCMP6_OFFSET   0xE58
+#define ADC_DCCMP7_OFFSET   0xE5C
+#define ADC_PP_OFFSET       0xFC0
+#define ADC_PC_OFFSET       0xFC4
+#define ADC_CC_OFFSET       0xFC8
 
  #endif

@@ -176,7 +176,7 @@ void Gpt_Init(void){
         TimerPtr = GetTimerAddress(GPT_ConfigPtr_Container[i].GptChannelId);
 
         if( (RCG_clock & (1 << GPT_ConfigPtr_Container[i].GptChannelId) )== 0){
-            REG_WRITE_32_BIT(SYSCTL_RCGCTIMER_REG, 1 << (GPT_ConfigPtr_Container[i].GptChannelId % 6));
+            REG_ORING_VALUE_NO_CASTING(SYSCTL_RCGCTIMER_REG, 1 << (GPT_ConfigPtr_Container[i].GptChannelId % 6));
             RCG_clock |= 1 <<  1 << (GPT_ConfigPtr_Container[i].GptChannelId % 6);
         }
 
@@ -251,7 +251,7 @@ void Gpt_Init(void){
             /* Counting Up */
             REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_TBMR_REG_OFFSET),4);
             /* Enable Match Interrupt */
-            REG_WRITE_BIT_PTR((uint32)TimerPtr + (uint32)GPTM_TBMR_REG_OFFSET, 5);
+            REG_ORING_ONE_BIT_CASTING_POINTED((uint32)TimerPtr + (uint32)GPTM_TBMR_REG_OFFSET, 5);
             /* Write the PreScale value */
             if(GPT_ConfigPtr_Container[i].PreScalingType == Gpt_Prescale_Hardware){
                 WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TBPR_REG_OFFSET),(uint8)frequency);

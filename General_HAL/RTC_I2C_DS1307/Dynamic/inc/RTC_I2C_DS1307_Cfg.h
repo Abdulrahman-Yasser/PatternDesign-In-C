@@ -14,8 +14,8 @@
 
 #define RTC_12_vs_24_USER_CFG          RTC_DS1307_USED_12_MODE
 
-extern const RTC_DS1307_TimeFrame_Type RTC_DS1307_Time_Config;
-extern const RTC_DS1307_DateFrame_Type RTC_DS1307_Date_Config;
+extern const RTC_DS1307_TimeFrame_Type RTC_DS1307_InitialTime_Config;
+extern const RTC_DS1307_DateFrame_Type RTC_DS1307_InitialDate_Config;
 
 
 #endif /* RTC_I2C_DS1307_DYNAMIC_INC_RTC_I2C_DS1307_CFG_H_ */
