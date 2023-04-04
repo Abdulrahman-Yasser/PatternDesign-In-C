@@ -10,7 +10,8 @@ It's helpful to check my I2C Driver <br>
 
 ## Pins out for the module : 
 sorry for the uncivilized diagram but i am too lazy to draw it <br>
-![Live image for the Circuit](https://user-images.githubusercontent.com/63866803/228698124-14bfa25e-b3c3-4dce-a2c9-8886164a1008.jpeg)
+![Live image for the Circuit](https://user-images.githubusercontent.com/63866803/229676668-b9266bf4-401e-4508-bd63-f5e75908c00f.jpeg)
+
 
 
 
