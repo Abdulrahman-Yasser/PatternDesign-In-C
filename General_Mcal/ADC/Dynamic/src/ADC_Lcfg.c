@@ -15,10 +15,11 @@
 
 #include "../inc/ADC_Cfg.h"
 
-const ADC_ConfigType ADC_Container[ADC_CONFIGURED_NUMBER] = {
+const ADC_SampleSequencer_ConfigType ADC_Container[ADC_CONFIGURED_NUMBER] = {
 
 };
 
+enum ADC_Sample_Averaging_Control my_ADC_Averging_Sample = ADC_Sample_Averaging_x4;
 /**********************************************************************************************************************
  *  END OF FILE: ADC_Lcfg.c
  *********************************************************************************************************************/

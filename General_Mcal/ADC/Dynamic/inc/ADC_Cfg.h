@@ -21,7 +21,10 @@
 
 #define ADC_CONFIGURED_NUMBER 1
 
-extern const ADC_ConfigType ADC_Container[ADC_CONFIGURED_NUMBER];
+
+#define ADC_VREF_OR_VDDA                ADC_VDDA_AS_REFRENCE
+
+extern const ADC_SampleSequencer_ConfigType ADC_Container[ADC_CONFIGURED_NUMBER];
 
 
 /**********************************************************************************************************************
