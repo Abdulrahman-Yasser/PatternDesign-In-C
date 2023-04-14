@@ -17,4 +17,6 @@
 
 #include "Testing_DS1037/Testing_DS1307.h"
 
+#include "Testing_ADC/Testing_ADC.h"
+
 #endif /* APP_MAIN_H_ */

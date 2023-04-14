@@ -216,9 +216,11 @@ void ADC_StopConversion(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequ
 }
 
 Std_ReturnType ADC_ReadGroup(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencerNm, ADC_ValueGroup_Type* DataBufferPtr){
-
     if(my_ADC_Buffers[mySampleSequencerNm + (ADC_Num*4)] != Null_Ptr){
         DataBufferPtr = my_ADC_Buffers[mySampleSequencerNm + (ADC_Num*4)];
+        while(! NormalQueue_Static_isEmpty(my_ADC_Buffers[mySampleSequencerNm + (ADC_Num*4)]) ){
+            NormalQueue_Static_remove( my_ADC_Buffers[mySampleSequencerNm + (ADC_Num*4)] );
+        }
     }else{
         return E_NOK;
     }
@@ -236,18 +238,22 @@ void ADC_ReadingOperation(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSe
         base = ADC1_BASE_ADDERSS;
     }
 
+    ADC_StartConversion(ADC_Num, mySampleSequencer);
     /* the sample finished it's conversion ? */
     do{
-        REG_READ_CASTING_POINTED(RegisterCheck, base + ADC_RIS_OFFSET + (mySampleSequencer*0x20) );
+        REG_READ_CASTING_POINTED(RegisterCheck, base + ADC_RIS_OFFSET );
     }while(RegisterCheck & (1 << mySampleSequencer));
 
     /* read the FIFO till the EMPTY FIFO flag set high */
     do{
         REG_READ_CASTING_POINTED(data, base + ADC_SSFIFOn_OFFSET + (mySampleSequencer*0x20) );
-        NormalQueue_Static_insert(my_ADC_Buffers[mySampleSequencer + (ADC_Num*4)], data);
+        if(!NormalQueue_Static_isFull( my_ADC_Buffers[mySampleSequencer + (ADC_Num*4)] ) ){
+            NormalQueue_Static_insert( my_ADC_Buffers[mySampleSequencer + (ADC_Num*4)] , data);
+        }
         REG_READ_CASTING_POINTED(RegisterCheck, base + ADC_SSFSTATn_OFFSET + (mySampleSequencer*0x20) );
     }while(! (RegisterCheck & (1 << 8) ) );
 
+    REG_ORING_ONE_BIT_CASTING_POINTED(base + ADC_ISC_OFFSET , mySampleSequencer);
 }
 
 

@@ -17,6 +17,9 @@
 #include "../../General_Mcal/PORT/Static/inc/PORT.h"
 #include "../../General_Mcal/IntCtrl/Static/inc/IntCtrl.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #define TESTING_ADC_Channel                 (ADC_Module_Num_Type)ADC_Module_0
 #define TESTING_ADC_SS_NUM                  (ADC_SS_NumType)ADC_SS_3
 

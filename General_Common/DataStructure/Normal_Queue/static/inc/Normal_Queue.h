@@ -12,13 +12,13 @@
 #include "Normal_Queue_Types.h"
 
 
-Normal_Queue_DynamicUint *Queue_Create_DYNAMIC_uint(uint8 Dynamic_Size, Normal_Queue_Types queue_type);
-void Queue_Destroy_DYNAMIC_uint(Normal_Queue_DynamicUint* const me);
+Normal_Queue_DynamicUint *NormalQueue_Create_DYNAMIC_uint(uint8 Dynamic_Size, Normal_Queue_Types queue_type);
+void NormalQueue_Destroy_DYNAMIC_uint(Normal_Queue_DynamicUint* const me);
 
 /* Constructor and Destructor Static Allocation */
 
-Normal_Queue_StaticUint *Queue_Create_STATIC_uint(Normal_Queue_Types queue_type);
-void Queue_Destroy_STATIC_uint(Normal_Queue_StaticUint* const me);
+Normal_Queue_StaticUint *NormalQueue_Create_STATIC_uint(Normal_Queue_Types queue_type);
+void NormalQueue_Destroy_STATIC_uint(Normal_Queue_StaticUint* const me);
 
 
 uint8 NormalQueue_Static_isFull(Normal_Queue_StaticUint* const my_queue);
