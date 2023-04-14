@@ -170,9 +170,11 @@ void Port_Init(void){
             (*(volatile uint32*)((uint32)PortPtr + PORT_COMMIT_REG_OFFSET)) |= 1 << PinNum;
             break;
         case Port_PinMode_ADC:
-            REG_CLEAR_ONE_BIT_CASTING_POINTED(((volatile uint8 *)PortPtr + PORT_ANALOG_MODE_SEL_REG_OFFSET) , PinNum);
-            REG_CLEAR_ONE_BIT_CASTING_POINTED(((volatile uint8 *)PortPtr + PORT_ALT_FUNC_REG_OFFSET) , PinNum);
-            *(volatile uint32 *)((volatile uint8 *)PortPtr + PORT_CTL_REG_OFFSET) &= ~(0x0000000F << (PinNum * 4));
+            REG_ORING_ONE_BIT_CASTING_POINTED((volatile uint8 *)PortPtr + PORT_ALT_FUNC_REG_OFFSET, PinNum);
+            REG_CLEAR_ONE_BIT_CASTING_POINTED((volatile uint8 *)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET, PinNum);
+            REG_ORING_ONE_BIT_CASTING_POINTED(((volatile uint8 *)PortPtr + PORT_ANALOG_MODE_SEL_REG_OFFSET) , PinNum);
+            REG_CLEAR_THOSE_BITS_CASTING_POINTED((volatile uint8 *)PortPtr + PORT_CTL_REG_OFFSET, 0xF << (PinNum * 4));
+//            *(volatile uint32 *)((volatile uint8 *)PortPtr + PORT_CTL_REG_OFFSET) &= ~(0x0000000F << (PinNum * 4));
             break;
         case Port_PinMode_UARTn:
             REG_ORING_ONE_BIT_CASTING_POINTED(((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET), PinNum);

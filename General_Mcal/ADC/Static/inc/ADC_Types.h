@@ -17,6 +17,7 @@
  *********************************************************************************************************************/
 
 #include "../../General_Common/Std_Types.h"
+#include "../../General_Common/DataStructure/Normal_Queue/static/inc/Normal_Queue.h"
 
 
 #define ADC_VDDA_AS_REFRENCE        0x00
@@ -26,7 +27,7 @@
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
 
-
+typedef  Normal_Queue_StaticUint ADC_ValueGroup_Type;
 
 typedef enum{
     ADC_Module_0, ADC_Module_1
@@ -52,9 +53,12 @@ typedef enum{
     ADC_Digital_Comparator_0, ADC_Digital_Comparator_1, ADC_Digital_Comparator_2, ADC_Digital_Comparator_3,
     ADC_Digital_Comparator_4, ADC_Digital_Comparator_5, ADC_Digital_Comparator_6, ADC_Digital_Comparator_7,
     ADC_Digital_Comparator_NotUsed
-}ADC_Digital_Comparator_UnitTypr;
+}ADC_Digital_Comparator_UnitType;
 
-
+typedef enum{
+    ADC_SampleSequence_Input_MUX0, ADC_SampleSequence_Input_MUX1, ADC_SampleSequence_Input_MUX2, ADC_SampleSequence_Input_MUX3,
+    ADC_SampleSequence_Input_MUX4, ADC_SampleSequence_Input_MUX5, ADC_SampleSequence_Input_MUX6, ADC_SampleSequence_Input_MUX7
+}ADC_SS_Input_Multiplexer_Type;
 typedef enum{
     ADC_EventType_Software, ADC_EventType_AnalogComparator_0, ADC_EventType_AnalogComparator_1, ADC_EventType_GPIO=4, ADC_EventType_Timer,
     ADC_EventType_PWM_0_0, ADC_EventType_PWM_1_0, ADC_EventType_PWM_2_0, ADC_EventType_PWM_3_0,
@@ -63,24 +67,53 @@ typedef enum{
 }ADC_EventType;
 
 
+typedef enum{
+    ADC_Comparison_Condition_LOWBand, ADC_Comparison_Condition_MidBand, ADC_Comparison_Condition_HighBand = 3
+}ADC_Comparison_ConditionType;
+
+typedef enum{
+    ADC_Comparison_Mode_Always, ADC_Comparison_Mode_Once, ADC_Comparison_Mode_HysteresisAlways, ADC_Comparison_Mode_HysteresisOnce
+}ADC_Comparison_ModeType;
 
 typedef struct{
     ADC_Module_Num_Type ADC_Num;
     ADC_SS_NumType      sampleSequencer_Num;
-    ADC_Channel_Num_Type UsedChannel_Num[8];
     ADC_EventType       EventTrigger;
     uint8               SampleSequencer_Priority;
+    Enable_vs_DisableType   SampleSequencer_NormalInterrupt;
+    Enable_vs_DisableType   SampleSequencer_DifferentialInterrupt;
+}ADC_SampleSequencer_ConfigType;
+
+
+typedef struct{
+    ADC_Module_Num_Type     ADC_Num;
+    ADC_SS_NumType          sampleSequencer_Num;
+    ADC_Channel_Num_Type    UsedChannel_Num;
+    ADC_SS_Input_Multiplexer_Type   Channel_Mux;
+
+    /* General Configuration */
 
     /* that register will contain what we should put to ADCSSCTLn */
-    uint8               SampleSequencer_Differential_in_CTL_R;
-    uint8               SampleSequencer_Temp_Sensor_in_CTL_R;
-    uint8               SampleSequencer_is_End_of_Sequence_in_CTL_R;
-    uint8               SampleSequencer_Interrupt_Enable_in_CTL_R;
+    Enable_vs_DisableType   Channel_Differential_in_CTL_R;
+    Enable_vs_DisableType   Channel_Temp_Sensor_in_CTL_R;
+    Enable_vs_DisableType   Channel_is_End_of_Sequence_in_CTL_R;
+    Enable_vs_DisableType   Channel_Interrupt_Enable_in_CTL_R;
 
-    uint8               SampleSequencer_Operation_FIFO_or_DigitalComparator_R;
-    ADC_Digital_Comparator_UnitTypr SampleSequencer_DigitalComparator_Select[8];
+    /* Digital comparator configuration */
+    Enable_vs_DisableType   Channel_Operation_DigitalComparator_R;
+    ADC_Digital_Comparator_UnitType Channel_DigitalComparator_Select;
+    uint16                  Channel_DigitalComparator_HighBand;
+    uint16                  Channel_DigitalComparator_LowBand;
 
-}ADC_SampleSequencer_ConfigType;
+    Enable_vs_DisableType   Channel_ComparisonTrigger;
+    ADC_Comparison_ModeType Channel_ModeTrigger;
+    ADC_Comparison_ConditionType Channel_OperationalConditionTrigger;
+
+    Enable_vs_DisableType   Channel_ComparisonInterrupt;
+    ADC_Comparison_ModeType Channel_ModeInterrupt;
+    ADC_Comparison_ConditionType Channel_OperationalConditionInterrupt;
+
+}ADC_Channel_ConfigType;
 
 
 enum ADC_Sample_Averaging_Control{

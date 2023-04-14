@@ -8,6 +8,9 @@
 #define Enable          1
 #define Disable         0
 
+typedef enum{
+    Disable_EnumType, Enable_EnumType
+}Enable_vs_DisableType;
 
 #define STD_ON          0x01U       /* Standard ON */
 #define STD_OFF         0x00U       /* Standard OFF */

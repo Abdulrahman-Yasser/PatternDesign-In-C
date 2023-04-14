@@ -26,9 +26,16 @@
 
 void ADC_Init(void);
 
-void ADC_SoftwareTrigger_SC(ADC_SS_NumType mySampleSequencerNm);
+Std_ReturnType ADC_SetupResultBuffer(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencerNm, ADC_ValueGroup_Type* DataBufferPtr);
 
-uint16 ADC_ReadResult(ADC_SS_NumType mySampleSequencer);
+void ADC_StartConversion(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencerNm);
+
+void ADC_StopConversion(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencerNm);
+
+Std_ReturnType ADC_ReadGroup(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencerNm, ADC_ValueGroup_Type* DataBufferPtr);
+
+void ADC_ReadingOperation(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencer);
+
 
 
 
