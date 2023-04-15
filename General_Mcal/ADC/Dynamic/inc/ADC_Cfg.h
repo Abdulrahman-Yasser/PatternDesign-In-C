@@ -22,7 +22,7 @@
 #define ADC_CONFIGURED_SAMPLE_SEQUENCES_NUMBER  1
 #define ADC_CONFIGURED_CHANNELS_NUMBER          1
 
-#define ADC_BUFFER_SIZE                         16
+#define ADC_BUFFER_SIZE                         5
 
 #define ADC0_VREF_OR_VDDA                ADC_VDDA_AS_REFRENCE
 #define ADC1_VREF_OR_VDDA                ADC_VDDA_AS_REFRENCE
