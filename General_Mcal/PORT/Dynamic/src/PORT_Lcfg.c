@@ -59,16 +59,33 @@ PF2 30 - - SSI1Clk - M0FAULT0 M1PWM6 - T1CCP0 - - TRD0 -
 PF3 31 - - SSI1Fss CAN0Tx - M1PWM7 - T1CCP1 - - TRCLK -
 PF4 5 - - - - - M1FAULT0 IDX0 T2CCP0 USB0EPEN - -
 */
- /**********************************************************************************************************************
-  *  GLOBAL DATA
+
+
+
+
+
+
+
+
+
+
+/**********************************************************************************************************************
+  *  Testing ADC
   *********************************************************************************************************************/
-/* Testing ADC */
 
 
 const Port_ConfigType ConfigPtr[configured_pins] =
 {
   {Port_Pin_E3, Port_PinLevel_LOW, Port_PinDir_IN, Port_PinMode_ADC, Port_PinInternal_HW, Port_PinOutputCurrent_2ma}
 };
+
+
+
+
+
+
+
+
 
 
 /**********************************************************************************************************************
@@ -81,6 +98,17 @@ const Port_ConfigType ConfigPtr[configured_pins] =
 //  {Port_Pin_D0, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},  // SCL
 //  {Port_Pin_D1, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_OpenDrain, Port_PinOutputCurrent_2ma}  // SDA
 //};
+
+
+
+
+
+
+
+
+
+
+
 
 /* For initializing the whole pins */
 /*
