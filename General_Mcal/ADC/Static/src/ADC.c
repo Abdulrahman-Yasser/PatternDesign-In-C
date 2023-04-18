@@ -30,6 +30,17 @@ static uint8 ADC_ModulesUsed_RcggSaver = 0;
 static ADC_ValueGroup_Type *my_ADC_Buffers[8];
 
 /**********************************************************************************************************************
+ *  STATIC FUNCTIONS
+ *********************************************************************************************************************/
+static inline uint32 ADC_Get_Base(ADC_Module_Num_Type ADC_Num){
+    if(ADC_Num == ADC_Module_0){
+        return (uint32)ADC0_BASE_ADDERSS;
+    }else if(ADC_Num == ADC_Module_1){
+        return (uint32)ADC1_BASE_ADDERSS;
+    }
+}
+
+/**********************************************************************************************************************
  *  GLOBAL FUNCTIONS
  *********************************************************************************************************************/
 
@@ -47,13 +58,8 @@ void ADC_Init(void){
             REG_ORING_ONE_BIT_CASTING_POINTED(SYSCTL_RCGCADC_BASE, ADC_SS_Container[i].ADC_Num);
             REG_READ_CASTING_POINTED(register_check, SYSCTL_RCGCADC_BASE);
         }
-
-        if(ADC_SS_Container[i].ADC_Num == ADC_Module_0){
-            base = ADC0_BASE_ADDERSS;
-        }else if(ADC_SS_Container[i].ADC_Num == ADC_Module_1){
-            base = ADC1_BASE_ADDERSS;
-        }
-
+        /* Get the ADC base address using an inline function */
+        base = ADC_Get_Base(ADC_SS_Container[i].ADC_Num);
 
         /* 2 Disable the sample sequencer before changing the SS configurations  (ADCACTSS)*/
         REG_CLEAR_ONE_BIT_CASTING_POINTED(base + ADC_ACTSS_OFFSET, ADC_SS_Container[i].sampleSequencer_Num);
@@ -106,11 +112,8 @@ void ADC_Init(void){
 
         /* 1 Check if the RCGC Register is initialized, initialized it if not. it's done in the sample sequencer */
 
-        if(ADC_CH_Container[i].ADC_Num == ADC_Module_0){
-            base = ADC0_BASE_ADDERSS;
-        }else if(ADC_CH_Container[i].ADC_Num == ADC_Module_1){
-            base = ADC1_BASE_ADDERSS;
-        }
+        /* Get the ADC base address using an inline function */
+        base = ADC_Get_Base(ADC_CH_Container[i].ADC_Num);
 
         /* 2 Disable the sample sequencer before changing the SS configurations  (ADCACTSS).
          * But it's already disabled in the Sample Sequence initialization */
@@ -158,9 +161,14 @@ void ADC_Init(void){
 
     /* Enabling all the Sample Sequencers */
     for(i = 0; i < ADC_CONFIGURED_SAMPLE_SEQUENCES_NUMBER; i++){
+
+        /* Get the ADC base address using an inline function */
+        base = ADC_Get_Base(ADC_SS_Container[i].ADC_Num);
+
         REG_ORING_ONE_BIT_CASTING_POINTED(base + ADC_ACTSS_OFFSET, ADC_SS_Container[i].sampleSequencer_Num);
     }
 
+    /* Configurations for ADC0 only like VREF option and average sample */
     if(ADC_ModulesUsed_RcggSaver & 1 << 0){
         base = ADC0_BASE_ADDERSS;
     }
@@ -170,6 +178,7 @@ void ADC_Init(void){
     /* If interrupt is used, change (ADCIM) */
     REG_WRITE_CASTING_POINTED(base +  ADC_SAC_OFFSET, my_ADC0_Averging_Sample);
 
+    /* Configurations for ADC1 only like VREF option and average sample */
     if(ADC_ModulesUsed_RcggSaver & 1 << 1){
         base = ADC1_BASE_ADDERSS;
     }
@@ -202,11 +211,7 @@ Std_ReturnType ADC_SetupResultBuffer(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType
 void ADC_StartConversion(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencerNm){
     uint32 base;
 
-    if(ADC_Num == ADC_Module_0){
-        base = ADC0_BASE_ADDERSS;
-    }else if(ADC_Num == ADC_Module_1){
-        base = ADC1_BASE_ADDERSS;
-    }
+    base = ADC_Get_Base(ADC_Num);
 
     REG_ORING_ONE_BIT_CASTING_POINTED(base + ADC_PSSI_OFFSET, mySampleSequencerNm);
 }
@@ -232,10 +237,10 @@ void ADC_ReadingOperation(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSe
     uint16 data;
 
 
-    if(ADC_Num == ADC_Module_0){
-        base = ADC0_BASE_ADDERSS;
-    }else if(ADC_Num == ADC_Module_1){
-        base = ADC1_BASE_ADDERSS;
+    base = ADC_Get_Base(ADC_Num);
+
+    if(my_ADC_Buffers[mySampleSequencer + (ADC_Num*4)] == Null_Ptr){
+        return;
     }
 
     ADC_StartConversion(ADC_Num, mySampleSequencer);
@@ -256,6 +261,33 @@ void ADC_ReadingOperation(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSe
     REG_ORING_ONE_BIT_CASTING_POINTED(base + ADC_ISC_OFFSET , mySampleSequencer);
 }
 
+uint32 ADC_ReadOneValue(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencerNm){
+    uint32 base, RegisterCheck;
+    uint16 data;
+
+    base = ADC_Get_Base(ADC_Num);
+
+
+    /* in case there is no data in the built-in queue, then apply a read operation */
+    if(NormalQueue_Static_isEmpty( my_ADC_Buffers[mySampleSequencerNm + (ADC_Num*4)] ) ){
+
+        ADC_StartConversion(ADC_Num, mySampleSequencerNm);
+        /* the sample finished it's conversion ? */
+        do{
+            REG_READ_CASTING_POINTED(RegisterCheck, base + ADC_RIS_OFFSET );
+        }while(RegisterCheck & (1 << mySampleSequencerNm));
+
+        REG_READ_CASTING_POINTED(data, base + ADC_SSFIFOn_OFFSET + (mySampleSequencerNm*0x20) );
+
+        REG_ORING_ONE_BIT_CASTING_POINTED(base + ADC_ISC_OFFSET , mySampleSequencerNm);
+    }else{
+        /* in case there is data in the built-in queue, just return it */
+        data = NormalQueue_Static_remove(my_ADC_Buffers[mySampleSequencerNm + (ADC_Num*4)]);
+    }
+
+    return data;
+
+}
 
 
 /**********************************************************************************************************************

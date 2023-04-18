@@ -27,6 +27,10 @@
 #define ADC0_VREF_OR_VDDA                ADC_VDDA_AS_REFRENCE
 #define ADC1_VREF_OR_VDDA                ADC_VDDA_AS_REFRENCE
 
+#define ADC_TEMPERATURE_ID          0
+#define ADC_TEMPERATURE_ADC_NUM     ADC_Module_0
+#define ADC_TEMPERATURE_SS_NUM      ADC_SS_3
+
 extern const ADC_SampleSequencer_ConfigType ADC_SS_Container[ADC_CONFIGURED_SAMPLE_SEQUENCES_NUMBER];
 extern const ADC_Channel_ConfigType ADC_CH_Container[ADC_CONFIGURED_CHANNELS_NUMBER];
 extern enum ADC_Sample_Averaging_Control my_ADC0_Averging_Sample;

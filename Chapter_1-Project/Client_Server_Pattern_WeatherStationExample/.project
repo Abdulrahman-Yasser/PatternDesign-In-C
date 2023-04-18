@@ -26,34 +26,19 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>Common</name>
-			<type>2</type>
-			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_Common</location>
-		</link>
-		<link>
 			<name>General_Common</name>
 			<type>2</type>
-			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_Common</location>
+			<location>F:/PatternDesign-In-C/General_Common</location>
 		</link>
 		<link>
 			<name>General_HAL</name>
 			<type>2</type>
-			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_HAL</location>
+			<location>F:/PatternDesign-In-C/General_HAL</location>
 		</link>
 		<link>
 			<name>General_Mcal</name>
 			<type>2</type>
-			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_Mcal</location>
-		</link>
-		<link>
-			<name>HAL</name>
-			<type>2</type>
-			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_HAL</location>
-		</link>
-		<link>
-			<name>MCAL</name>
-			<type>2</type>
-			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_Mcal</location>
+			<location>F:/PatternDesign-In-C/General_Mcal</location>
 		</link>
 	</linkedResources>
 	<variableList>

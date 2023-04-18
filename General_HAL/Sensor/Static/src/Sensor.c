@@ -51,5 +51,5 @@ SENSOR_READ_TYPE GetValueFunction_Digital(Sensor_Type* const me){
 }
 
 SENSOR_READ_TYPE GetValueFunction_Analog(Sensor_Type* const me){
-    return 0;
+    return ADC_ReadOneValue( Sensor_Analog_Config[me->Sensor_ID].ADC_Num, Sensor_Analog_Config[me->Sensor_ID].sampleSequencer_Num);
 }

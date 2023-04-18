@@ -12,8 +12,12 @@
 
 
 #define SENSOR_DIGITAL_CONFIGURED_NUMBER   1
-#define SENSOR_ANALOG_CONFIGURED_NUMBER   0
+#define SENSOR_ANALOG_CONFIGURED_NUMBER   3
 
+#define SMOKE_ID 0
+#define LIGHT_ID 1
+#define TEMPERATURE_ID 0
+#define WATER_ID 3
 
 extern const Sensor_Digital_Container_Type Sensor_Digital_Config[SENSOR_DIGITAL_CONFIGURED_NUMBER];
 

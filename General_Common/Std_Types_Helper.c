@@ -24,3 +24,23 @@ void Delay_ms(unsigned long long n){
     volatile unsigned long long  count = 0;
     while(count++ < (762 * n) );
 }
+
+char* int_to_string(uint32 var){
+    char* s;
+    uint8 i = 0, j = 0;
+    uint32 temp = var;
+
+    while(temp > 0){
+        i++;
+        temp /= 10;
+    }
+    s = (char*)malloc(sizeof(char) * i);
+
+    while(i > j){
+        s[j] = (var % 10) + '0';
+        var = var / 10;
+        j++;
+    }
+    s[j] = '/0';
+    return s;
+}

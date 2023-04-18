@@ -36,6 +36,7 @@ Std_ReturnType ADC_ReadGroup(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampl
 
 void ADC_ReadingOperation(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencer);
 
+uint32 ADC_ReadOneValue(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencerNm);
 
 
 

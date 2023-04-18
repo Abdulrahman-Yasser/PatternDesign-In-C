@@ -11,6 +11,7 @@
 #include "../../General_Common/Platform_Types.h"
 
 #include "../../General_Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
+#include "../../General_Mcal/ADC/Dynamic/inc/ADC_Cfg.h"
 
 typedef uint32 SENSOR_READ_TYPE;
 
@@ -46,9 +47,13 @@ struct Sensor_Digital_Container{
  * ==================================================== ANALOG SENSOR ====================================================
  */
 
-/* I need to write ADC Driver to use that, but i do not need it write now */
+/* the data that i will need while reading the sensor */
 typedef struct Sensor_Analog_Container Sensor_Analog_Container_Type;
 
+struct Sensor_Analog_Container{
+    ADC_Module_Num_Type ADC_Num;
+    ADC_SS_NumType      sampleSequencer_Num;
+};
 
 
 #endif /* HAL_SENSOR_STATIC_INC_SENSOR_TYPES_H_ */

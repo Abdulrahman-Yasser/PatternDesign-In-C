@@ -12,7 +12,7 @@
 #include "Sensor_Types.h"
 
 
-Sensor_Type * Sensor_Create(uint8 Sensor_ID, Sensor_IntrfaceType SensorInterface);
+Sensor_Type* Sensor_Create(uint8 Sensor_ID, Sensor_IntrfaceType SensorInterface);
 void Sensor_Destroy( Sensor_Type* const me);
 
 #endif /* HAL_SENSOR_STATIC_INC_SENOSR_H_ */
