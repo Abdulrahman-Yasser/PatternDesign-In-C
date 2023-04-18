@@ -9,7 +9,7 @@ It's helpful to check my ADC Driver <br>
 
 ## Pins out for the module : 
 sorry for the uncivilized diagram but i am too lazy to draw it <br>
-![Live image for the Circuit](https://user-images.githubusercontent.com/63866803/229676668-b9266bf4-401e-4508-bd63-f5e75908c00f.jpeg)
+![Live image for the Circuit](https://user-images.githubusercontent.com/63866803/232230910-d2be5d07-9d5c-4ff8-878e-317312903589.jpeg)
 
 
 
