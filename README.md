@@ -23,6 +23,8 @@
 ![3](https://user-images.githubusercontent.com/63866803/222526262-faab5933-2d10-4353-be9a-31c2206a61de.png)
 ![4](https://user-images.githubusercontent.com/63866803/222526247-cfd451e3-874e-4ac8-9acc-5a64db1d3ebf.png)
 ![5](https://user-images.githubusercontent.com/63866803/222526257-3f7cf3d4-8698-46eb-add7-a1c8a523ed5b.png)
+![6](https://user-images.githubusercontent.com/63866803/232916915-1756fd00-3917-4617-88b1-b77c16d07c3d.png)
+
 
 
 ## 🛠 Skills
