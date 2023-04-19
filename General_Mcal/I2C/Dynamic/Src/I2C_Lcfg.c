@@ -20,6 +20,10 @@ const I2C_ConfigType I2C_Container[I2C_CONFIGURED_NUMBER] = {
     {I2C_NUM_3, I2C_ModeMaster, I2cSpeed_SM_100Kbps, I2C_GlitchSuppression_OFF, I2C_LoopBack_OFF,
      {I2C_MasterISR_None, I2C_MasterISR_None, I2C_MasterISR_None},
      {I2C_SlaveISR_None, I2C_SlaveISR_None, I2C_SlaveISR_None}, 0x00, 0x00, 0x7B, 0xF1
+    },
+    {I2C_NUM_1, I2C_ModeMaster, I2cSpeed_SM_100Kbps, I2C_GlitchSuppression_OFF, I2C_LoopBack_OFF,
+     {I2C_MasterISR_None, I2C_MasterISR_None, I2C_MasterISR_None},
+     {I2C_SlaveISR_None, I2C_SlaveISR_None, I2C_SlaveISR_None}, 0x00, 0x00, 0x7B, 0xF1
     }
 };
 

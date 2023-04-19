@@ -5,10 +5,18 @@
  */
 #include "main.h"
 
+void Board_init(void);
+
 int main(){
+    Board_init();
+
     TestBuilder * p_TestBuilder;
+
     p_TestBuilder = TestBuilder_Create();
 
+    LCD_Handler_Type *my_lcd;
+    my_lcd = LCD_Create(LCD_Interface_I2C, HISTOGRAM_LCD_ID);
+    HistogramDisplay_setItsLCD(&(p_TestBuilder->itsHistogramDisplay), my_lcd);
 
     while(1){
         Delay_ms(1000);
@@ -20,6 +28,11 @@ int main(){
 
     }
 
-    TestBuilder_Destroy(p_TestBuilder);
-    return 0;
+}
+
+void Board_init(void){
+    Port_Init();
+    I2C_init();
+    ADC_Init();
+    TempDriver_WeatherStation_Init();
 }

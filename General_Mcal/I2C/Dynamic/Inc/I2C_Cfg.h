@@ -17,7 +17,7 @@
  /**********************************************************************************************************************
   *  GLOBAL CONSTANT MACROS
   *********************************************************************************************************************/
-#define I2C_CONFIGURED_NUMBER 1
+#define I2C_CONFIGURED_NUMBER 2
 
 
 #define I2C0_PREDEF_MACRO        Disable   //Enable EOT, Disable FIFO, No ISR
@@ -37,6 +37,8 @@
 
 
 
+#define I2C_LCD_CHANNEL_NUMBER      I2C_NUM_3
+#define I2C_RTC_CHANNEL_NUMBER      I2C_NUM_1
 
 
 extern const I2C_ConfigType I2C_Container[I2C_CONFIGURED_NUMBER];

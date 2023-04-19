@@ -7,6 +7,7 @@
 
 
 #include "Std_Types.h"
+#include <stdlib.h>
 
 void WriteUsingBB(uint32* Ptr, uint32 Value){
     uint8 i;
@@ -41,6 +42,6 @@ char* int_to_string(uint32 var){
         var = var / 10;
         j++;
     }
-    s[j] = '/0';
+    s[j] = '\0';
     return s;
 }

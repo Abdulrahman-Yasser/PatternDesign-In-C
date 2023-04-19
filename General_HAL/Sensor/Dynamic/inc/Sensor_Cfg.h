@@ -10,6 +10,8 @@
 
 #include "../../Static/inc/Sensor_Types.h"
 
+#include "../General_Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
+#include "../General_Mcal/ADC/Dynamic/inc/ADC_Cfg.h"
 
 #define SENSOR_DIGITAL_CONFIGURED_NUMBER   1
 #define SENSOR_ANALOG_CONFIGURED_NUMBER   3

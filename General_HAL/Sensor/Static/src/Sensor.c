@@ -1,9 +1,12 @@
+
+
 #include "../inc/Senosr.h"
 #include "../inc/Sensor_Types.h"
 #include "../../Dynamic/inc/Sensor_Cfg.h"
 
 #include "../../General_Common/Compiler.h"
 #include "../../General_Mcal/DIO/Static/inc/DIO.h"
+#include "../General_Mcal/ADC/Static/inc/ADC.h"
 
 #include <stdlib.h>
 

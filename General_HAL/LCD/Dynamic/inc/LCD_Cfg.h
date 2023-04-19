@@ -14,8 +14,7 @@
 #define LCD_I2C_CONFIGURED_NUMBER   1
 #define LCD_DIO_CONFIGURED_NUMBER   0
 
-#define FireDisplay_LCD_ID          0
-#define StatisticsDisplay_LCD_ID    1
+#define HistogramDisplay_LCD_ID          0
 
 extern const LCD_I2C_Container_Type Lcd_I2C_Config[LCD_I2C_CONFIGURED_NUMBER];
 extern const LCD_DIO_Container_Type Lcd_DIO_Config[LCD_DIO_CONFIGURED_NUMBER];

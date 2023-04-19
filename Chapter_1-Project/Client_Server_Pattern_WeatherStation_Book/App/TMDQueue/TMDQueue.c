@@ -7,13 +7,14 @@
 
 
 #include <App/TMDQueue/TMDQueue.h>
+#include <stdlib.h>
+
 
 static void initRelations(TMDQueue* const me);
 static void cleanUpRelations(TMDQueue* const me);
 
 
 void TMDQueue_Init(TMDQueue* const me) {
-    int i = 0;
     me->head = 0;
     me->size = 0;
     /* Setting the buffer into zeros */
@@ -55,7 +56,7 @@ uint8 TMDQueue_IsEmpty(TMDQueue* const me){
 // we don't decrease the size !!!!
 struct TimeMarkedData TMDQueue_remove(TMDQueue* const me, uint8 index){
     struct TimeMarkedData tmd;
-    if (!TMDQueue_IsEmpty(me) && (index>=0) && (index < TMD_QUEUE_SIZE) && (index < me->size)) {
+    if (!TMDQueue_IsEmpty(me) && (index < TMD_QUEUE_SIZE) && (index < me->size)) {
         tmd = me->Buffer[index];
     }
     return tmd;

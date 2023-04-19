@@ -10,7 +10,9 @@
 
 
 #include "../../Static/inc/RTC_I2C_DS1307_Types.h"
+#include "../General_Mcal/I2C/Dynamic/Inc/I2C_Cfg.h"
 
+#define RTC_DS1307_I2C_Channel              I2C_RTC_CHANNEL_NUMBER
 
 #define RTC_12_vs_24_USER_CFG          RTC_DS1307_USED_12_MODE
 

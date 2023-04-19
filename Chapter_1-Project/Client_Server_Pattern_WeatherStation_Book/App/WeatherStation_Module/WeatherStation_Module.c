@@ -5,6 +5,9 @@
  *      Author: Abdu
  */
 
+#include <stdlib.h>
+
+
 #include <App/WeatherStation_Module/WeatherStation_Module.h>
 
 #include "../../General_HAL/RTC_I2C_DS1307/Static/inc/RTC_I2C_DS1307.h"

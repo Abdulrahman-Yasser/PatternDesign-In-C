@@ -11,7 +11,6 @@
 #include "../inc/RTC_I2C_DS1307.h"
 #include "../../Dynamic/inc/RTC_I2C_DS1307_Cfg.h"
 
-#define RTC_DS1307_I2C_Channel              (I2C_ChannelType)I2C_NUM_3
 #define RTC_DS1307_I2C_Slave_Address        0x68
 
 #define RTC_DS1307_Seconds_Register         0x00

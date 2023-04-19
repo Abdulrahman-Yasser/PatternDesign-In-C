@@ -17,7 +17,7 @@ struct TMDQueue;
 
 typedef struct HistogramDisplay HistogramDisplay;
 
-#define HISTOGRAM_LCD_ID 0
+#define HISTOGRAM_LCD_ID HistogramDisplay_LCD_ID
 
 struct HistogramDisplay {
     int index;

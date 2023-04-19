@@ -6,6 +6,7 @@
  */
 
 #include "Testing.h"
+#include <stdlib.h>
 
 
 static void initRelations(TestBuilder* const me);
@@ -33,7 +34,8 @@ struct TMDQueue* TestBuilder_getItsTMDQueue(const TestBuilder* const me) {
 }
 
 TestBuilder * TestBuilder_Create(void) {
-    TestBuilder* me = (TestBuilder *)malloc(sizeof(TestBuilder));
+    TestBuilder* me;
+    me = (TestBuilder *)malloc(sizeof(TestBuilder));
     if(me!=Null_Ptr)
     {
             TestBuilder_Init(me);

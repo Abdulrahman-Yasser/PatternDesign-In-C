@@ -11,6 +11,7 @@
 
 #include "HistogramDisplay.h"
 
+#include <stdlib.h>
 
 static void cleanUpRelations(HistogramDisplay* const me);
 
@@ -31,7 +32,7 @@ void HistogramDisplay_Cleanup(HistogramDisplay* const me){
 void HistogramDisplay_getValue(HistogramDisplay* const me){
     struct TimeMarkedData tmd;
     uint8 t;
-    LCD_CHAR_Type s;
+    LCD_CHAR_Type *s;
 
     if(me->itsTMDQueue == Null_Ptr || me->my_lcd == Null_Ptr){
         return;

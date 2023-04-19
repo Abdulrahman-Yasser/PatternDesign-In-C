@@ -8,6 +8,7 @@
 #include "../inc/Motor.h"
 #include "../inc/Motor_Types.h"
 #include "../../Dynamic/inc/Motor_Cfg.h"
+#include <stdlib.h>
 
 static void Motor_Init(Motor_HandlerType* me, uint8 Motor_ID);
 

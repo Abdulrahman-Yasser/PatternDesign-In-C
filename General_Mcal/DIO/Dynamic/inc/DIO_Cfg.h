@@ -21,6 +21,8 @@
 #define GPIO_UART5_CHECK_PIN         (DIO_ChannelType)DIO_Channel0_B
 #define GPIO_UART7_CHECK_PIN         (DIO_ChannelType)DIO_Channel1_B
 
+#define GPIO_UART5_CHECK_PIN         (DIO_ChannelType)DIO_Channel0_B
+#define GPIO_UART7_CHECK_PIN         (DIO_ChannelType)DIO_Channel1_B
 
 #endif  /* DIO_CFG_H */
 

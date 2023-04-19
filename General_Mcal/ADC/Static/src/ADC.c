@@ -38,6 +38,7 @@ static inline uint32 ADC_Get_Base(ADC_Module_Num_Type ADC_Num){
     }else if(ADC_Num == ADC_Module_1){
         return (uint32)ADC1_BASE_ADDERSS;
     }
+    return 0;
 }
 
 /**********************************************************************************************************************

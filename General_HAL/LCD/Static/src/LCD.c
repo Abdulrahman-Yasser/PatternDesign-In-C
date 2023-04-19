@@ -236,7 +236,6 @@ Std_BoolReturnType LCD_I2C_Destroy_Function(LCD_Handler_Type* const me){
     return r;
 }
 
-
 /*
  * ====================================== Private Function Definition ======================================
  */

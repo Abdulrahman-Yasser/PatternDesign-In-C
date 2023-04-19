@@ -9,6 +9,7 @@
 #define HAL_SENSOR_STATIC_INC_SENOSR_H_
 
 #include "../../General_Mcal/DIO/Static/inc/DIO_Types.h"
+
 #include "Sensor_Types.h"
 
 
