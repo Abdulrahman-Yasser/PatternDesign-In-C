@@ -1,12 +1,12 @@
 
 # Pattern Design for embedded-systems in C 
 ## Patterns used in taht chapter : 
-- [Chapter 1 : What is Embedded programming ](Chapter_1-Project/)
-- [Chapter 2 : Embedded Programming with The Harmony TM for Embedded RealTime Process](Chapter_1-Project/)
-- [Chapter 3 : Design Patterns for Accessing Hardware](Chapter_2-Project/)
-- [Chapter 4 : Design Patterns for Embedding Concurrency and Resource Management](Chapter_3-Project/)
-- [Chapter 5 : Design Patterns for State Machines](Chapter_4-Project/)
-- [Chapter 6 : Safety and Reliability Pattern](Chapter_5-Project/)
+- [Chapter 2 : What is Embedded programming ](Chapter_1-Project/)<details><summary>Patterns Details</summary>that file contains Client-Server Pattern, Puush-Pop Pattern and Observer Pattern.</details>
+- [Chapter 3 : Embedded Programming with The Harmony TM for Embedded RealTime Process](Chapter_1-Project/)
+- [Chapter 4 : Design Patterns for Accessing Hardware](Chapter_2-Project/)
+- [Chapter 5 : Design Patterns for Embedding Concurrency and Resource Management](Chapter_3-Project/)
+- [Chapter 6 : Design Patterns for State Machines](Chapter_4-Project/)
+- [Chapter 7 : Safety and Reliability Pattern](Chapter_5-Project/)
 
 ## Some tested drivers to make sure that it works fine : 
 - [Testing LCD](Testing_SW_Layers/Testing_Drivers/APP/Testing_LCD/)<details><summary>Project's Details</summary>Using I2C LCD Serial Interface Module to control the LCD</details>
