@@ -1,7 +1,7 @@
 
 # Pattern Design for embedded-systems in C 
 ## Patterns used in taht chapter : 
-- [Chapter 2 : What is Embedded programming ](Chapter_1-Project/)<details><summary>Patterns Details</summary>that file contains Client-Server Pattern, Puush-Pop Pattern and Observer Pattern.</details>
+- [Chapter 2 : What is Embedded programming ](Chapter_1-Project/)<details><summary>Patterns Details</summary>that file contains Client-Server Pattern, Push-Pop Pattern and Observer Pattern.</details>
 - [Chapter 3 : Embedded Programming with The Harmony TM for Embedded RealTime Process](Chapter_1-Project/)
 - [Chapter 4 : Design Patterns for Accessing Hardware](Chapter_2-Project/)
 - [Chapter 5 : Design Patterns for Embedding Concurrency and Resource Management](Chapter_3-Project/)
