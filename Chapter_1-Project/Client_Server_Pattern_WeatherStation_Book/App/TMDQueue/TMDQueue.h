@@ -11,7 +11,7 @@
 #include <App/TimeMarkedData/TimeMarkedData.h>
 #include "../ECGPkg.h"
 
-#define TMD_QUEUE_SIZE 20
+#define TMD_QUEUE_SIZE 5
 
 typedef struct TMDQueue TMDQueue;
 
