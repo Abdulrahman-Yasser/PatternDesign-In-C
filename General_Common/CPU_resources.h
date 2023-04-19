@@ -20,6 +20,8 @@
 /* may be 10 */
 #define CPU_CLOCK       (uint16)16U
 
+#define EXTERNAL_VOLTAGE_SOURCE     5
+#define INTERNAL_VOLTAGE_SOURCE     3.3
 
 
 #endif /* COMMON_CPU_RESOURCES_H_ */

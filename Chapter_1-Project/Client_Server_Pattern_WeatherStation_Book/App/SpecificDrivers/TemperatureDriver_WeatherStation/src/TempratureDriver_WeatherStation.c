@@ -7,18 +7,19 @@
 
 #include "../inc/TempratureDriver_WeatherStation.h"
 
-
+#include "../General_Common/CPU_resources.h"
 
 
 void TempDriver_WeatherStation_Init(void){
-    TempHandler = Sensor_Create(TEMPERATURE_ID, Sensor_Interface_Digital);
+    TempHandler = Sensor_Create(TEMPERATURE_ID, Sensor_Interface_Analog);
 }
 
 
 int TempDriver_WeatherStation_Read(void){
-    int x;
-    x = TempHandler->GetValue(TempHandler);
-    return x;
+    float x;
+    x = (float)TempHandler->GetValue(TempHandler);
+    x = (float)(100 * INTERNAL_VOLTAGE_SOURCE / 4096) * x;
+    return (int)x;
 }
 
 

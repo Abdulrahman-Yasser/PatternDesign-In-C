@@ -40,8 +40,8 @@ void WeatherStation_Module_acquireValue(WeatherStation_Module* const me) {
 
     tmd.temperature_value = TempDriver_WeatherStation_Read();
 
-    tmd.date = RTC_DS1307_getDate();
-    tmd.time = RTC_DS1307_getTime();
+//    tmd.date = RTC_DS1307_getDate();
+//    tmd.time = RTC_DS1307_getTime();
 
     /* Publishing the data */
     TMDQueue_Insert(me->itsTMDQueue, tmd);

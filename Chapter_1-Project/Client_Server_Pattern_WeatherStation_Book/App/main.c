@@ -24,7 +24,7 @@ int main(){
         /* Read the tmdQueue values and push it to the server */
         WeatherStation_Module_acquireValue(&(p_TestBuilder->itsWeatherStation_Module));
 
-        HistogramDisplay_updateHistogram(&(p_TestBuilder->itsHistogramDisplay));
+//        HistogramDisplay_updateHistogram(&(p_TestBuilder->itsHistogramDisplay));
 
     }
 
