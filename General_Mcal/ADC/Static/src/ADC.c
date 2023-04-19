@@ -1,14 +1,14 @@
 /**********************************************************************************************************************
  *  FILE DESCRIPTION
-  *  -----------------------------------------------------------------------------------------------------------------*/
-/**        \file  ADC.c
-  *        \brief  Analog Digital Converter
-  *
-  *      \details  This file contains the static implementation of the driver
+  *  -----------------------------------------------------------------------------------------------------------------*/
+/**        \file  ADC.c
+  *        \brief  Analog Digital Converter
+  *
+  *      \details  This file contains the static implementation of the driver
   *                  it contains all the function implementation logic
-  *
-  *
-  *********************************************************************************************************************/
+  *
+  *
+  *********************************************************************************************************************/
 
 /**********************************************************************************************************************
  *  INCLUDES
@@ -16,6 +16,7 @@
 
 #include "../inc/ADC.h"
 #include "../../Dynamic/inc/ADC_Cfg.h"
+#include <stdlib.h>
 
 #include "../../General_Common/Std_Types.h"
 #include "../../General_Common/Mcu_Hw.h"
@@ -101,6 +102,7 @@ void ADC_Init(void){
         /* Sample sequencer priority */
         REG_ORING_ONE_BIT_CASTING_POINTED(base + ADC_SSPRI_OFFSET, ADC_SS_Container[i].SampleSequencer_Priority << (ADC_SS_Container[i].sampleSequencer_Num * 4) );
 
+        my_ADC_Buffers[ADC_SS_Container[i].sampleSequencer_Num + (ADC_SS_Container[i].ADC_Num * 4)] = NormalQueue_Create_STATIC_uint(Normal_Queue_uint16);
     }
 
     /* Second, we initialize the configured ADC Channels */
@@ -202,7 +204,7 @@ Std_ReturnType ADC_SetupResultBuffer(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType
         return my_return;
     }
     else if(my_ADC_Buffers[mySampleSequencerNm + (4*ADC_Num)] != Null_Ptr){
-        my_return = E_NOK;
+        free(my_ADC_Buffers[mySampleSequencerNm + (4*ADC_Num)]);
     }
     my_ADC_Buffers[mySampleSequencerNm + (4*ADC_Num)] = DataBufferPtr;
 
@@ -268,32 +270,19 @@ uint32 ADC_ReadOneValue(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequ
 
     base = ADC_Get_Base(ADC_Num);
 
-
-    /* in case there is no data in the built-in queue, then apply a read operation */
-    if(NormalQueue_Static_isEmpty( my_ADC_Buffers[mySampleSequencerNm + (ADC_Num*4)] ) ){
-
-        ADC_StartConversion(ADC_Num, mySampleSequencerNm);
-        /* the sample finished it's conversion ? */
-        do{
-            REG_READ_CASTING_POINTED(RegisterCheck, base + ADC_RIS_OFFSET );
-        }while(RegisterCheck & (1 << mySampleSequencerNm));
-
-        REG_READ_CASTING_POINTED(data, base + ADC_SSFIFOn_OFFSET + (mySampleSequencerNm*0x20) );
-
-        REG_ORING_ONE_BIT_CASTING_POINTED(base + ADC_ISC_OFFSET , mySampleSequencerNm);
-    }else{
-        /* in case there is data in the built-in queue, just return it */
-        data = NormalQueue_Static_remove(my_ADC_Buffers[mySampleSequencerNm + (ADC_Num*4)]);
+    if( my_ADC_Buffers[mySampleSequencerNm + (ADC_Num * 4)] == Null_Ptr){
+        return 0;
     }
 
-    return data;
+    if( NormalQueue_Static_isEmpty(my_ADC_Buffers[mySampleSequencerNm + (ADC_Num * 4)] ) ){
+        ADC_ReadingOperation(ADC_Num, mySampleSequencerNm);
+    }
 
+    return NormalQueue_Static_remove(my_ADC_Buffers[mySampleSequencerNm + (ADC_Num * 4)] );
 }
 
 
 /**********************************************************************************************************************
  *  END OF FILE: ADC.c
  *********************************************************************************************************************/
-
-
 

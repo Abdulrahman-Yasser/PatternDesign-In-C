@@ -17,12 +17,15 @@ Normal_Queue_DynamicUint *NormalQueue_Create_DYNAMIC_uint(uint8 Dynamic_Size, No
         switch(queue_type){
         case Normal_Queue_uint8:
             me->Buffer.u8_ptr = (uint8*)malloc(sizeof(uint8) * Dynamic_Size);
+            me->Buffer.u8_ptr[0] = 0;
             break;
         case Normal_Queue_uint16:
             me->Buffer.u16_ptr = (uint16*)malloc(sizeof(uint16) * Dynamic_Size);
+            me->Buffer.u16_ptr[0] = 0;
             break;
         case Normal_Queue_uint32:
-            me->Buffer.u32_ptr = (uint32*)malloc(sizeof(uint16) * Dynamic_Size);
+            me->Buffer.u32_ptr = (uint32*)malloc(sizeof(uint32) * Dynamic_Size);
+            me->Buffer.u32_ptr[0] = 0;
             break;
         }
 
@@ -52,6 +55,7 @@ Normal_Queue_StaticUint *NormalQueue_Create_STATIC_uint(Normal_Queue_Types queue
     }
     return me;
 }
+
 void NormalQueue_Destroy_STATIC_uint(Normal_Queue_StaticUint* const me){
 }
 
@@ -65,6 +69,7 @@ uint8 NormalQueue_Static_isEmpty(Normal_Queue_StaticUint* const my_queue){
 uint8 NormalQueue_Static_getSize(Normal_Queue_StaticUint* const my_queue){
     return my_queue->size;
 }
+
 void NormalQueue_Static_insert(Normal_Queue_StaticUint* const my_queue, uint32 data){
     if(!NormalQueue_Static_isFull(my_queue)){
         switch(my_queue->my_type){
@@ -82,6 +87,7 @@ void NormalQueue_Static_insert(Normal_Queue_StaticUint* const my_queue, uint32 d
         ++my_queue->size;
     }
 }
+
 uint32 NormalQueue_Static_remove(Normal_Queue_StaticUint* const my_queue){
     uint32 result = 0;
     if(!NormalQueue_Static_isEmpty(my_queue)){
@@ -104,7 +110,7 @@ uint32 NormalQueue_Static_remove(Normal_Queue_StaticUint* const my_queue){
 
 
 uint8 NormalQueue_Dynamic_isFull(Normal_Queue_DynamicUint* const my_queue){
-    return(my_queue->head + 1) % my_queue->Dynamic_Size == my_queue->tail;
+    return (my_queue->head + 1) % my_queue->Dynamic_Size == my_queue->tail;
 }
 uint8 NormalQueue_Dynamic_isEmpty(Normal_Queue_DynamicUint* const my_queue){
     return (my_queue->head == my_queue->tail);

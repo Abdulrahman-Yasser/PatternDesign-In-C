@@ -15,8 +15,8 @@ int main(){
     p_TestBuilder = TestBuilder_Create();
 
     LCD_Handler_Type *my_lcd;
-    my_lcd = LCD_Create(LCD_Interface_I2C, HISTOGRAM_LCD_ID);
-    HistogramDisplay_setItsLCD(&(p_TestBuilder->itsHistogramDisplay), my_lcd);
+//    my_lcd = LCD_Create(LCD_Interface_I2C, HISTOGRAM_LCD_ID);
+//    HistogramDisplay_setItsLCD(&(p_TestBuilder->itsHistogramDisplay), my_lcd);
 
     while(1){
         Delay_ms(1000);
