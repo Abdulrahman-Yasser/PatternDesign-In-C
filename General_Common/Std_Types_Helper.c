@@ -28,14 +28,15 @@ void Delay_ms(unsigned long long n){
 
 char* int_to_string(uint32 var){
     char* s;
-    uint8 i = 0, j = 0;
+    uint8 i = 1, j = 0;
     uint32 temp = var;
 
-    while(temp > 0){
+    do{
         i++;
         temp /= 10;
-    }
-    s = (char*)malloc(sizeof(char) * i);
+    }while(temp > 0);
+
+    s = (char*)malloc(sizeof(char) * (i + 1));
 
     while(i > j){
         s[j] = (var % 10) + '0';

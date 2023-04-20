@@ -88,6 +88,7 @@ LCD_Handler_Type *LCD_Create(LCD_Interface_Type LCD_Interface_arg, uint8 LCD_ID)
             me->LCD_Write_Cmd(me, LCD_I2C_INST_DISPLAY_ON_CURSOR_ON_BLK_OFF);
         }
     }
+    me->LCD_Write_Cmd(me, LCD_I2C_INST_CLEAR);
     return me;
 }
 

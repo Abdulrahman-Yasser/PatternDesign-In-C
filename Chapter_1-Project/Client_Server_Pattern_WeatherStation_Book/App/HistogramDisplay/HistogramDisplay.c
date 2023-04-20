@@ -48,16 +48,19 @@ void HistogramDisplay_getValue(HistogramDisplay* const me){
         return ;
     }
 
-    me->my_lcd->LCD_Write_Cmd(me->my_lcd, LCD_I2C_SET_DDRAM_ADDRESS(0, 0));
+    me->my_lcd->LCD_Write_Cmd(me->my_lcd, LCD_I2C_INST_CURSOR_GO_1ST_LINE);
 
     s = int_to_string(tmd.time.hours);
     me->my_lcd->LCD_Write_Data(me->my_lcd, s);
+    free(s);
 
     s = int_to_string(tmd.time.minutes);
     me->my_lcd->LCD_Write_Data(me->my_lcd, s);
+    free(s);
 
     s = int_to_string(tmd.time.seconds);
     me->my_lcd->LCD_Write_Data(me->my_lcd, s);
+    free(s);
 
     me->my_lcd->LCD_Write_Cmd(me->my_lcd, LCD_I2C_INST_CURSOR_GO_2ND_LINE);
 
@@ -65,6 +68,7 @@ void HistogramDisplay_getValue(HistogramDisplay* const me){
 
     s = int_to_string(tmd.temperature_value);
     me->my_lcd->LCD_Write_Data(me->my_lcd, s);
+    free(s);
 }
 
 void HistogramDisplay_updateHistogram(HistogramDisplay* const me){

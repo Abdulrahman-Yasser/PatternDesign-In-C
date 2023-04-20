@@ -32,6 +32,12 @@ void TestingLCD_Loop(void){
         me->LCD_Write_Cmd(me, LCD_I2C_INST_CURSOR_GO_2ND_LINE);
         me->LCD_Write_Data(me, Goodbye);
         Delay_ms(1000);
+        me->LCD_Write_Cmd(me, LCD_I2C_SET_DDRAM_ADDRESS(0, 8));
+        me->LCD_Write_Data(me, "FORM 8");
+        Delay_ms(1000);
+        me->LCD_Write_Cmd(me, LCD_I2C_SET_DDRAM_ADDRESS(1, 7));
+        me->LCD_Write_Data(me, "FORM 7");
+        Delay_ms(1000);
     }
 }
 
