@@ -4,8 +4,8 @@ This code uses I2C LCD Serial Interface Module and control LCD <br>
 the code goes to line 1, print "HEllp !", Deletes it, goes to line 2, print "Goodbye", Deletes it. <br>
 
 ## video : 
-[running the code]() <br>
-[Link for explaining how lcd works]()<br>
+[running the code](https://youtu.be/eY6lXMR9aqo) <br>
+
 
 ## Pins out for the module : 
 
