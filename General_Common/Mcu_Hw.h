@@ -56,8 +56,17 @@ Nasted Vector Interrupt Controller (NVIC)
 #define GPIO_PORTF_BASE_ADDRESS           0x40025000
 
 /* GPIO Registers offset addresses */
+
 #define PORT_DATA_REG_OFFSET              0x3FC
 #define PORT_DIR_REG_OFFSET               0x400
+#define PORT_IS_REG_OFFSET                0x404
+#define PORT_IBE_REG_OFFSET               0x408
+#define PORT_IEV_REG_OFFSET               0x40C
+#define PORT_IM_REG_OFFSET                0x410
+#define PORT_RIS_REG_OFFSET_REG_OFFSET    0x414
+#define PORT_MI_REG_OFFSETS               0x418
+#define PORT_ICR_REG_OFFSET               0x41C
+
 #define PORT_ALT_FUNC_REG_OFFSET          0x420
 #define PORT_2_MA_DRIVE_REG_OFFSET        0X500
 #define PORT_4_MA_DRIVE_REG_OFFSET        0X504

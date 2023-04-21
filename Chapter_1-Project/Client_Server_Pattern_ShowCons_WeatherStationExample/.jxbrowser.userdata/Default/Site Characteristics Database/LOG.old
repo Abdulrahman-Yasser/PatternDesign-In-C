@@ -1,0 +1,5 @@
+2023/03/03-21:47:26.816 458 Log #3: 2 ops saved to Table #4 OK
+2023/03/03-21:47:26.817 458 Archiving F:\Courses-Books-AND-Educational\PatternDesign-In-C\Chapter_1-Project\Client_Server_Pattern_WeatherStationExample\.jxbrowser.userdata\Default\Site Characteristics Database/000003.log: OK
+2023/03/03-21:47:26.817 458 Table #4: 2 entries OK
+2023/03/03-21:47:26.819 458 Archiving F:\Courses-Books-AND-Educational\PatternDesign-In-C\Chapter_1-Project\Client_Server_Pattern_WeatherStationExample\.jxbrowser.userdata\Default\Site Characteristics Database/MANIFEST-000001: OK
+2023/03/03-21:47:26.827 458 **** Repaired leveldb F:\Courses-Books-AND-Educational\PatternDesign-In-C\Chapter_1-Project\Client_Server_Pattern_WeatherStationExample\.jxbrowser.userdata\Default\Site Characteristics Database; recovered 1 files; 191 bytes. Some data may have been lost. ****

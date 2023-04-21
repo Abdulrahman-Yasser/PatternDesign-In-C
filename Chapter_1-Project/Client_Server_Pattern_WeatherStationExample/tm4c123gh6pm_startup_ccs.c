@@ -54,7 +54,12 @@ extern uint32_t __STACK_TOP;
 // External declarations for the interrupt handlers used by the application.
 //
 //*****************************************************************************
-// To be added by user
+
+//*****************************************************************************
+//
+// UART ISR
+//
+//*****************************************************************************
 extern void uart0_handler(void);
 
 extern void uart1_handler(void);
@@ -70,6 +75,24 @@ extern void uart5_handler(void);
 extern void uart6_handler(void);
 
 extern void uart7_handler(void);
+
+
+//*****************************************************************************
+//
+// GPIO ISR
+//
+//*****************************************************************************
+extern void DIO_A_handler(void);
+
+extern void DIO_B_handler(void);
+
+extern void DIO_C_handler(void);
+
+extern void DIO_D_handler(void);
+
+extern void DIO_E_handler(void);
+
+extern void DIO_F_handler(void);
 
 
 //*****************************************************************************
@@ -99,11 +122,11 @@ void (* const g_pfnVectors[])(void) =
     0,                                      // Reserved
     IntDefaultHandler,                      // The PendSV handler
     IntDefaultHandler,                      // The SysTick handler
-    IntDefaultHandler,                      // GPIO Port A
-    IntDefaultHandler,                      // GPIO Port B
-    IntDefaultHandler,                      // GPIO Port C
-    IntDefaultHandler,                      // GPIO Port D
-    IntDefaultHandler,                      // GPIO Port E
+    DIO_A_handler,                      // GPIO Port A
+    DIO_B_handler,                      // GPIO Port B
+    DIO_C_handler,                      // GPIO Port C
+    DIO_D_handler,                      // GPIO Port D
+    DIO_E_handler,                      // GPIO Port E
     uart0_handler,                              // UART0 Rx and Tx
     uart1_handler,                              // UART1 Rx and Tx
     IntDefaultHandler,                      // SSI0 Rx and Tx
@@ -129,7 +152,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // Analog Comparator 2
     IntDefaultHandler,                      // System Control (PLL, OSC, BO)
     IntDefaultHandler,                      // FLASH Control
-    IntDefaultHandler,                      // GPIO Port F
+    DIO_F_handler,                      // GPIO Port F
     IntDefaultHandler,                      // GPIO Port G
     IntDefaultHandler,                      // GPIO Port H
     uart2_handler,                              // UART2 Rx and Tx

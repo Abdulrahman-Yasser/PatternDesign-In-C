@@ -22,8 +22,10 @@ int main(){
         Delay_ms(1000);
 
         /* Read the tmdQueue values and push it to the server */
+        /* Publishing to the server */
         WeatherStation_Module_acquireValue(&(p_TestBuilder->itsWeatherStation_Module));
 
+        /* Subscribing to the server */
         HistogramDisplay_updateHistogram(&(p_TestBuilder->itsHistogramDisplay));
 
     }

@@ -22,9 +22,116 @@
 #include "../inc/DIO.h"
 
 
+extern void  DIO_A_handler(void);
+
+extern void  DIO_B_handler(void);
+
+extern void  DIO_C_handler(void);
+
+extern void  DIO_D_handler(void);
+
+extern void  DIO_E_handler(void);
+
+extern void  DIO_F_handler(void);
+
+/**********************************************************************************************************************
+ *  STATIC VARIABLES
+ *********************************************************************************************************************/
+
+static void  (*DIO_A_handler_static)(void);
+static void  (*DIO_B_handler_static)(void);
+static void  (*DIO_C_handler_static)(void);
+static void  (*DIO_D_handler_static)(void);
+static void  (*DIO_E_handler_static)(void);
+static void  (*DIO_F_handler_static)(void);
+
+/**********************************************************************************************************************
+ *  STATIC FUNCTIONS
+ *********************************************************************************************************************/
+
+static void DIO_Default_Isr(void);
+static void Dio_ISR_Init(void);
+inline static uint32 Dio_GetBase_Channel(DIO_ChannelType ChannelId);
+inline static uint32 Dio_GetBase_Port(DIO_PortType PortId);
+
+
+static void DIO_Default_Isr(void){
+    while(1);
+}
+
+static void Dio_ISR_Init(void){
+    DIO_A_handler_static = DIO_Default_Isr;
+    DIO_B_handler_static = DIO_Default_Isr;
+    DIO_C_handler_static = DIO_Default_Isr;
+    DIO_D_handler_static = DIO_Default_Isr;
+    DIO_E_handler_static = DIO_Default_Isr;
+    DIO_F_handler_static = DIO_Default_Isr;
+}
+
+inline static uint32 Dio_GetBase_Channel(DIO_ChannelType ChannelId){
+    uint32 temp;
+    switch(ChannelId / 8){
+    case 0:
+        temp = GPIO_PORTA_BASE_ADDRESS;
+        break;
+    case 1:
+        temp = GPIO_PORTB_BASE_ADDRESS;
+        break;
+    case 2:
+        temp = GPIO_PORTC_BASE_ADDRESS;
+        break;
+    case 3:
+        temp = GPIO_PORTD_BASE_ADDRESS;
+        break;
+    case 4:
+        temp = GPIO_PORTE_BASE_ADDRESS ;
+        break;
+    case 5:
+        temp = GPIO_PORTF_BASE_ADDRESS ;
+        break;
+    default:
+        break;
+    }
+    return temp;
+}
+
+inline static uint32 Dio_GetBase_Port(DIO_PortType PortId){
+    uint32 temp;
+    switch(PortId){
+    case DIO_PORTA:
+        temp = GPIO_PORTA_BASE_ADDRESS;
+        break;
+    case DIO_PORTB:
+        temp = GPIO_PORTB_BASE_ADDRESS;
+        break;
+    case DIO_PORTC:
+        temp = GPIO_PORTC_BASE_ADDRESS;
+        break;
+    case DIO_PORTD:
+        temp = GPIO_PORTD_BASE_ADDRESS;
+        break;
+    case DIO_PORTE:
+        temp = GPIO_PORTE_BASE_ADDRESS ;
+        break;
+    case DIO_PORTF:
+        temp = GPIO_PORTF_BASE_ADDRESS ;
+        break;
+    default:
+        break;
+    }
+    return temp;
+}
 /**********************************************************************************************************************
  *  GLOBAL FUNCTIONS
  *********************************************************************************************************************/
+
+void Dio_Init(void){
+    uint8 i = 0;
+    Dio_ISR_Init();
+    for(i = 0; i < DIO_CONFIGURED_NUMBER; i++){
+        Dio_Init_ISR(DIO_Container[i].DIO_ch, DIO_Container[i].DIO_Isr);
+    }
+}
 
 
 /******************************************************************************
@@ -39,30 +146,10 @@
 *                                       DIO_Level_LOW
 *******************************************************************************/
 DIO_LevelType Dio_ReadChannel(DIO_ChannelType ChannelId){
-    uint32 temp;
-    switch(ChannelId / 8){
-    case 0:
-        temp = *(volatile uint32*)((uint8*)GPIO_PORTA_DATA_ADDRESS + ( (1 << ChannelId%8) << 2));
-        break;
-    case 1:
-        temp = *(volatile uint32*)((uint8*)GPIO_PORTB_DATA_ADDRESS + ( (1 << ChannelId%8) << 2));
-        break;
-    case 2:
-        temp = *(volatile uint32*)((uint8*)GPIO_PORTC_DATA_ADDRESS + ( (1 << ChannelId%8) << 2));
-        break;
-    case 3:
-        temp = *(volatile uint32*)((uint8*)GPIO_PORTD_DATA_ADDRESS + ( (1 << ChannelId%8) << 2));
-        break;
-    case 4:
-        temp = *(volatile uint32*)((uint8*)GPIO_PORTE_DATA_ADDRESS + ( (1 << ChannelId%8) << 2));
-        break;
-    case 5:
-        temp = *(volatile uint32*)((uint8*)GPIO_PORTF_DATA_ADDRESS + ( (1 << ChannelId%8) << 2));
-        break;
-    default:
-        break;
-    }
-    if(temp > 0){
+    uint32 base, registerChecker;
+    base = Dio_GetBase_Channel(ChannelId);
+    REG_READ_CASTING_POINTED(registerChecker, base + ((ChannelId%8) << 2));
+    if(registerChecker > 0){
         return DIO_Level_HIGH;
     }else{
         return DIO_Level_LOW;
@@ -81,52 +168,12 @@ DIO_LevelType Dio_ReadChannel(DIO_ChannelType ChannelId){
 * \Return value:   : None
 * *******************************************************************************/
 void Dio_WriteChannel(DIO_ChannelType ChannelId, DIO_LevelType Level){
+    uint32 base;
+    base = Dio_GetBase_Channel(ChannelId);
     if(Level == DIO_Level_HIGH){
-        switch(ChannelId / 8){
-        case 0:
-            *(volatile uint32*)((uint8*)GPIO_PORTA_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) |= 0XFF;
-            break;
-        case 1:
-            *(volatile uint32*)((uint8*)GPIO_PORTB_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) |= 0XFF;
-            break;
-        case 2:
-            *(volatile uint32*)((uint8*)GPIO_PORTC_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) |= 0XFF;
-            break;
-        case 3:
-            *(volatile uint32*)((uint8*)GPIO_PORTD_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) |= 0XFF;
-            break;
-        case 4:
-            *(volatile uint32*)((uint8*)GPIO_PORTE_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) |= 0XFF;
-            break;
-        case 5:
-            *(volatile uint32*)((uint8*)GPIO_PORTF_DATA_ADDRESS + ( (1 << (ChannelId%8)) << 2)) |= 0XFF;
-            break;
-        default:
-            break;
-        }
+        REG_ORING_CASTING_POINTED(base + ((ChannelId%8) << 2), 0xff);
     }else{
-        switch(ChannelId / 8){
-        case 0:
-            *(volatile uint32*)((uint8*)GPIO_PORTA_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) &= ~(0XFF);
-            break;
-        case 1:
-            *(volatile uint32*)((uint8*)GPIO_PORTB_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) &= ~(0XFF);
-            break;
-        case 2:
-            *(volatile uint32*)((uint8*)GPIO_PORTC_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) &= ~(0XFF);
-            break;
-        case 3:
-            *(volatile uint32*)((uint8*)GPIO_PORTD_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) &= ~(0XFF);
-            break;
-        case 4:
-            *(volatile uint32*)((uint8*)GPIO_PORTE_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) &= ~(0XFF);
-            break;
-        case 5:
-            *(volatile uint32*)((uint8*)GPIO_PORTF_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) &= ~(0XFF);
-            break;
-        default:
-            break;
-        }
+        REG_CLEAR_CASTING_POINTED(base + ((ChannelId%8) << 2));
     }
 }
 
@@ -142,26 +189,9 @@ void Dio_WriteChannel(DIO_ChannelType ChannelId, DIO_LevelType Level){
 *******************************************************************************/
 DIO_PortLevelType Dio_ReadPort(DIO_PortType PortId){
     DIO_PortLevelType myLevel;
-    switch(PortId){
-    case DIO_PORTA:
-        myLevel = GPIO_PORTA_DATA_REG;
-        break;
-    case DIO_PORTB:
-        myLevel = GPIO_PORTB_DATA_REG;
-        break;
-    case DIO_PORTC:
-        myLevel = GPIO_PORTC_DATA_REG;
-        break;
-    case DIO_PORTD:
-        myLevel = GPIO_PORTD_DATA_REG;
-        break;
-    case DIO_PORTE:
-        myLevel = GPIO_PORTE_DATA_REG & 0b111111;
-        break;
-    case DIO_PORTF:
-        myLevel = GPIO_PORTF_DATA_REG & 0b11111;
-        break;
-    }
+    uint32 base;
+    base = Dio_GetBase_Port(PortId);
+    REG_READ_CASTING_POINTED(myLevel, base + PORT_DATA_REG_OFFSET);
     return myLevel;
 }
 
@@ -177,28 +207,9 @@ DIO_PortLevelType Dio_ReadPort(DIO_PortType PortId){
 * \Return value:   : None
 * *******************************************************************************/
 void Dio_WritePort(DIO_PortType PortId, DIO_PortLevelType Level){
-    switch(PortId / 8){
-    case 0:
-        GPIO_PORTA_DATA_REG = Level;
-        break;
-    case 1:
-        GPIO_PORTB_DATA_REG = Level;
-        break;
-    case 2:
-        GPIO_PORTC_DATA_REG = Level;
-        break;
-    case 3:
-        GPIO_PORTD_DATA_REG = Level;
-        break;
-    case 4:
-        GPIO_PORTE_DATA_REG = Level;
-        break;
-    case 5:
-        GPIO_PORTF_DATA_REG = Level;
-        break;
-    default:
-        break;
-    }
+    uint32 base;
+    base = Dio_GetBase_Port(PortId);
+    REG_WRITE_CASTING_POINTED(base + PORT_DATA_REG_OFFSET, PortId);
 }
 
 /******************************************************************************
@@ -212,41 +223,101 @@ void Dio_WritePort(DIO_PortType PortId, DIO_PortLevelType Level){
 * \Return value:   : DIO_LevelType      The output level on the Pin
 *******************************************************************************/
 DIO_LevelType Dio_FlipChannel(DIO_ChannelType ChannelId){
-    uint8 myLevel;
-    switch(ChannelId / 8){
-    case 0:
-        *(volatile uint32*)((uint8*)GPIO_PORTA_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) ^= 0XFF;
-        myLevel = *(volatile uint32*)((uint8*)GPIO_PORTA_DATA_ADDRESS + ( (1 << ChannelId%8) << 2));
-        break;
-    case 1:
-        *(volatile uint32*)((uint8*)GPIO_PORTB_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) ^= 0XFF;
-        myLevel = *(volatile uint32*)((uint8*)GPIO_PORTB_DATA_ADDRESS + ( (1 << ChannelId%8) << 2));
-        break;
-    case 2:
-        *(volatile uint32*)((uint8*)GPIO_PORTC_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) ^= 0XFF;
-        myLevel = *(volatile uint32*)((uint8*)GPIO_PORTC_DATA_ADDRESS + ( (1 << ChannelId%8) << 2));
-        break;
-    case 3:
-        *(volatile uint32*)((uint8*)GPIO_PORTD_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) ^= 0XFF;
-        myLevel = *(volatile uint32*)((uint8*)GPIO_PORTD_DATA_ADDRESS + ( (1 << ChannelId%8) << 2));
-        break;
-    case 4:
-        *(volatile uint32*)((uint8*)GPIO_PORTE_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) ^= 0XFF;
-        myLevel = *(volatile uint32*)((uint8*)GPIO_PORTE_DATA_ADDRESS + ( (1 << ChannelId%8) << 2));
-        break;
-    case 5:
-        *(volatile uint32*)((uint8*)GPIO_PORTF_DATA_ADDRESS + ( (1 << ChannelId%8) << 2)) ^= 0XFF;
-        myLevel = *(volatile uint32*)((uint8*)GPIO_PORTF_DATA_ADDRESS + ( (1 << ChannelId%8) << 2));
-        break;
-    default:
-        break;
-    }
-    if(myLevel > 0){
-        return DIO_Level_HIGH;
-    }else{
+    uint32 base, registerChecker;
+    base = Dio_GetBase_Channel(ChannelId);
+    REG_READ_CASTING_POINTED(registerChecker, base + ((ChannelId%8) << 2));
+
+    if(registerChecker > 0){
+        REG_CLEAR_CASTING_POINTED(base + ((ChannelId%8) << 2));
         return DIO_Level_LOW;
+    }else{
+        REG_ORING_CASTING_POINTED(base + ((ChannelId%8) << 2), 0xff);
+        return DIO_Level_HIGH;
     }
 }
+
+void Dio_Init_ISR(DIO_ChannelType ChannelId, DIO_ChannelISR_Type ISR_Event){
+    uint32 registerChecker, base;
+    base = Dio_GetBase_Channel(ChannelId);
+    REG_READ_CASTING_POINTED(registerChecker, base + PORT_DIR_REG_OFFSET);
+    registerChecker = registerChecker & (1 << ChannelId);
+    if(registerChecker > 0){
+        /* the channel is fucking output !!! */
+        return;
+    }else{
+        /* the channel is input, you good to go */
+        REG_ORING_ONE_BIT_CASTING_POINTED(base + PORT_IM_REG_OFFSET, ChannelId % 8);
+        if(ISR_Event < 3){
+            /* it's Edge Sensitive */
+            REG_CLEAR_ONE_BIT_CASTING_POINTED(base + PORT_IS_REG_OFFSET, ChannelId % 8);
+            if(ISR_Event == DIO_ChannelISR_edges_both){
+                REG_ORING_ONE_BIT_CASTING_POINTED(base + PORT_IBE_REG_OFFSET, ChannelId % 8);
+            }else if(ISR_Event == DIO_ChannelISR_edges_falling){
+                REG_CLEAR_ONE_BIT_CASTING_POINTED(base + PORT_IBE_REG_OFFSET, ChannelId % 8);
+                REG_CLEAR_ONE_BIT_CASTING_POINTED(base + PORT_IEV_REG_OFFSET, ChannelId % 8);
+            }else{
+                REG_CLEAR_ONE_BIT_CASTING_POINTED(base + PORT_IBE_REG_OFFSET, ChannelId % 8);
+                REG_ORING_ONE_BIT_CASTING_POINTED(base + PORT_IEV_REG_OFFSET, ChannelId % 8);
+            }
+        }else{
+            /* It's Level Sensitive */
+            REG_ORING_ONE_BIT_CASTING_POINTED(base + PORT_IS_REG_OFFSET, ChannelId % 8);
+            if(ISR_Event == DIO_ChannelISR_level_high){
+                REG_ORING_ONE_BIT_CASTING_POINTED(base + PORT_IEV_REG_OFFSET, ChannelId % 8);
+            }else{
+                REG_CLEAR_ONE_BIT_CASTING_POINTED(base + PORT_IEV_REG_OFFSET, ChannelId % 8);
+            }
+        }
+    }
+}
+
+void Dio_Set_CallBackFun(DIO_ChannelType ChannelId, void (*DioCallBackFun)(void)){
+    switch(ChannelId % 8){
+    case 0:
+        DIO_A_handler_static = DioCallBackFun;
+        break;
+    case 1:
+        DIO_B_handler_static = DioCallBackFun;
+        break;
+    case 2:
+        DIO_C_handler_static = DioCallBackFun;
+        break;
+    case 3:
+        DIO_D_handler_static = DioCallBackFun;
+        break;
+    case 4:
+        DIO_E_handler_static = DioCallBackFun;
+        break;
+    case 5:
+        DIO_F_handler_static = DioCallBackFun;
+        break;
+    }
+}
+
+void __attribute__((weak)) DIO_A_handler(void){
+    DIO_A_handler_static();
+}
+
+void __attribute__((weak)) DIO_B_handler(void){
+    DIO_B_handler_static();
+}
+
+void __attribute__((weak)) DIO_C_handler(void){
+    DIO_C_handler_static();
+}
+
+void __attribute__((weak)) DIO_D_handler(void){
+    DIO_D_handler_static();
+}
+
+void __attribute__((weak)) DIO_E_handler(void){
+    DIO_E_handler_static();
+}
+
+void __attribute__((weak)) DIO_F_handler(void){
+    DIO_F_handler_static();
+}
+
 
 /**********************************************************************************************************************
  *  END OF FILE: DIO.c

@@ -13,8 +13,8 @@
 void Sensor_Init(Sensor_Type* const me, SENSOR_READ_TYPE (*GetValueFunction)(Sensor_Type* const me));
 void Sensor_Cleanup(Sensor_Type* const me) ;
 
-SENSOR_READ_TYPE GetValueFunction_Digital(Sensor_Type* const me);
-SENSOR_READ_TYPE GetValueFunction_Analog(Sensor_Type* const me);
+static SENSOR_READ_TYPE GetValueFunction_Digital(Sensor_Type* const me);
+static SENSOR_READ_TYPE GetValueFunction_Analog(Sensor_Type* const me);
 
 
 /* Constructor */
@@ -49,10 +49,10 @@ void Sensor_Destroy( Sensor_Type* const me){
 }
 
 
-SENSOR_READ_TYPE GetValueFunction_Digital(Sensor_Type* const me){
+static SENSOR_READ_TYPE GetValueFunction_Digital(Sensor_Type* const me){
     return Dio_ReadChannel(Sensor_Digital_Config[me->Sensor_ID].Sensor_Data_Pins);
 }
 
-SENSOR_READ_TYPE GetValueFunction_Analog(Sensor_Type* const me){
+static SENSOR_READ_TYPE GetValueFunction_Analog(Sensor_Type* const me){
     return ADC_ReadOneValue( Sensor_Analog_Config[me->Sensor_ID].ADC_Num, Sensor_Analog_Config[me->Sensor_ID].sampleSequencer_Num);
 }

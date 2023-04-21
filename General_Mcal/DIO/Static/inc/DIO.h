@@ -25,6 +25,8 @@
  *  GLOBAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
 
+void Dio_Init(void);
+
 DIO_LevelType Dio_ReadChannel(DIO_ChannelType ChannelId);
 
 void Dio_WriteChannel(DIO_ChannelType ChannelId, DIO_LevelType Level);
@@ -34,6 +36,11 @@ DIO_PortLevelType Dio_ReadPort(DIO_PortType PortId);
 void Dio_WritePort(DIO_PortType PortId, DIO_PortLevelType Level);
 
 DIO_LevelType Dio_FlipChannel(DIO_ChannelType ChannelId);
+
+void Dio_Init_ISR(DIO_ChannelType ChannelId, DIO_ChannelISR_Type ISR_Event);
+
+void Dio_Set_CallBackFun(DIO_ChannelType ChannelId, void (*DioCallBackFun)(void));
+
 
 #endif    /* DIO_H */
 

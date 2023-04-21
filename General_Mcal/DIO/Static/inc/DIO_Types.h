@@ -37,8 +37,19 @@ typedef enum{
 }DIO_PortType;
 
 typedef enum{
+    DIO_ChannelISR_edges_both, DIO_ChannelISR_edges_falling, DIO_ChannelISR_edges_rising,
+    DIO_ChannelISR_level_low, DIO_ChannelISR_level_high, DIO_ChannelISR_NotUsed
+}DIO_ChannelISR_Type;
+
+typedef enum{
     DIO_Level_LOW, DIO_Level_HIGH
 }DIO_LevelType;
+
+struct DIO_ContainerType{
+    DIO_ChannelType DIO_ch;
+    DIO_LevelType DIO_Init_Lvl;
+    DIO_ChannelISR_Type DIO_Isr;
+};
 
 typedef uint8 DIO_PortLevelType;
 
