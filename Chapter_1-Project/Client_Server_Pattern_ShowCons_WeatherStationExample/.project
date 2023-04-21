@@ -40,6 +40,11 @@
 			<type>2</type>
 			<location>F:/PatternDesign-In-C/General_Mcal</location>
 		</link>
+		<link>
+			<name>General_SpecificDrivers</name>
+			<type>2</type>
+			<location>F:/PatternDesign-In-C/General_SpecificDrivers</location>
+		</link>
 	</linkedResources>
 	<variableList>
 		<variable>

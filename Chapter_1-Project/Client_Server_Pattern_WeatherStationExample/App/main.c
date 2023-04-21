@@ -21,7 +21,7 @@ int main(){
 
     /* FireDisplay client */
     DigitalInterface_Type* my_Buzzer;
-    my_Buzzer = Digital_Interface_Create(Buzzed_ID);
+    my_Buzzer = Digital_Interface_Create(Buzzer_ID);
     FireDisplay_setItsBUZZER(&(p_TestBuilder->itsFireDisplay), my_Buzzer);
 
     DigitalInterface_Type* my_Led;

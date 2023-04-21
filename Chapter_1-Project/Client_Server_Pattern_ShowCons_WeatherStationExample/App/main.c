@@ -7,12 +7,21 @@
 
 void Board_init(void);
 
+void my_isr_dio(void);
+
+TestBuilder * p_TestBuilder;
+
+Button_Type *my_button;
+
 int main(){
     Board_init();
 
-    TestBuilder * p_TestBuilder;
-
     p_TestBuilder = TestBuilder_Create();
+
+    my_button =Button_Create(DIO_BUTTON_ID);
+    if( E_NOK == Button_Set_CallBackFuncISR(my_button, my_isr_dio)){
+        while(1);
+    }
 
     /* Histogram client */
     LCD_Handler_Type *my_lcd;
@@ -28,12 +37,14 @@ int main(){
     my_Led = Digital_Interface_Create(Led_ID);
     FireDisplay_setItsLED(&(p_TestBuilder->itsFireDisplay), my_Led);
 
+
+
     while(1){
+
         Delay_ms(1000);
 
         /* Read the tmdQueue values and push it to the server */
         /* Publishing to the server */
-        WeatherStation_Module_acquireValue(&(p_TestBuilder->itsWeatherStation_Module));
 
         /* Client 1 is Reading from the server */
         HistogramDisplay_updateHistogram(&(p_TestBuilder->itsHistogramDisplay));
@@ -45,9 +56,19 @@ int main(){
 
 }
 
+void my_isr_dio(void){
+    if( Button_Check_Isr(my_button) ){
+        WeatherStation_Module_acquireValue(&(p_TestBuilder->itsWeatherStation_Module));
+        Button_Remove_Isr(my_button);
+    }
+}
+
+
 void Board_init(void){
     Port_Init();
     I2C_init();
     ADC_Init();
+    Dio_Init();
+    IntCtrl_Init();
     TempDriver_WeatherStation_Init();
 }

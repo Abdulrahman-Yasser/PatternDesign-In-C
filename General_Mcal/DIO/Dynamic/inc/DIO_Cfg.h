@@ -21,8 +21,8 @@
 extern const struct  DIO_ContainerType DIO_Container[DIO_CONFIGURED_NUMBER];
 
 #define DIO_BUZZER_ID           0
-#define DIO_BUTTON_ID           1
-#define DIO_LED_ID              2
+#define DIO_LED_ID              1
+#define DIO_BUTTON_ID           2
 
 
 #define GPIO_UART5_CHECK_PIN         (DIO_ChannelType)DIO_Channel0_B

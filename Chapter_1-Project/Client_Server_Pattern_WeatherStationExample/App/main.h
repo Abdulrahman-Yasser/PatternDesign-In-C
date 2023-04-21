@@ -23,5 +23,5 @@
 #include "../General_HAL/Digital_Intrface/Static/inc/Digital_Interface.h"
 #include "../General_HAL/Digital_Intrface/Dynamic/inc/Digital_Interface_Cfg.h"
 
-#include "SpecificDrivers/TemperatureDriver_WeatherStation/TempratureDriver_WeatherStation.h"
+#include "../General_SpecificDrivers/TemperatureDriver_WeatherStation/TempratureDriver_WeatherStation.h"
 #endif /* APP_MAIN_H_ */

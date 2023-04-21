@@ -53,6 +53,7 @@
 									<listOptionValue builtIn="false" value="&quot;F:\PatternDesign-In-C\General_HAL&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;F:\PatternDesign-In-C\General_Mcal&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;F:\PatternDesign-In-C\General_Common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\PatternDesign-In-C\General_SpecificDrivers&quot;"/>
 								</option>
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_20.2.compilerID.LITTLE_ENDIAN.655549102" name="Little endian code [See 'General' page to edit] (--little_endian, -me)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_20.2.compilerID.LITTLE_ENDIAN" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.TMS470_20.2.compiler.inputType__C_SRCS.1025736498" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.TMS470_20.2.compiler.inputType__C_SRCS"/>
@@ -86,10 +87,11 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="General_HAL|General_Common|General_Mcal" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="General_SpecificDrivers|General_HAL|General_Common|General_Mcal" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="General_Common"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="General_HAL"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="General_Mcal"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="General_SpecificDrivers"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

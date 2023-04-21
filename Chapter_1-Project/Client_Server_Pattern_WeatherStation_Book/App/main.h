@@ -19,6 +19,6 @@
 
 #include "../General_HAL/LCD/Static/inc/LCD.h"
 #include "../General_HAL/LCD/Dynamic/inc/LCD_Cfg.h"
-#include "SpecificDrivers/TemperatureDriver_WeatherStation/inc/TempratureDriver_WeatherStation.h"
+#include "../General_SpecificDrivers/TemperatureDriver_WeatherStation/TempratureDriver_WeatherStation.h"
 
 #endif /* APP_MAIN_H_ */

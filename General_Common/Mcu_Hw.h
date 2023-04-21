@@ -64,7 +64,7 @@ Nasted Vector Interrupt Controller (NVIC)
 #define PORT_IEV_REG_OFFSET               0x40C
 #define PORT_IM_REG_OFFSET                0x410
 #define PORT_RIS_REG_OFFSET_REG_OFFSET    0x414
-#define PORT_MI_REG_OFFSETS               0x418
+#define PORT_MIS_REG_OFFSETS               0x418
 #define PORT_ICR_REG_OFFSET               0x41C
 
 #define PORT_ALT_FUNC_REG_OFFSET          0x420

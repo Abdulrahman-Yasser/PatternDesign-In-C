@@ -5,15 +5,15 @@
  *      Author: Abdu
  */
 
-#include <App/HAL_Patterns/Server/WeatherStation_Module/WeatherStation_Module.h>
-#include <App/SpecificDrivers/SmokeDriver_WeatherStation/SmokeDriver_WeatherStation.h>
-#include <App/SpecificDrivers/TemperatureDriver_WeatherStation/TempratureDriver_WeatherStation.h>
+#include "WeatherStation_Module.h"
+#include "../General_SpecificDrivers/SmokeDriver_WeatherStation/SmokeDriver_WeatherStation.h"
+#include "../General_SpecificDrivers/TemperatureDriver_WeatherStation/TempratureDriver_WeatherStation.h"
 #include <stdlib.h>
 
 
 #include "../../General_HAL/RTC_I2C_DS1307/Static/inc/RTC_I2C_DS1307.h"
 
-#include "../../../SpecificDrivers/TemperatureDriver_WeatherStation/TempratureDriver_WeatherStation.h"
+#include "../General_SpecificDrivers/TemperatureDriver_WeatherStation/TempratureDriver_WeatherStation.h"
 
 static void cleanUpRelations(WeatherStation_Module* const me);
 

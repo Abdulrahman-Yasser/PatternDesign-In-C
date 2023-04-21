@@ -240,7 +240,7 @@ void Dio_Init_ISR(DIO_ChannelType ChannelId, DIO_ChannelISR_Type ISR_Event){
     uint32 registerChecker, base;
     base = Dio_GetBase_Channel(ChannelId);
     REG_READ_CASTING_POINTED(registerChecker, base + PORT_DIR_REG_OFFSET);
-    registerChecker = registerChecker & (1 << ChannelId);
+    registerChecker = registerChecker & (1 << (ChannelId % 8));
     if(registerChecker > 0){
         /* the channel is fucking output !!! */
         return;
@@ -270,6 +270,24 @@ void Dio_Init_ISR(DIO_ChannelType ChannelId, DIO_ChannelISR_Type ISR_Event){
         }
     }
 }
+
+uint8 Dio_Check_Isr(DIO_ChannelType ChannelId){
+    uint32 registerChecker, base;
+    base = Dio_GetBase_Channel(ChannelId);
+    REG_READ_CASTING_POINTED(registerChecker, base + PORT_MIS_REG_OFFSETS);
+    if(registerChecker & (1 << (ChannelId%8))){
+        return 1;
+    }else{
+        return 0;
+    }
+}
+
+uint8 Dio_Remove_Isr(DIO_ChannelType ChannelId){
+    uint32 registerChecker, base;
+    base = Dio_GetBase_Channel(ChannelId);
+    REG_ORING_ONE_BIT_CASTING_POINTED(base + PORT_ICR_REG_OFFSET, ChannelId%8);
+}
+
 
 void Dio_Set_CallBackFun(DIO_ChannelType ChannelId, void (*DioCallBackFun)(void)){
     switch(ChannelId % 8){
@@ -318,6 +336,9 @@ void __attribute__((weak)) DIO_F_handler(void){
     DIO_F_handler_static();
 }
 
+DIO_ChannelType Dio_GetChannelId(uint8 Dio_cfg_Array_ID){
+    return DIO_Container[Dio_cfg_Array_ID].DIO_ch;
+}
 
 /**********************************************************************************************************************
  *  END OF FILE: DIO.c

@@ -8,13 +8,13 @@
 #include <stdlib.h>
 
 
-#include <App/WeatherStation_Module/WeatherStation_Module.h>
+#include "WeatherStation_Module.h"
 
 #include "../../General_HAL/RTC_I2C_DS1307/Static/inc/RTC_I2C_DS1307.h"
 
-#include "../SpecificDrivers/SmokeDriver_WeatherStation/inc/SmokeDriver_WeatherStation.h"
-#include "../SpecificDrivers/TemperatureDriver_WeatherStation/inc/TempratureDriver_WeatherStation.h"
-#include "../SpecificDrivers/LightDriver_WeatherStation/inc/LightDriver_WeatherStation.h"
+#include "../General_SpecificDrivers/SmokeDriver_WeatherStation/SmokeDriver_WeatherStation.h"
+#include "../General_SpecificDrivers/TemperatureDriver_WeatherStation/TempratureDriver_WeatherStation.h"
+#include "../General_SpecificDrivers/LightDriver_WeatherStation/LightDriver_WeatherStation.h"
 
 static void cleanUpRelations(WeatherStation_Module* const me);
 
