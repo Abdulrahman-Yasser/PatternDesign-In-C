@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Proxy_Example</name>
+	<name>Proxy_Pattern</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -26,24 +26,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>Common</name>
-			<type>2</type>
-			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_Common</location>
-		</link>
-		<link>
 			<name>General_Common</name>
 			<type>2</type>
 			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_Common</location>
-		</link>
-		<link>
-			<name>HAL</name>
-			<type>2</type>
-			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_HAL</location>
-		</link>
-		<link>
-			<name>MCAL</name>
-			<type>2</type>
-			<location>F:/Courses-Books-AND-Educational/PatternDesign-In-C/General_Mcal</location>
 		</link>
 	</linkedResources>
 	<variableList>

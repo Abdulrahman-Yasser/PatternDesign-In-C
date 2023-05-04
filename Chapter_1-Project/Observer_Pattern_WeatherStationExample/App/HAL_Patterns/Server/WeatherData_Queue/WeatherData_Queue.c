@@ -13,12 +13,11 @@
 #include <stdlib.h>
 
 
-struct {
+struct WeatherData_Queue{
     Queue_uint8_DYNAMIC_Type* temp;
     Queue_uint8_DYNAMIC_Type* smoke;
-    Queue_uint8_DYNAMIC_Type* light;
     Observable_Type *my_Observable;
-}WeatherData_Queue;
+};
 
 void PrivateSubscribe(Observer *o);
 void PrivateUnSubscribe(Observer *o);

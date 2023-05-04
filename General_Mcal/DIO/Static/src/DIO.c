@@ -149,7 +149,7 @@ void Dio_Init(void){
 DIO_LevelType Dio_ReadChannel(DIO_ChannelType ChannelId){
     uint32 base, registerChecker;
     base = Dio_GetBase_Channel(ChannelId);
-    REG_READ_CASTING_POINTED(registerChecker, base + ((ChannelId%8) << 2));
+    REG_READ_CASTING_POINTED(registerChecker, base + (1 << (ChannelId%8) << 2));
     if(registerChecker > 0){
         return DIO_Level_HIGH;
     }else{
@@ -172,9 +172,9 @@ void Dio_WriteChannel(DIO_ChannelType ChannelId, DIO_LevelType Level){
     uint32 base;
     base = Dio_GetBase_Channel(ChannelId);
     if(Level == DIO_Level_HIGH){
-        REG_ORING_CASTING_POINTED(base + ((ChannelId%8) << 2), 0xff);
+        REG_ORING_CASTING_POINTED(base + (1 << (ChannelId%8) << 2), 0xff);
     }else{
-        REG_CLEAR_CASTING_POINTED(base + ((ChannelId%8) << 2));
+        REG_CLEAR_CASTING_POINTED(base + (1 << (ChannelId%8) << 2));
     }
 }
 
@@ -226,13 +226,13 @@ void Dio_WritePort(DIO_PortType PortId, DIO_PortLevelType Level){
 DIO_LevelType Dio_FlipChannel(DIO_ChannelType ChannelId){
     uint32 base, registerChecker;
     base = Dio_GetBase_Channel(ChannelId);
-    REG_READ_CASTING_POINTED(registerChecker, base + ((ChannelId%8) << 2));
+    REG_READ_CASTING_POINTED(registerChecker, base + (1 << (ChannelId%8) << 2));
 
     if(registerChecker > 0){
-        REG_CLEAR_CASTING_POINTED(base + ((ChannelId%8) << 2));
+        REG_CLEAR_CASTING_POINTED(base + (1 << (ChannelId%8) << 2));
         return DIO_Level_LOW;
     }else{
-        REG_ORING_CASTING_POINTED(base + ((ChannelId%8) << 2), 0xff);
+        REG_ORING_CASTING_POINTED(base + (1 << (ChannelId%8) << 2), 0xff);
         return DIO_Level_HIGH;
     }
 }
@@ -300,7 +300,7 @@ DIO_ChannelType Dio_GetChannelId(uint8 Dio_cfg_Array_ID){
 
 
 void Dio_Set_CallBackFun(DIO_ChannelType ChannelId, void (*DioCallBackFun)(void)){
-    switch(ChannelId % 8){
+    switch(ChannelId / 8){
     case 0:
         DIO_A_handler_static = DioCallBackFun;
         break;

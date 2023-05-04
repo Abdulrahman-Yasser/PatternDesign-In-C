@@ -12,19 +12,15 @@
 
 #include "../../General_Common/DataStructure/Queue/static/inc/Queue.h"
 #include "../../General_Common/Compiler.h"
+#include "../../General_HAL/RTC_I2C_DS1307/Static/inc/RTC_I2C_DS1307_Types.h"
 
-typedef struct {
-    uint8 temp;
-    uint8 smoke;
-    uint8 light;
-}WeatherData_Queue_Element_Type;
 
 
 void WeatherData_Queue_Create(void);
 
-void WeatherData_Queue_Push(WeatherData_Queue_Element_Type* element);
+void WeatherData_Queue_Push(struct TimeMarkedData* element);
 
-WeatherData_Queue_Element_Type* weatherData_Queue_Pop(void);
+struct TimeMarkedData* weatherData_Queue_Pop(void);
 
 uint8 WeatherData_Queue_GetSize(void);
 
