@@ -15,9 +15,10 @@ void TempDriver_WeatherStation_Init(void){
 }
 
 
-int TempDriver_WeatherStation_Read(void){
-    int x;
+uint32 TempDriver_WeatherStation_Read(void){
+    uint32 x;
     x = TempHandler->GetValue(TempHandler);
+    x = x * 330 / 4096;
     return x;
 }
 

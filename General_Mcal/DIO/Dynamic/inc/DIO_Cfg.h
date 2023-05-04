@@ -16,9 +16,9 @@
  /**********************************************************************************************************************
   *  GLOBAL CONSTANT MACROS
   *********************************************************************************************************************/
-#define DIO_CONFIGURED_NUMBER       2
+#define DIO_INPUT_CONFIGURED_NUMBER       2
 
-extern const struct  DIO_ContainerType DIO_Container[DIO_CONFIGURED_NUMBER];
+extern const struct  DIO_ContainerType DIO_Input_Container[DIO_INPUT_CONFIGURED_NUMBER];
 
 #define DIO_BUZZER_ID           0
 #define DIO_LED_ID              1

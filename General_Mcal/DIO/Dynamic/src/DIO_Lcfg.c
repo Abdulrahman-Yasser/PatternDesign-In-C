@@ -15,10 +15,9 @@
 
 #include "../inc/DIO_Cfg.h"
 
-const struct DIO_ContainerType DIO_Container[DIO_CONFIGURED_NUMBER] = {
-                                                               {DIO_Channel3_A, DIO_Level_HIGH, DIO_ChannelISR_NotUsed},
-                                                               {DIO_Channel2_A, DIO_Level_LOW, DIO_ChannelISR_level_high},
-                                                               {DIO_Channel5_A, DIO_Level_LOW, DIO_ChannelISR_level_high}
+const struct DIO_ContainerType DIO_Input_Container[DIO_INPUT_CONFIGURED_NUMBER] = {
+                                                               {DIO_Channel0_F, DIO_ChannelISR_NotUsed},
+                                                               {DIO_Channel4_F, DIO_ChannelISR_level_high}
 };
 
 

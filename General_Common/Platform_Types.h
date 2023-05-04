@@ -13,7 +13,7 @@
 #define REG_CLEAR_THOSE_BITS_CASTING_POINTED(REG, VAL)  ( (*((volatile uint32 *)(REG))) &= ~(VAL))
 #define REG_ORING_CASTING_POINTED(REG, VAL)  ( (*((volatile uint32 *)(REG))) |= VAL)
 #define REG_WRITE_CASTING_POINTED(REG, VAL)  ( (*((volatile uint32 *)(REG))) = VAL)
-#define REG_ORING_ONE_BIT_CASTING_POINTED(REG, CNT)     ( (*((volatile uint32 *)(REG))) |= 1<<(CNT))
+#define REG_ORING_ONE_BIT_CASTING_POINTED(REG, CNT)     ( (*((volatile uint32 *)(REG))) |= (1<<(CNT) ))
 #define REG_CLEAR_ONE_BIT_CASTING_POINTED(REG, CNT)     ( (*((volatile uint32 *)(REG))) &= ~(1<<(CNT)))
 
 #define REG_READ_CASTING_POINTED(x, REG)              (x = ( (*((volatile uint32 *)(REG))) ) )

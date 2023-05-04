@@ -43,13 +43,7 @@ DigitalInterface_Type* Digital_Interface_Create(uint8 DIO_ID){
         me->Write_High = Digital_Interface_WriteHigh;
         me->Write_Low = Digital_Interface_WriteLow;
         me->Write_Toggle = Digital_Interface_Toggle;
-        me->Dio_Ch = DIO_Container[DIO_ID].DIO_ch;
-        me->Dio_Level = DIO_Container[DIO_ID].DIO_Init_Lvl;
-        if(me->Dio_Level == DIO_Level_HIGH){
-            me->Write_High(me);
-        }else{
-            me->Write_Low(me);
-        }
+        me->Dio_Ch = DIO_Input_Container[DIO_ID].DIO_ch;
     }
     return me;
 }

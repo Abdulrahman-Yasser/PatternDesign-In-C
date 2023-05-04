@@ -18,7 +18,7 @@ static Sensor_Type *TempHandler = Null_Ptr;
 
 void TempDriver_WeatherStation_Init(void);
 
-int TempDriver_WeatherStation_Read(void);
+uint32 TempDriver_WeatherStation_Read(void);
 
 void TempDriver_WeatherStation_Delete(void);
 

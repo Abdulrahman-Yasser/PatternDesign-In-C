@@ -7,15 +7,15 @@
 
 #include "Testing_ADC.h"
 
-static void Testing_I2C_Initialization(void);
-static void Testing_I2C_Loop(void);
+static void Testing_ADC_Initialization(void);
+static void Testing_ADC_Loop(void);
 
-static void Testing_I2C_Initialization(void){
+static void Testing_ADC_Initialization(void){
     Port_Init();
     ADC_Init();
 }
 
-static void Testing_I2C_Loop(void){
+static void Testing_ADC_Loop(void){
     uint16 x;
     ADC_ValueGroup_Type* my_ADCBuffer;
     my_ADCBuffer = NormalQueue_Create_STATIC_uint(Normal_Queue_uint16);
@@ -29,7 +29,7 @@ static void Testing_I2C_Loop(void){
 
 
 void Testing_ADC_Test(void){
-    Testing_I2C_Initialization();
-    Testing_I2C_Loop();
+    Testing_ADC_Initialization();
+    Testing_ADC_Loop();
 }
 

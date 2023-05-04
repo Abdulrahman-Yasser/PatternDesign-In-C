@@ -47,7 +47,6 @@ typedef enum{
 
 struct DIO_ContainerType{
     DIO_ChannelType DIO_ch;
-    DIO_LevelType DIO_Init_Lvl;
     DIO_ChannelISR_Type DIO_Isr;
 };
 

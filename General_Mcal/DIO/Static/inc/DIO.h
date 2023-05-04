@@ -15,7 +15,6 @@
  *  INCLUDES
  *********************************************************************************************************************/
 
-#include "../../Dynamic/inc/DIO_Cfg.h"
 #include "../../General_Common/Std_Types.h"
 #include "DIO_Types.h"
 
@@ -41,7 +40,7 @@ DIO_LevelType Dio_FlipChannel(DIO_ChannelType ChannelId);
 
 uint8 Dio_Check_Isr(DIO_ChannelType ChannelId);
 
-uint8 Dio_Remove_Isr(DIO_ChannelType ChannelId);
+Std_ReturnType Dio_Remove_Isr(DIO_ChannelType ChannelId);
 
 void Dio_Init_ISR(DIO_ChannelType ChannelId, DIO_ChannelISR_Type ISR_Event);
 

@@ -250,7 +250,7 @@ void ADC_ReadingOperation(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSe
     /* the sample finished it's conversion ? */
     do{
         REG_READ_CASTING_POINTED(RegisterCheck, base + ADC_RIS_OFFSET );
-    }while(RegisterCheck & (1 << mySampleSequencer));
+    }while( (RegisterCheck & (1 << mySampleSequencer) ) == 0);
 
     /* read the FIFO till the EMPTY FIFO flag set high */
     do{
@@ -264,21 +264,46 @@ void ADC_ReadingOperation(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSe
     REG_ORING_ONE_BIT_CASTING_POINTED(base + ADC_ISC_OFFSET , mySampleSequencer);
 }
 
-uint32 ADC_ReadOneValue(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencerNm){
-    uint32 base, RegisterCheck;
-    uint16 data;
+uint32 ADC_ReadOneValue(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencer){
+//    uint32 base, RegisterCheck;
+//    uint16 data;
+//
+//    base = ADC_Get_Base(ADC_Num);
+//
+//    if( my_ADC_Buffers[mySampleSequencer + (ADC_Num * 4)] == Null_Ptr){
+//        return 0;
+//    }
+//
+//    if( NormalQueue_Static_isEmpty(my_ADC_Buffers[mySampleSequencer + (ADC_Num * 4)] ) ){
+//        ADC_ReadingOperation(ADC_Num, mySampleSequencer);
+//    }
+//
+//    return NormalQueue_Static_remove(my_ADC_Buffers[mySampleSequencer + (ADC_Num * 4)] );
+    volatile uint32 base, RegisterCheck;
+    volatile uint16 data;
+
 
     base = ADC_Get_Base(ADC_Num);
 
-    if( my_ADC_Buffers[mySampleSequencerNm + (ADC_Num * 4)] == Null_Ptr){
+    if(my_ADC_Buffers[mySampleSequencer + (ADC_Num*4)] == Null_Ptr){
         return 0;
     }
 
-    if( NormalQueue_Static_isEmpty(my_ADC_Buffers[mySampleSequencerNm + (ADC_Num * 4)] ) ){
-        ADC_ReadingOperation(ADC_Num, mySampleSequencerNm);
-    }
+    ADC_StartConversion(ADC_Num, mySampleSequencer);
+    /* the sample finished it's conversion ? */
+    do{
+        REG_READ_CASTING_POINTED(RegisterCheck, base + ADC_RIS_OFFSET );
+    }while( (RegisterCheck & (1 << mySampleSequencer) ) == 0);
 
-    return NormalQueue_Static_remove(my_ADC_Buffers[mySampleSequencerNm + (ADC_Num * 4)] );
+    /* read the FIFO till the EMPTY FIFO flag set high */
+    do{
+        REG_READ_CASTING_POINTED(data, base + ADC_SSFIFOn_OFFSET + (mySampleSequencer*0x20) );
+        REG_READ_CASTING_POINTED(RegisterCheck, base + ADC_SSFSTATn_OFFSET + (mySampleSequencer*0x20) );
+    }while(! (RegisterCheck & (1 << 8) ) );
+
+    REG_ORING_ONE_BIT_CASTING_POINTED(base + ADC_ISC_OFFSET , mySampleSequencer);
+
+    return data;
 }
 
 

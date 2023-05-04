@@ -16,6 +16,7 @@
 
 #include "../../General_Common/Std_Types.h"
 
+#include "../../Dynamic/inc/DIO_Cfg.h"
 
 #include "../../General_Common/Mcu_Hw.h"
 
@@ -50,7 +51,7 @@ static void  (*DIO_F_handler_static)(void);
  *********************************************************************************************************************/
 
 static void DIO_Default_Isr(void);
-static void Dio_ISR_Init(void);
+static void Dio_ISR_DefaultFunction_Init(void);
 inline static uint32 Dio_GetBase_Channel(DIO_ChannelType ChannelId);
 inline static uint32 Dio_GetBase_Port(DIO_PortType PortId);
 
@@ -59,7 +60,7 @@ static void DIO_Default_Isr(void){
     while(1);
 }
 
-static void Dio_ISR_Init(void){
+static void Dio_ISR_DefaultFunction_Init(void){
     DIO_A_handler_static = DIO_Default_Isr;
     DIO_B_handler_static = DIO_Default_Isr;
     DIO_C_handler_static = DIO_Default_Isr;
@@ -127,10 +128,10 @@ inline static uint32 Dio_GetBase_Port(DIO_PortType PortId){
 
 void Dio_Init(void){
     uint8 i = 0;
-    Dio_ISR_Init();
-    for(i = 0; i < DIO_CONFIGURED_NUMBER; i++){
-        Dio_Init_ISR(DIO_Container[i].DIO_ch, DIO_Container[i].DIO_Isr);
+    for(i = 0; i < DIO_INPUT_CONFIGURED_NUMBER; i++){
+        Dio_Init_ISR(DIO_Input_Container[i].DIO_ch, DIO_Input_Container[i].DIO_Isr);
     }
+    Dio_ISR_DefaultFunction_Init();
 }
 
 
@@ -282,10 +283,19 @@ uint8 Dio_Check_Isr(DIO_ChannelType ChannelId){
     }
 }
 
-uint8 Dio_Remove_Isr(DIO_ChannelType ChannelId){
-    uint32 registerChecker, base;
+Std_ReturnType Dio_Remove_Isr(DIO_ChannelType ChannelId){
+    uint32 base;
     base = Dio_GetBase_Channel(ChannelId);
     REG_ORING_ONE_BIT_CASTING_POINTED(base + PORT_ICR_REG_OFFSET, ChannelId%8);
+    return E_OK;
+}
+
+DIO_ChannelType Dio_GetChannelId(uint8 Dio_cfg_Array_ID){
+    if(Dio_cfg_Array_ID < DIO_INPUT_CONFIGURED_NUMBER){
+        return DIO_Input_Container[Dio_cfg_Array_ID].DIO_ch;
+    }else{
+        return DIO_Channel_NotUsed;
+    }
 }
 
 
@@ -334,10 +344,6 @@ void __attribute__((weak)) DIO_E_handler(void){
 
 void __attribute__((weak)) DIO_F_handler(void){
     DIO_F_handler_static();
-}
-
-DIO_ChannelType Dio_GetChannelId(uint8 Dio_cfg_Array_ID){
-    return DIO_Container[Dio_cfg_Array_ID].DIO_ch;
 }
 
 /**********************************************************************************************************************
