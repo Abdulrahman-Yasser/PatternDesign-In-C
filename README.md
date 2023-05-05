@@ -1,12 +1,12 @@
 
 # Pattern Design for embedded-systems in C 
 ## Patterns used in that chapter : 
-- [Chapter 2 : What is Embedded programming ](Chapter_1-Project/)<details><summary>Patterns Details</summary>that file contains Client-Server Pattern, Push-Pop Pattern and Observer Pattern.</details>
-- [Chapter 3 : Embedded Programming with The Harmony TM for Embedded RealTime Process](Chapter_1-Project/)
-- [Chapter 4 : Design Patterns for Accessing Hardware](Chapter_2-Project/)
-- [Chapter 5 : Design Patterns for Embedding Concurrency and Resource Management](Chapter_3-Project/)
-- [Chapter 6 : Design Patterns for State Machines](Chapter_4-Project/)
-- [Chapter 7 : Safety and Reliability Pattern](Chapter_5-Project/)
+- [Chapter 1 : What is Embedded programming ](Chapter_1-Project/)<details><summary>Patterns Details</summary>that file contains Client-Server Pattern, Push-Pop Pattern and Observer Pattern.</details>
+- [Chapter 2 : Embedded Programming with The Harmony TM for Embedded RealTime Process](Chapter_1-Project/)<details><summary>Patterns Details</summary>that file contains Client-Server Pattern, Push-Pop Pattern and Observer Pattern.</details>
+- [Chapter 3 : Design Patterns for Accessing Hardware](Chapter_2-Project/)<details><summary>Patterns Details</summary>that file contains Interrupt, Polling, Adapter, Proxy, Debouncing, Mediator and Observer Patterns in form of HAL Driver that kinda interact directly with the Hardware.</details>
+- [Chapter 4 : Design Patterns for Embedding Concurrency and Resource Management](Chapter_3-Project/)
+- [Chapter 5 : Design Patterns for State Machines](Chapter_4-Project/)
+- [Chapter 6 : Safety and Reliability Pattern](Chapter_5-Project/)
 
 ## Some tested drivers to make sure that it works fine : 
 - [Testing LCD](Testing_SW_Layers/Testing_Drivers/APP/Testing_LCD/)<details><summary>Project's Details</summary>Using I2C LCD Serial Interface Module to control the LCD</details>
@@ -14,7 +14,7 @@
 - [Testing I2C 2 ](Testing_SW_Layers/Testing_Drivers/APP/Testing_I2C_2/)<details><summary>Project's Details</summary>Using I2C LCD Serial Interface Module as GPIO expander and control LEDS with it</details>
 - [Testing DS1037](Testing_SW_Layers/Testing_Drivers/APP/Testing_DS1037/)<details><summary>Project's Details</summary>Using DS1037 i set the initial time and then read it every 3 second, this project test all the operations in my I2C driver .</details>
 - [Testing ADC](Testing_SW_Layers/Testing_Drivers/APP/Testing_ADC)<details><summary>Project's Details</summary>Using the potentiometer on the module (I2C LCD Serial Interface) to test my driver .</details>
-
+- [Testing DIO](Testing_SW_Layers/Testing_Drivers\APP\Testing_DIO_ISR)<details><summary>Project's Details</summary>Trying on-Board buttons and LEDs to test my DIO ISR and Normal Functions in DIO driver .</details>
 ## Steps you need to do if you are using CCS or another ide
 
 
