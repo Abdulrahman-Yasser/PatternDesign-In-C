@@ -50,7 +50,7 @@ const IntCtrl_Container_t Initialized_Interrupt_Container =
          {Timer_2A_32, 0x5, IntCtrl_Disable},            {Timer_2B_32, 0x5, IntCtrl_Disable},
          {Analog_Comparator_0, 0x5, IntCtrl_Disable},    {Analog_Comparator_1, 0x5, IntCtrl_Disable},
          {System_Control, 0x5, IntCtrl_Disable},         {Flash_Memory_Control_and_EEPROM_Control, 0x5, IntCtrl_Disable},
-         {GPIO_Port_F      , 0x01, IntCtrl_Disable},      {UART2      , 0x5, IntCtrl_Disable},
+         {GPIO_Port_F      , 0x01, IntCtrl_Enable},      {UART2      , 0x5, IntCtrl_Disable},
          {SSI1 , 0x5, IntCtrl_Disable},                  {Timer_3A_32, 0x5, IntCtrl_Disable},
          {Timer_3B_32, 0x5, IntCtrl_Disable},            {I2C1, 0x5, IntCtrl_Disable},
          {QEI1, 0x5, IntCtrl_Disable},                   {CAN0, 0x5, IntCtrl_Disable},

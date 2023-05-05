@@ -25,6 +25,10 @@
  *  GLOBAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
 
+#define Enable_Interrupts()     __asm("  CPSIE I")
+
+#define Disable_Interrupts()     __asm("  CPSID I")
+
 void IntCtrl_Init(void) ;
 
 void IntCtrl_DisableInterrupt(IntCtrl_InterruptType_t InterruptID) ;

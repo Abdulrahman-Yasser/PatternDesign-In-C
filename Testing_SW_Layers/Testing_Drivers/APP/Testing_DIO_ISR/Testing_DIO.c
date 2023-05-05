@@ -39,9 +39,12 @@ static void Testing_DIO_Loop(void){
 
 
 static void Testing_DIO_Init(void){
+    Enable_Interrupts();
+
     Port_Init();
     Dio_Init();
     Dio_Set_CallBackFun(TESTING_DIO_Button_1_Channel, Testing_DIO_Isr_But_1);
+    IntCtrl_Init();
 }
 
 void Testing_DIO(void){

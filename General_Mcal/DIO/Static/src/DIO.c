@@ -239,6 +239,9 @@ DIO_LevelType Dio_FlipChannel(DIO_ChannelType ChannelId){
 
 void Dio_Init_ISR(DIO_ChannelType ChannelId, DIO_ChannelISR_Type ISR_Event){
     uint32 registerChecker, base;
+    if(ISR_Event == DIO_ChannelISR_NotUsed){
+        return ;
+    }
     base = Dio_GetBase_Channel(ChannelId);
     REG_READ_CASTING_POINTED(registerChecker, base + PORT_DIR_REG_OFFSET);
     registerChecker = registerChecker & (1 << (ChannelId % 8));

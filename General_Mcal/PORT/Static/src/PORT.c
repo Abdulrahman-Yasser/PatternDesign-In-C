@@ -155,28 +155,28 @@ void Port_Init(void){
         PortPtr = GetPortAddress(ConfigPtr[i].PinNum);
         PinNum = ConfigPtr[i].PinNum % 8;
 
-        /* If the Pin is DIO Configurations */
-        switch(ConfigPtr[i].PinMode){
         /* Unlock the locked pins.
          * BUT NEVER UNLOCK PORT C */
-            switch(ConfigPtr[i].PinNum){
-                case Port_Pin_A0:
-                case Port_Pin_A1:
-                case Port_Pin_A2:
-                case Port_Pin_A3:
-                case Port_Pin_A4:
-                case Port_Pin_A5:
-                case Port_Pin_B2:
-                case Port_Pin_B3:
-                case Port_Pin_D7:
-                case Port_Pin_F0:
-                    (*(volatile uint32*)((uint32)PortPtr + PORT_LOCK_REG_OFFSET)) = LOCK_VALUE;
-                    (*(volatile uint32*)((uint32)PortPtr + PORT_COMMIT_REG_OFFSET)) |= 1 << PinNum;
-                    break;
-                default :
-                    break;
-                }
+        switch(ConfigPtr[i].PinNum){
+            case Port_Pin_A0:
+            case Port_Pin_A1:
+            case Port_Pin_A2:
+            case Port_Pin_A3:
+            case Port_Pin_A4:
+            case Port_Pin_A5:
+            case Port_Pin_B2:
+            case Port_Pin_B3:
+            case Port_Pin_D7:
+            case Port_Pin_F0:
+                (*(volatile uint32*)((uint32)PortPtr + PORT_LOCK_REG_OFFSET)) = LOCK_VALUE;
+                (*(volatile uint32*)((uint32)PortPtr + PORT_COMMIT_REG_OFFSET)) |= 1 << PinNum;
+                break;
+            default :
+                break;
+            }
 
+        /* If the Pin is DIO Configurations */
+        switch(ConfigPtr[i].PinMode){
         case Port_PinMode_DIO:
             SetPinDirection((uint32*)PortPtr, PinNum, ConfigPtr[i].PinInitialDirection);
             (*(volatile uint32*)((uint32)PortPtr + PORT_DIGITAL_ENABLE_REG_OFFSET)) |= 1 << PinNum;

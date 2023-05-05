@@ -76,8 +76,8 @@ PF4 5 - - - - - M1FAULT0 IDX0 T2CCP0 USB0EPEN - -
 
 const Port_ConfigType ConfigPtr[configured_pins] =
 {
-  {Port_Pin_F0, Port_PinLevel_LOW, Port_PinDir_IN, Port_PinMode_DIO, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma},
-  {Port_Pin_F4, Port_PinLevel_LOW, Port_PinDir_IN, Port_PinMode_DIO, Port_PinInternal_PullDown, Port_PinOutputCurrent_2ma},
+  {Port_Pin_F0, Port_PinLevel_LOW, Port_PinDir_IN, Port_PinMode_DIO, Port_PinInternal_PullUp, Port_PinOutputCurrent_2ma},
+  {Port_Pin_F4, Port_PinLevel_LOW, Port_PinDir_IN, Port_PinMode_DIO, Port_PinInternal_PullUp, Port_PinOutputCurrent_2ma},
   {Port_Pin_F1, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},
   {Port_Pin_F2, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},
   {Port_Pin_E3, Port_PinLevel_LOW, Port_PinDir_IN, Port_PinMode_ADC, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},
