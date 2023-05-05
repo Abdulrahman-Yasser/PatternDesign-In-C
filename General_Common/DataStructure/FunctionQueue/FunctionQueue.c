@@ -7,12 +7,13 @@
 
 
 #include "FunctionQueue.h"
-
+#include <stdlib.h>
 FunctionQueue_t* FunctionQueue_Create(void){
     FunctionQueue_t *me;
     me = (FunctionQueue_t*)malloc(sizeof(FunctionQueue_t));
     me->next = Null_Ptr;
     me->funPtr = Null_Ptr;
+    return me;
 }
 
 void FunctionQueue_Destroy(FunctionQueue_t* me){

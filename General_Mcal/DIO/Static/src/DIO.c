@@ -112,6 +112,7 @@ inline static uint32 Dio_GetBase_Port(DIO_PortType PortId){
 
 void Dio_Init(void){
     uint8 i = 0;
+
     for(i = 0; i < DIO_INPUT_CONFIGURED_NUMBER; i++){
         Dio_Init_ISR(DIO_Input_Container[i].DIO_ch, DIO_Input_Container[i].DIO_Isr);
     }
@@ -288,35 +289,51 @@ DIO_ChannelType Dio_GetChannelId(uint8 Dio_cfg_Array_ID){
 }
 
 void Dio_Remove_CallBackFun(DIO_ChannelType ChannelId, void (*DioCallBackFun)(void)){
-    FunctionQueue_RemoveFunction(DIO_handlerFunctionQueue[ChannelId / 8], DioCallBackFun);
+    if(DIO_handlerFunctionQueue[ChannelId / 8] != Null_Ptr){
+        FunctionQueue_RemoveFunction(DIO_handlerFunctionQueue[ChannelId / 8], DioCallBackFun);
+    }
 }
 
 void Dio_Set_CallBackFun(DIO_ChannelType ChannelId, void (*DioCallBackFun)(void)){
-    FunctionQueue_AddFunction(DIO_handlerFunctionQueue[ChannelId / 8], DioCallBackFun);
+    if(DIO_handlerFunctionQueue[ChannelId / 8] != Null_Ptr){
+        FunctionQueue_AddFunction(DIO_handlerFunctionQueue[ChannelId / 8], DioCallBackFun);
+    }
 }
 
 void __attribute__((weak)) DIO_A_handler(void){
-    FunctionQueue_Calling(DIO_handlerFunctionQueue[0]);
+    if(DIO_handlerFunctionQueue[0] != Null_Ptr){
+        FunctionQueue_Calling(DIO_handlerFunctionQueue[0]);
+    }
 }
 
 void __attribute__((weak)) DIO_B_handler(void){
-    FunctionQueue_Calling(DIO_handlerFunctionQueue[1]);
+    if(DIO_handlerFunctionQueue[1] != Null_Ptr){
+        FunctionQueue_Calling(DIO_handlerFunctionQueue[1]);
+    }
 }
 
 void __attribute__((weak)) DIO_C_handler(void){
-    FunctionQueue_Calling(DIO_handlerFunctionQueue[2]);
+    if(DIO_handlerFunctionQueue[2] != Null_Ptr){
+        FunctionQueue_Calling(DIO_handlerFunctionQueue[2]);
+    }
 }
 
 void __attribute__((weak)) DIO_D_handler(void){
-    FunctionQueue_Calling(DIO_handlerFunctionQueue[3]);
+    if(DIO_handlerFunctionQueue[3] != Null_Ptr){
+        FunctionQueue_Calling(DIO_handlerFunctionQueue[3]);
+    }
 }
 
 void __attribute__((weak)) DIO_E_handler(void){
-    FunctionQueue_Calling(DIO_handlerFunctionQueue[4]);
+    if(DIO_handlerFunctionQueue[4] != Null_Ptr){
+        FunctionQueue_Calling(DIO_handlerFunctionQueue[4]);
+    }
 }
 
 void __attribute__((weak)) DIO_F_handler(void){
-    FunctionQueue_Calling(DIO_handlerFunctionQueue[5]);
+    if(DIO_handlerFunctionQueue[5] != Null_Ptr){
+        FunctionQueue_Calling(DIO_handlerFunctionQueue[5]);
+    }
 }
 /**********************************************************************************************************************
  *  END OF FILE: DIO.c

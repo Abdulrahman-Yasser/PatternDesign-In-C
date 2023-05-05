@@ -19,4 +19,6 @@
 
 #include "Testing_ADC/Testing_ADC.h"
 
+#include "Testing_DIO_ISR/Testing_DIO.h"
+
 #endif /* APP_MAIN_H_ */

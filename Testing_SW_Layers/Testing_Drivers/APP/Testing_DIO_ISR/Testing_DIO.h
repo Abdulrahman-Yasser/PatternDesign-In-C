@@ -25,5 +25,7 @@
 #define TESTING_DIO_LED_1_Channel                   (DIO_ChannelType)DIO_Channel1_F
 #define TESTING_DIO_LED_2_Channel                   (DIO_ChannelType)DIO_Channel2_F
 
+void Testing_DIO(void);
+
 
 #endif /* APP_TESTING_DIO_ISR_TESTING_DIO_H_ */
