@@ -37,7 +37,7 @@
 *******************************************************************************/
 void IntCtrl_Init(void)
  {
-    volatile uint32 t1, t3, t4;
+    volatile uint32 t1, t3;
     volatile uint32* t2;
     uint8 i;
     NVIC_APINT = IntCtrl_Prio_Group_System_Lock_reg | (Initialized_Interrupt_Container.Prio_Group_System << 8);
@@ -68,9 +68,7 @@ void IntCtrl_Init(void)
             }
             t1 = (((Initialized_Interrupt_Container.container_ptr[i].int_num)-16)/4);
             t2 = ((volatile uint32*)NVIC_PRI0_ADDRESS + t1) ;
-            t4 = (((Initialized_Interrupt_Container.container_ptr[i].int_num) - 16) % 4);
-            t4 = (t4 * 8) + 5;
-            t3 = (uint32)((uint32)Initialized_Interrupt_Container.container_ptr[i].int_priority << t4);
+            t3 = (uint32)((uint32)Initialized_Interrupt_Container.container_ptr[i].int_priority << (((((Initialized_Interrupt_Container.container_ptr[i].int_num) - 16) % 4) * 8 ) + 5 ));
             (*(volatile uint32 *)t2) |= t3;
         }else if(Initialized_Interrupt_Container.container_ptr[i].int_num < 7){
             if(Initialized_Interrupt_Container.container_ptr[i].int_num == Memory_Management){

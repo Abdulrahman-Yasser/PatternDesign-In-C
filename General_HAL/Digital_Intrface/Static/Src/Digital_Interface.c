@@ -36,14 +36,14 @@ static void Digital_Interface_Toggle(DigitalInterface_Type* const me){
     }
 }
 
-DigitalInterface_Type* Digital_Interface_Create(uint8 DIO_ID){
+DigitalInterface_Type* Digital_Interface_Create(DIO_ChannelType DIO_CH){
     DigitalInterface_Type* me;
     me = (DigitalInterface_Type*)malloc(sizeof(DigitalInterface_Type));
     if(me != Null_Ptr){
         me->Write_High = Digital_Interface_WriteHigh;
         me->Write_Low = Digital_Interface_WriteLow;
         me->Write_Toggle = Digital_Interface_Toggle;
-        me->Dio_Ch = DIO_Input_Container[DIO_ID].DIO_ch;
+        me->Dio_Ch = DIO_CH;
     }
     return me;
 }

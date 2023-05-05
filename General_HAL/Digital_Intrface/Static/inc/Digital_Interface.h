@@ -20,7 +20,7 @@ struct DigitalInterface_struct{
     void (*Write_Toggle)(DigitalInterface_Type* const me);
 };
 
-DigitalInterface_Type* Digital_Interface_Create(uint8 DIO_ID);
+DigitalInterface_Type* Digital_Interface_Create(DIO_ChannelType DIO_CH);
 void Digital_Interface_Destroy(DigitalInterface_Type* me);
 
 

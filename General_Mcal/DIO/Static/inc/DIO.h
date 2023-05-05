@@ -46,6 +46,8 @@ void Dio_Init_ISR(DIO_ChannelType ChannelId, DIO_ChannelISR_Type ISR_Event);
 
 void Dio_Set_CallBackFun(DIO_ChannelType ChannelId, void (*DioCallBackFun)(void));
 
+void Dio_Remove_CallBackFun(DIO_ChannelType ChannelId, void (*DioCallBackFun)(void));
+
 #endif    /* DIO_H */
 
 /**********************************************************************************************************************

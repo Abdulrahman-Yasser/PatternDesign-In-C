@@ -18,6 +18,8 @@
 
 #include "../../Dynamic/inc/DIO_Cfg.h"
 
+#include "../General_Common/DataStructure/FunctionQueue/FunctionQueue.h"
+
 #include "../../General_Common/Mcu_Hw.h"
 
 #include "../inc/DIO.h"
@@ -39,35 +41,17 @@ extern void  DIO_F_handler(void);
  *  STATIC VARIABLES
  *********************************************************************************************************************/
 
-static void  (*DIO_A_handler_static)(void);
-static void  (*DIO_B_handler_static)(void);
-static void  (*DIO_C_handler_static)(void);
-static void  (*DIO_D_handler_static)(void);
-static void  (*DIO_E_handler_static)(void);
-static void  (*DIO_F_handler_static)(void);
+static FunctionQueue_t* DIO_handlerFunctionQueue[6];
 
 /**********************************************************************************************************************
  *  STATIC FUNCTIONS
  *********************************************************************************************************************/
 
-static void DIO_Default_Isr(void);
-static void Dio_ISR_DefaultFunction_Init(void);
 inline static uint32 Dio_GetBase_Channel(DIO_ChannelType ChannelId);
 inline static uint32 Dio_GetBase_Port(DIO_PortType PortId);
 
 
-static void DIO_Default_Isr(void){
-    while(1);
-}
 
-static void Dio_ISR_DefaultFunction_Init(void){
-    DIO_A_handler_static = DIO_Default_Isr;
-    DIO_B_handler_static = DIO_Default_Isr;
-    DIO_C_handler_static = DIO_Default_Isr;
-    DIO_D_handler_static = DIO_Default_Isr;
-    DIO_E_handler_static = DIO_Default_Isr;
-    DIO_F_handler_static = DIO_Default_Isr;
-}
 
 inline static uint32 Dio_GetBase_Channel(DIO_ChannelType ChannelId){
     uint32 temp;
@@ -131,7 +115,6 @@ void Dio_Init(void){
     for(i = 0; i < DIO_INPUT_CONFIGURED_NUMBER; i++){
         Dio_Init_ISR(DIO_Input_Container[i].DIO_ch, DIO_Input_Container[i].DIO_Isr);
     }
-    Dio_ISR_DefaultFunction_Init();
 }
 
 
@@ -242,6 +225,9 @@ void Dio_Init_ISR(DIO_ChannelType ChannelId, DIO_ChannelISR_Type ISR_Event){
     if(ISR_Event == DIO_ChannelISR_NotUsed){
         return ;
     }
+    if( DIO_handlerFunctionQueue[ChannelId / 8] == Null_Ptr){
+        DIO_handlerFunctionQueue[ChannelId / 8] = FunctionQueue_Create();
+    }
     base = Dio_GetBase_Channel(ChannelId);
     REG_READ_CASTING_POINTED(registerChecker, base + PORT_DIR_REG_OFFSET);
     registerChecker = registerChecker & (1 << (ChannelId % 8));
@@ -301,54 +287,37 @@ DIO_ChannelType Dio_GetChannelId(uint8 Dio_cfg_Array_ID){
     }
 }
 
+void Dio_Remove_CallBackFun(DIO_ChannelType ChannelId, void (*DioCallBackFun)(void)){
+    FunctionQueue_RemoveFunction(DIO_handlerFunctionQueue[ChannelId / 8], DioCallBackFun);
+}
 
 void Dio_Set_CallBackFun(DIO_ChannelType ChannelId, void (*DioCallBackFun)(void)){
-    switch(ChannelId / 8){
-    case 0:
-        DIO_A_handler_static = DioCallBackFun;
-        break;
-    case 1:
-        DIO_B_handler_static = DioCallBackFun;
-        break;
-    case 2:
-        DIO_C_handler_static = DioCallBackFun;
-        break;
-    case 3:
-        DIO_D_handler_static = DioCallBackFun;
-        break;
-    case 4:
-        DIO_E_handler_static = DioCallBackFun;
-        break;
-    case 5:
-        DIO_F_handler_static = DioCallBackFun;
-        break;
-    }
+    FunctionQueue_AddFunction(DIO_handlerFunctionQueue[ChannelId / 8], DioCallBackFun);
 }
 
 void __attribute__((weak)) DIO_A_handler(void){
-    DIO_A_handler_static();
+    FunctionQueue_Calling(DIO_handlerFunctionQueue[0]);
 }
 
 void __attribute__((weak)) DIO_B_handler(void){
-    DIO_B_handler_static();
+    FunctionQueue_Calling(DIO_handlerFunctionQueue[1]);
 }
 
 void __attribute__((weak)) DIO_C_handler(void){
-    DIO_C_handler_static();
+    FunctionQueue_Calling(DIO_handlerFunctionQueue[2]);
 }
 
 void __attribute__((weak)) DIO_D_handler(void){
-    DIO_D_handler_static();
+    FunctionQueue_Calling(DIO_handlerFunctionQueue[3]);
 }
 
 void __attribute__((weak)) DIO_E_handler(void){
-    DIO_E_handler_static();
+    FunctionQueue_Calling(DIO_handlerFunctionQueue[4]);
 }
 
 void __attribute__((weak)) DIO_F_handler(void){
-    DIO_F_handler_static();
+    FunctionQueue_Calling(DIO_handlerFunctionQueue[5]);
 }
-
 /**********************************************************************************************************************
  *  END OF FILE: DIO.c
  *********************************************************************************************************************/

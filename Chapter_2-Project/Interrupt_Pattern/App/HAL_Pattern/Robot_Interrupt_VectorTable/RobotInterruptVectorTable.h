@@ -1,0 +1,16 @@
+/*
+ * RobotInterruptVectorTable.h
+ *
+ *  Created on: May 5, 2023
+ *      Author: Abdu
+ */
+
+#ifndef APP_HAL_PATTERN_ROBOT_INTERRUPT_VECTORTABLE_ROBOTINTERRUPTVECTORTABLE_H_
+#define APP_HAL_PATTERN_ROBOT_INTERRUPT_VECTORTABLE_ROBOTINTERRUPTVECTORTABLE_H_
+
+typedef void (*ButtonVectorPtr)(void);
+
+ButtonVectorPtr ISR_Address[10];
+
+
+#endif /* APP_HAL_PATTERN_ROBOT_INTERRUPT_VECTORTABLE_ROBOTINTERRUPTVECTORTABLE_H_ */
