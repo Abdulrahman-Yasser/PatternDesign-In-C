@@ -6,6 +6,7 @@
 - [Testing I2C 2](APP/Testing_I2C_2)
 - [Testing LCD](APP/Testing_LCD)
 - [Testing ADC](APP/Testing_ADC)
+- [Testing DIO](APP/Testing_DIO_ISR)
 
 
 ## 🛠 Skills
