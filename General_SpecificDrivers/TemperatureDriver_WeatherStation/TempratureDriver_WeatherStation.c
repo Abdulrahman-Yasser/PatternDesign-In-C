@@ -10,6 +10,7 @@
 
 
 
+
 void TempDriver_WeatherStation_Init(void){
     TempHandler = Sensor_Create(TEMPERATURE_ID, Sensor_Interface_Digital);
 }

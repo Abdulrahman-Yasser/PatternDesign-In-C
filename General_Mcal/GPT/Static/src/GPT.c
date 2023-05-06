@@ -41,19 +41,19 @@ static uint32 G_BitUsedGuarding[TIMERS_NUMBERS] = {0};
  *********************************************************************************************************************/
 
 
-void Gpt_Notification_channel_Normal_0(void);
-void Gpt_Notification_channel_Normal_1(void);
-void Gpt_Notification_channel_Normal_2(void);
-void Gpt_Notification_channel_Normal_3(void);
-void Gpt_Notification_channel_Normal_4(void);
-void Gpt_Notification_channel_Normal_5(void);
+extern void Gpt_Notification_channel_Normal_0(void);
+extern void Gpt_Notification_channel_Normal_1(void);
+extern void Gpt_Notification_channel_Normal_2(void);
+extern void Gpt_Notification_channel_Normal_3(void);
+extern void Gpt_Notification_channel_Normal_4(void);
+extern void Gpt_Notification_channel_Normal_5(void);
 
-void Gpt_Notification_channel_Wide_0(void);
-void Gpt_Notification_channel_Wide_1(void);
-void Gpt_Notification_channel_Wide_2(void);
-void Gpt_Notification_channel_Wide_3(void);
-void Gpt_Notification_channel_Wide_4(void);
-void Gpt_Notification_channel_Wide_5(void);
+extern void Gpt_Notification_channel_Wide_0(void);
+extern void Gpt_Notification_channel_Wide_1(void);
+extern void Gpt_Notification_channel_Wide_2(void);
+extern void Gpt_Notification_channel_Wide_3(void);
+extern void Gpt_Notification_channel_Wide_4(void);
+extern void Gpt_Notification_channel_Wide_5(void);
 
 volatile uint32* GetTimerAddress(Gpt_ChannelType TimerAddress);
 uint8 calculate_MaxBits(uint32 val);
@@ -141,11 +141,11 @@ volatile uint32* GetTimerAddress(Gpt_ChannelType TimerAddress){
 }
 
 void __attribute__((weak)) App_Function(void){
-
+    while(1);
 }
 
 void __attribute__((weak)) Default_Function(void){
-
+    while(1);
 }
 
 /**********************************************************************************************************************
@@ -682,7 +682,7 @@ Std_ReturnType Gpt_GetPredefTimerValue(Gpt_PredefTimerType PredefTimer, uint32* 
 * \Parameters (out): TimeValuePtr       None
 * \Return value:   : Std_ReturnType     None
 *******************************************************************************/
-void Gpt_Notification_channel_Normal_0(void){
+extern void Gpt_Notification_channel_Normal_0(void){
     volatile uint32* timePtr = (uint32*)GPTM_0_16_32_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
     if( temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_0].Interrupt_Type & ( (1 << Gpt_InterruptOverFlow) | (1 << Gpt_InterruptOverFlow << 8)) ){
@@ -710,7 +710,7 @@ void Gpt_Notification_channel_Normal_0(void){
 }
 
 
-void Gpt_Notification_channel_Normal_1(void){
+extern void Gpt_Notification_channel_Normal_1(void){
     volatile uint32* timePtr = (uint32*)GPTM_1_16_32_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
     if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].Interrupt_Type & ((1 << Gpt_InterruptOverFlow) | (1 << Gpt_InterruptOverFlow << 8)) ){
@@ -736,7 +736,7 @@ void Gpt_Notification_channel_Normal_1(void){
         GPT_ConfigPtr_Container[Gpt_Channel_Normal_1].GptNotificationCallBack_Match();
     }
 }
-void Gpt_Notification_channel_Normal_2(void){
+extern void Gpt_Notification_channel_Normal_2(void){
     volatile uint32* timePtr = (uint32*)GPTM_2_16_32_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
     if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].Interrupt_Type & ( (1 << Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
@@ -762,7 +762,7 @@ void Gpt_Notification_channel_Normal_2(void){
         GPT_ConfigPtr_Container[Gpt_Channel_Normal_2].GptNotificationCallBack_Match();
     }
 }
-void Gpt_Notification_channel_Normal_3(void){
+extern void Gpt_Notification_channel_Normal_3(void){
     volatile uint32* timePtr = (uint32*)GPTM_3_16_32_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
     if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].Interrupt_Type & ((1 << Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
@@ -788,7 +788,7 @@ void Gpt_Notification_channel_Normal_3(void){
         GPT_ConfigPtr_Container[Gpt_Channel_Normal_3].GptNotificationCallBack_Match();
     }
 }
-void Gpt_Notification_channel_Normal_4(void){
+extern void Gpt_Notification_channel_Normal_4(void){
     volatile uint32* timePtr = (uint32*)GPTM_4_16_32_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
     if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].Interrupt_Type & ( (1 << Gpt_InterruptOverFlow) | (1 << Gpt_InterruptOverFlow << 8)) ){
@@ -814,7 +814,7 @@ void Gpt_Notification_channel_Normal_4(void){
         GPT_ConfigPtr_Container[Gpt_Channel_Normal_4].GptNotificationCallBack_Match();
     }
 }
-void Gpt_Notification_channel_Normal_5(void){
+extern void Gpt_Notification_channel_Normal_5(void){
     volatile uint32* timePtr = (uint32*)GPTM_5_16_32_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
     if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Normal_5].Interrupt_Type &( (1 << Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
@@ -841,7 +841,7 @@ void Gpt_Notification_channel_Normal_5(void){
     }
 }
 
-void Gpt_Notification_channel_Wide_0(void){
+extern void Gpt_Notification_channel_Wide_0(void){
     volatile uint32* timePtr = (uint32*)GPTM_0_32_64_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
     if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
@@ -867,7 +867,7 @@ void Gpt_Notification_channel_Wide_0(void){
         GPT_ConfigPtr_Container[Gpt_Channel_Wide_0].GptNotificationCallBack_Match();
     }
 }
-void Gpt_Notification_channel_Wide_1(void){
+extern void Gpt_Notification_channel_Wide_1(void){
     volatile uint32* timePtr = (uint32*)GPTM_1_32_64_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
     if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
@@ -893,7 +893,7 @@ void Gpt_Notification_channel_Wide_1(void){
         GPT_ConfigPtr_Container[Gpt_Channel_Wide_1].GptNotificationCallBack_Match();
     }
 }
-void Gpt_Notification_channel_Wide_2(void){
+extern void Gpt_Notification_channel_Wide_2(void){
     volatile uint32* timePtr = (uint32*)GPTM_2_32_64_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
     if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow ) | (1 << Gpt_InterruptOverFlow << 8)) ){
@@ -921,7 +921,7 @@ void Gpt_Notification_channel_Wide_2(void){
         GPT_ConfigPtr_Container[Gpt_Channel_Wide_2].GptNotificationCallBack_Match();
     }
 }
-void Gpt_Notification_channel_Wide_3(void){
+extern void Gpt_Notification_channel_Wide_3(void){
     volatile uint32* timePtr = (uint32*)GPTM_3_32_64_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
     if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
@@ -947,7 +947,7 @@ void Gpt_Notification_channel_Wide_3(void){
         GPT_ConfigPtr_Container[Gpt_Channel_Wide_3].GptNotificationCallBack_Match();
     }
 }
-void Gpt_Notification_channel_Wide_4(void){
+extern void Gpt_Notification_channel_Wide_4(void){
     volatile uint32* timePtr = (uint32*)GPTM_4_32_64_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
     if(temp & GPT_ConfigPtr_Container[Gpt_Channel_Wide_4].Interrupt_Type & ( (1 <<  Gpt_InterruptOverFlow)  | (1 << Gpt_InterruptOverFlow << 8)) ){
@@ -974,7 +974,7 @@ void Gpt_Notification_channel_Wide_4(void){
     }
 }
 
-void Gpt_Notification_channel_Wide_5(void){
+extern void Gpt_Notification_channel_Wide_5(void){
     volatile uint32* timePtr = (uint32*)GPTM_5_32_64_ADDRESS;
     uint32 temp = *(volatile uint32*)((uint8*)timePtr + GPTM_MIS_REG_OFFSET);
 

@@ -20,7 +20,7 @@
 #endif  /* ADC_CFG_H */
 
 #define ADC_CONFIGURED_SAMPLE_SEQUENCES_NUMBER  1
-#define ADC_CONFIGURED_CHANNELS_NUMBER          1
+#define ADC_CONFIGURED_CHANNELS_NUMBER          2
 
 #define ADC_BUFFER_SIZE                         5
 
@@ -29,7 +29,11 @@
 
 #define ADC_TEMPERATURE_ID          0
 #define ADC_TEMPERATURE_ADC_NUM     ADC_Module_0
-#define ADC_TEMPERATURE_SS_NUM      ADC_SS_3
+#define ADC_TEMPERATURE_SS_NUM      ADC_SS_2
+
+#define ADC_FLAME_ID                1
+#define ADC_TEMPERATURE_ADC_NUM     ADC_Module_0
+#define ADC_TEMPERATURE_SS_NUM      ADC_SS_2
 
 extern const ADC_SampleSequencer_ConfigType ADC_SS_Container[ADC_CONFIGURED_SAMPLE_SEQUENCES_NUMBER];
 extern const ADC_Channel_ConfigType ADC_CH_Container[ADC_CONFIGURED_CHANNELS_NUMBER];

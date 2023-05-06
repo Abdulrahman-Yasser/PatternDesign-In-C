@@ -45,7 +45,7 @@ const IntCtrl_Container_t Initialized_Interrupt_Container =
          {QEI0, 0x5 , IntCtrl_Disable},                  {ADC0_Sequence_0, 0x5, IntCtrl_Disable},
          {ADC0_Sequence_1, 0x5, IntCtrl_Disable},        {ADC0_Sequence_2, 0x5, IntCtrl_Disable},
          {ADC0_Sequence_3, 0x5, IntCtrl_Disable},        {Watchdog_Timers_0_and_1, 0x5, IntCtrl_Disable},
-         {Timer_0A_32, 0x5, IntCtrl_Disable},            {Timer_0B_32, 0x5, IntCtrl_Disable},
+         {Timer_0A_32, 0x1, IntCtrl_Enable},            {Timer_0B_32, 0x1, IntCtrl_Enable},
          {Timer_1A_32, 0x5, IntCtrl_Disable},            {Timer_1B_32, 0x5, IntCtrl_Disable},
          {Timer_2A_32, 0x5, IntCtrl_Disable},            {Timer_2B_32, 0x5, IntCtrl_Disable},
          {Analog_Comparator_0, 0x5, IntCtrl_Disable},    {Analog_Comparator_1, 0x5, IntCtrl_Disable},

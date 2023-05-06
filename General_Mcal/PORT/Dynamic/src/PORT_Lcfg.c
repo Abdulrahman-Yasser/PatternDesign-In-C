@@ -81,6 +81,7 @@ const Port_ConfigType ConfigPtr[configured_pins] =
   {Port_Pin_F1, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},
   {Port_Pin_F2, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},
   {Port_Pin_E3, Port_PinLevel_LOW, Port_PinDir_IN, Port_PinMode_ADC, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},
+  {Port_Pin_E2, Port_PinLevel_LOW, Port_PinDir_IN, Port_PinMode_ADC, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},
   {Port_Pin_D0, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},  // SCL        LCD
   {Port_Pin_D1, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_OpenDrain, Port_PinOutputCurrent_2ma}, // SDA  LCD
   {Port_Pin_A6, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},  // SCL        RTC
