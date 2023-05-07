@@ -19,7 +19,7 @@ The polling happens periodically using a Timer ISR.<br>
 
 ## UML : 
 replace BC with FC <br>
-Breathing with Fire
+Breathing with Fire<br>
 ![image](https://user-images.githubusercontent.com/63866803/236702240-b46c9aef-c8f0-42f8-a822-fc7d002ced5e.png)
 
 
