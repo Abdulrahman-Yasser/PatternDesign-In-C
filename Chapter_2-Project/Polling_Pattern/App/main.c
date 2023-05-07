@@ -34,9 +34,9 @@ void Pattern_Creation(void){
     my_FCTimer = FCTimer_Create();
     FCTimer_setItsTimerChannel(my_FCTimer, Gpt_Channel_Normal_0);
     my_FireCircuitSensor_1 = FireCircuitSensor_Create(TEMPERATURE_ID, Sensor_Interface_Analog);
-    FireCircuitSensor_setThreshold(my_FireCircuitSensor_1, 30);
+    FireCircuitSensor_setThreshold(my_FireCircuitSensor_1, 200);
     my_FireCircuitSensor_2 = FireCircuitSensor_Create(LIGHT_ID, Sensor_Interface_Analog);
-    FireCircuitSensor_setThreshold(my_FireCircuitSensor_2, 120);
+    FireCircuitSensor_setThreshold(my_FireCircuitSensor_2, 200);
     my_FireDisplay = FireDisplay_Create();
 
     FCTimer_installTimerInterruptHandler(my_FCPeriodicPoller->itsFCTimer, FCPeriodicPoller_poll);

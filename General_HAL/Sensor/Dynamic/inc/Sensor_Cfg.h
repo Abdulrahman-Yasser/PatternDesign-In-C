@@ -14,7 +14,7 @@
 #include "../General_Mcal/ADC/Dynamic/inc/ADC_Cfg.h"
 
 #define SENSOR_DIGITAL_CONFIGURED_NUMBER   1
-#define SENSOR_ANALOG_CONFIGURED_NUMBER   1
+#define SENSOR_ANALOG_CONFIGURED_NUMBER   2
 
 #define SMOKE_ID 0
 #define LIGHT_ID 1

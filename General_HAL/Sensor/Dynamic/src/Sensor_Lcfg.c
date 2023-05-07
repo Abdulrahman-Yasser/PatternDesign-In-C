@@ -12,6 +12,7 @@ const Sensor_Digital_Container_Type Sensor_Digital_Config[SENSOR_DIGITAL_CONFIGU
 };
 
 const Sensor_Analog_Container_Type Sensor_Analog_Config[SENSOR_ANALOG_CONFIGURED_NUMBER] = {
+                                                              {.ADC_Num = ADC_TEMPERATURE_ADC_NUM, .sampleSequencer_Num = ADC_TEMPERATURE_SS_NUM},
                                                               {.ADC_Num = ADC_TEMPERATURE_ADC_NUM, .sampleSequencer_Num = ADC_TEMPERATURE_SS_NUM}
 };
 

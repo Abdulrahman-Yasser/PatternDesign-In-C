@@ -39,8 +39,20 @@ static void FireDisplay_showTempStatus(FireDisplay_t* me, uint8 status){
 }
 
 void FireDisplay_showStatus(FireDisplay_t* me, uint8 Flamestatus, uint8 Tempstatus){
-    if(Flamestatus == 2 && Tempstatus == 2){
+    if(Flamestatus == 1 && Tempstatus == 1){
         me->FIRE_LED->Write_High(me->FIRE_LED);
+        me->Flame_LED->Write_High(me->Flame_LED);
+        me->Temp_LED->Write_High(me->Temp_LED);
+    }else if(Flamestatus != 1 && Tempstatus == 1){
+        me->FIRE_LED->Write_Low(me->FIRE_LED);
+        me->Flame_LED->Write_Low(me->Flame_LED);
+        me->Temp_LED->Write_High(me->Temp_LED);
+    }else if(Flamestatus == 1 && Tempstatus != 1){
+        me->FIRE_LED->Write_Low(me->FIRE_LED);
+        me->Flame_LED->Write_High(me->Flame_LED);
+        me->Temp_LED->Write_Low(me->Temp_LED);
+    }else if(Flamestatus != 1 && Tempstatus != 1){
+        me->FIRE_LED->Write_Low(me->FIRE_LED);
         me->Flame_LED->Write_Low(me->Flame_LED);
         me->Temp_LED->Write_Low(me->Temp_LED);
     }
