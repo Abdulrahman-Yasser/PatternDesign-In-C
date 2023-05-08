@@ -1,0 +1,15 @@
+/*
+ * SensorObserver.h
+ *
+ *  Created on: May 8, 2023
+ *      Author: Abdu
+ */
+
+#ifndef APP_HAP_PATTERN_SENSOROBSERVER_SENSOROBSERVER_H_
+#define APP_HAP_PATTERN_SENSOROBSERVER_SENSOROBSERVER_H_
+
+
+
+
+
+#endif /* APP_HAP_PATTERN_SENSOROBSERVER_SENSOROBSERVER_H_ */

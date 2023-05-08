@@ -14,7 +14,7 @@ static DIO_LevelType read_Button(Button_Type* me);
 
 Button_Type* Button_Create(uint8 DIO_ID){
     Button_Type* me;
-    me = (Button_Type*)sizeof(Button_Type);
+    me = (Button_Type*)malloc(sizeof(Button_Type));
     if(me != Null_Ptr){
         me->Dio_Ch = Dio_GetChannelId(DIO_ID);
         me->Read = read_Button;
@@ -45,7 +45,8 @@ void Button_Remove_Isr(Button_Type* me){
 }
 
 static DIO_LevelType read_Button(Button_Type* me){
-    return Dio_ReadChannel(me->Dio_Ch);
+    me->Last_State = Dio_ReadChannel(me->Dio_Ch);
+    return me->Last_State;
 }
 
 

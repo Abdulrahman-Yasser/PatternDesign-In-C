@@ -15,6 +15,7 @@ typedef struct Button_Struct Button_Type;
 
 struct Button_Struct{
     DIO_ChannelType Dio_Ch;
+    DIO_LevelType Last_State;
     DIO_LevelType (*Read)(Button_Type* const me);
 };
 
