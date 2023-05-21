@@ -8,7 +8,8 @@
 #include <App/HAL_Patterns/Observable/Observable.h>
 
 #include "../../General_Common/Compiler.h"
-#include "../../ObserverPattern_Cfg.h"
+#include "../ObserverPattern_Cfg.h"
+#include <stdlib.h>
 
 Observable_Type* Observable_Create(void){
     Observable_Type *me;

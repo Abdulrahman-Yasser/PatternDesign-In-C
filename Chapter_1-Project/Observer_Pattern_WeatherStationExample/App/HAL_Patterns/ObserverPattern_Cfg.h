@@ -8,7 +8,10 @@
 #ifndef APP_HAL_PATTERNS_OBSERVERPATTERN_CFG_H_
 #define APP_HAL_PATTERNS_OBSERVERPATTERN_CFG_H_
 
-// to update smoke, temperature
-typedef void (*Update_t)(int, int, int);
+#include "Std_Types.h"
+#include "Server/TimeMarkedData/TimeMarkedData_DataType.h"
+
+// to update temperature, date and time
+typedef void (*Update_t)(struct TimeMarkedData*);
 
 #endif /* APP_HAL_PATTERNS_OBSERVERPATTERN_CFG_H_ */

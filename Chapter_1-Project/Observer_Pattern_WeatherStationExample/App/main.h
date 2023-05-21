@@ -9,38 +9,20 @@
 #define APP_MAIN_H_
 
 
-#include "../../General_Mcal/I2C/Static/inc/I2C.h"
-#include "../../General_Mcal/UART/Static/inc/UART.h"
-#include "../../General_Mcal/DIO/Static/inc/DIO.h"
-#include "../../General_Mcal/PORT/Static/inc/PORT.h"
-#include "../../General_Mcal/IntCtrl/Static/inc/IntCtrl.h"
-#include "../../General_Mcal/GPT/Static/inc/GPT.h"
-#include "../../General_Mcal/SysTick/Static/inc/SysTick.h"
-#include "../../General_Mcal/PWM/Static/inc/PWM.h"
 
-#include "../../General_Mcal/I2C/Dynamic/inc/I2C_Cfg.h"
-#include "../../General_Mcal/UART/Dynamic/inc/UART_Cfg.h"
-#include "../../General_Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
-#include "../../General_Mcal/PORT/Dynamic/inc/PORT_Cfg.h"
-#include "../../General_Mcal/IntCtrl/Dynamic/inc/IntCtrl_Cfg.h"
-#include "../../General_Mcal/GPT/Dynamic/inc/GPT_Cfg.h"
-#include "../../General_Mcal/SysTick/Dynamic/inc/SysTick_CFG.h"
-#include "../../General_Mcal/PWM/Dynamic/inc/PWM_Cfg.h"
+#include "Testing/Testing.h"
 
-#include "../../General_HAL/LCD/Static/inc/LCD.h"
-#include "../../General_HAL/LCD/Dynamic/inc/LCD_Cfg.h"
+#include "../General_Mcal/ADC/Static/inc/ADC.h"
+#include "../General_Mcal/DIO/Static/inc/DIO.h"
+#include "../General_Mcal/I2C/Static/inc/I2C.h"
+#include "../General_Mcal/PORT/Static/inc/PORT.h"
 
-#include "HAL_Patterns/System_App/inc/System_App.h"
+#include "../General_HAL/LCD/Static/inc/LCD.h"
+#include "../General_HAL/LCD/Dynamic/inc/LCD_Cfg.h"
 
-void App_Init(void);
-void transmit(void);
-void Send_Msg(char* msg);
-uint8* Rcv_Msg(UART_ChannelType my_uart);
+#include "../General_HAL/Digital_Intrface/Static/inc/Digital_Interface.h"
+#include "../General_HAL/Digital_Intrface/Dynamic/inc/Digital_Interface_Cfg.h"
 
-/*
- * ================================== I2C TEST =========================================
- */
-#define I2c_test_Slave_Address 0x02
-
+#include "../General_SpecificDrivers/TemperatureDriver_WeatherStation/TempratureDriver_WeatherStation.h"
 
 #endif /* APP_MAIN_H_ */

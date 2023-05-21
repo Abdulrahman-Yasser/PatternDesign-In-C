@@ -6,9 +6,16 @@
  */
 
 #include "TMDQueue.h"
+#include "../../Observable/Observable.h"
+#include "../../Observer/Observer.h"
 
 static void initRelations(TMDQueue* const me);
 static void cleanUpRelations(TMDQueue* const me);
+
+
+//void PrivateSubscribe(TMDQueue *me, Observer *o);
+//void PrivateUnSubscribe(TMDQueue *me, Observer *o);
+//void PrivaateNotify(TMDQueue *me);
 
 
 void TMDQueue_Init(TMDQueue* const me) {
@@ -16,6 +23,10 @@ void TMDQueue_Init(TMDQueue* const me) {
     me->size = 0;
     /* Setting the buffer into zeros */
     initRelations(me);
+//    me->my_Observable = Observable_Create();
+//    me->my_Observable->Subscribe = PrivateSubscribe;
+//    me->my_Observable->unSubscribe = PrivateUnSubscribe;
+//    me->my_Observable->Notify = PrivaateNotify;
 }
 
 
@@ -30,7 +41,8 @@ uint8 TMDQueue_getLastIndex(TMDQueue* const me){
 }
 
 uint8 TMDQueue_getNextIndex(TMDQueue* const me, uint8 index){
-    /* this operation computes the next index from the first using modulo arithmetic
+    /*
+     * this operation computes the next index from the first using modulo arithmetic
     */
     return (index+1) % TMD_QUEUE_SIZE;
 }
@@ -38,6 +50,7 @@ uint8 TMDQueue_getNextIndex(TMDQueue* const me, uint8 index){
 void TMDQueue_Insert(TMDQueue* const me, const struct TimeMarkedData tmd){
     /* note that because we never ’remove’ data from this leaky queue, size only increases to
     the queue size and then stops increasing. Insertion always takes place at the head.
+    and we don't have to remove as long as the Head pointer is changed at every insertion
     */
 
     me->Buffer[me->head] = tmd;
@@ -46,6 +59,9 @@ void TMDQueue_Insert(TMDQueue* const me, const struct TimeMarkedData tmd){
         ++me->size;
 }
 
+/* it will never be empty by the way !!
+ * because we never delete data or decrease the head, which make sense as long there is multiple
+ * clients poping from the Queue, so if a client popped a data the other client won't read it !! */
 uint8 TMDQueue_IsEmpty(TMDQueue* const me){
     return (me->size == 0);
 }
@@ -93,3 +109,80 @@ static void cleanUpRelations(TMDQueue* const me){
 }
 
 
+//void weatherData_Queue_Push(TMDQueue *me, struct TimeMarkedData tmd){
+//    TMDQueue_Insert(me, tmd);
+//    PrivaateNotify();
+//}
+//
+//struct TimeMarkedData weatherData_Queue_Pop(TMDQueue *me){
+//    struct TimeMarkedData result;
+//    result = (TMDQueue*)malloc(sizeof(TMDQueue));
+//    if( TMDQueue_IsEmpty(me) ){
+//        return 0;
+//    }
+//    result = TMDQueue_remove(me, index);
+//    return result;
+//}
+//
+///**
+// *  Observable Function
+// **/
+//
+//void PrivateSubscribe(TMDQueue *me, Observer *o){
+//    /* add the function in the notification handler */
+//    NotificationHandle *pNH;
+//    pNH = me->my_Observable->itsNotificationHandler;
+//    if(pNH == Null_Ptr){
+//        me->my_Observable->itsNotificationHandler = NotificationHandle_Create();
+//        pNH = me->my_Observable->itsNotificationHandler;
+//    }else{
+//        while(pNH->itsNotificationHandle != Null_Ptr){
+//            pNH = pNH->itsNotificationHandle;
+//        }
+//        pNH->itsNotificationHandle = NotificationHandle_Create();
+//        pNH = pNH->itsNotificationHandle;
+//    }
+//    pNH->FunPtr = o->UpdateFuncPtr;
+//    ++me->my_Observable->nSubscribers;
+//}
+//
+//void PrivateUnSubscribe(TMDQueue *me, Observer *o){
+//    NotificationHandle *pNH, *pBack;
+//    pNH = pBack = me->my_Observable->itsNotificationHandler;
+//
+//    if(pNH == Null_Ptr){
+//        return ;
+//    }else{
+//        if(pNH->FunPtr == o->UpdateFuncPtr){
+//            me->my_Observable->itsNotificationHandler = pNH->itsNotificationHandle;
+//            free(pNH);
+//            --me->my_Observable->nSubscribers;
+//        }else{
+//            while(pNH != Null_Ptr){
+//                pBack = pNH;
+//                pNH = pNH->itsNotificationHandle;
+//                if(pNH->FunPtr == o->UpdateFuncPtr){
+//                    pBack->itsNotificationHandle = pNH->itsNotificationHandle;
+//                    free(pNH);
+//                    --me->my_Observable->nSubscribers;
+//                    return;
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//void PrivaateNotify(TMDQueue *me){
+//    int i;
+//    struct TimeMarkedData tmd;
+//    if( TMDQueue_IsEmpty(me) ){
+//        return;
+//    }
+//    i = TMDQueue_getLastIndex(me);
+//    tmd = TMDQueue_remove(me, i);
+//    for(i = 0; i < me.my_Observable->nSubscribers; i++){
+//        me->my_Observable->itsNotificationHandler->FunPtr(&tmd);
+//    }
+//}
+//
+//

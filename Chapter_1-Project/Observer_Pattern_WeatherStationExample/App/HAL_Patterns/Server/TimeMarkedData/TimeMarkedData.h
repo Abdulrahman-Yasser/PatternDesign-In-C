@@ -11,12 +11,7 @@
 #include "../../General_Common/DataStructure/Queue/static/inc/Queue.h"
 #include "../../General_Common/Compiler.h"
 #include "../../General_HAL/RTC_I2C_DS1307/Static/inc/RTC_I2C_DS1307_Types.h"
-
-struct TimeMarkedData{
-    RTC_DS1307_TimeFrame_Type time;
-    RTC_DS1307_DateFrame_Type date;
-    uint8 temperature_value;
-};
+#include "TimeMarkedData_DataType.h"
 
 void TimeMarkedData_Init(struct TimeMarkedData* me);
 

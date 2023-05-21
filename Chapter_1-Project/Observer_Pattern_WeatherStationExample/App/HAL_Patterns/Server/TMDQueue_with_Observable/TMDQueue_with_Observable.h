@@ -16,11 +16,11 @@
 
 
 
-void WeatherData_Queue_Create(void);
+struct TMDQueue_with_Observable_s* weatherData_Queue_Create(void);
 
-void WeatherData_Queue_Push(struct TimeMarkedData* element);
+struct TimeMarkedData weatherData_Queue_Pop(void);
 
-struct TimeMarkedData* weatherData_Queue_Pop(void);
+void WeatherData_Queue_Push(struct TimeMarkedData* tmd);
 
 uint8 WeatherData_Queue_GetSize(void);
 

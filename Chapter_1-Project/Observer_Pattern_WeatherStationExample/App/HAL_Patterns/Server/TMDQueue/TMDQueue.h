@@ -1,3 +1,4 @@
+
 /*
  * TMDQueue.h
  *
@@ -8,16 +9,9 @@
 #ifndef APP_HAL_PATTERNS_SERVER_TMDQUEUE_TMDQUEUE_H_
 #define APP_HAL_PATTERNS_SERVER_TMDQUEUE_TMDQUEUE_H_
 
-
 #include "../TimeMarkedData/TimeMarkedData.h"
+#include "TMDQueue_DataType.h"
 
-#define TMD_QUEUE_SIZE 5
-
-typedef struct {
-    uint8 head;
-    uint8 size;
-    struct TimeMarkedData Buffer[TMD_QUEUE_SIZE]
-}TMDQueue;
 
 void TMDQueue_Init(TMDQueue* const me);
 
@@ -38,6 +32,12 @@ struct TimeMarkedData TMDQueue_remove(TMDQueue* const me, uint8 index);
 TMDQueue* TMDQueue_Create(void);
 
 void TMDQueue_Destroy(TMDQueue* const me);
+
+/*
+ * Observable Functions
+ */
+
+
 
 
 #endif /* APP_HAL_PATTERNS_SERVER_TMDQUEUE_TMDQUEUE_H_ */

@@ -9,8 +9,8 @@
 #define APP_HAL_PATTERNS_OBSERVABLE_OBSERVABLE_H_
 
 #include <App/HAL_Patterns/Observable/NotificationHandler/NotificationHandler.h>
-#include "../../ObserverPattern_Cfg.h"
-#include "../../Observer/inc/Observer.h"
+#include "../ObserverPattern_Cfg.h"
+#include "../Observer/Observer.h"
 
 typedef struct{
     int nSubscribers;

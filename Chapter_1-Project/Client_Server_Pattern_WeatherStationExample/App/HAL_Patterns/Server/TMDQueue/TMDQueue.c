@@ -49,6 +49,7 @@ void TMDQueue_Insert(TMDQueue* const me, const struct TimeMarkedData tmd){
         ++me->size;
 }
 
+/* it will never be empty btw !! */
 uint8 TMDQueue_IsEmpty(TMDQueue* const me){
     return (me->size == 0);
 }
