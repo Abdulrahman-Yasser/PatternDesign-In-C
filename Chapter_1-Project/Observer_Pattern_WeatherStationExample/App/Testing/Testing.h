@@ -12,7 +12,6 @@
 /* Server : */
 #include "../HAL_Patterns/Server/WeatherStation_Api/WeatherStation_Server.h"
 
-
 /* Client : */
 #include "../HAL_Patterns/Client/FireDisplay/FireDisplay.h"
 #include "../HAL_Patterns/Client/HistogramDisplay/HistogramDisplay.h"

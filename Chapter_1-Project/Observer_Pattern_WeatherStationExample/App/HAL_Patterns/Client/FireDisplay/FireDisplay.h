@@ -34,7 +34,7 @@ void FireDisplay_setItsLED(struct FireDisplay* const me, DigitalInterface_Type* 
 void FireDisplay_setItsTMDQueue(struct FireDisplay* const me, struct TMDQueue_with_Observable_s *p_TMDQueue);
 
 
-struct FireDisplay * FireDisplay_GetHandler(struct TMDQueue_with_Observable_s* pTMDQueue_observable);
+struct FireDisplay * FireDisplay_GetHandler(void);
 
 //void FireDisplay_Destroy(FireDisplay* const me);
 

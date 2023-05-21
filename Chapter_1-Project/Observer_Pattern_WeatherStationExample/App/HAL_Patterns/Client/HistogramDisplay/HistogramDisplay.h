@@ -8,10 +8,9 @@
 #ifndef APP_HAL_PATTERNS_CLIENT_HISTOGRAMDISPLAY_HISTOGRAMDISPLAY_H_
 #define APP_HAL_PATTERNS_CLIENT_HISTOGRAMDISPLAY_HISTOGRAMDISPLAY_H_
 
-//#include "../../../ECGPkg.h"
 #include "../General_HAL/LCD/Static/inc/LCD_Types.h"
 #include "../../Observer/Observer.h"
-
+#include "../../Server/TMDQueue_with_Observable/TMDQueue_with_Observable.h"
 /*
  * here i've used singelton pattern. I have only one instance of HistogramDiplay which i can get
  * it's handler using HistogramDisplay_Create(). But i can't destroy it, because once i destroy
@@ -31,8 +30,7 @@ struct HistogramDisplay;
 
 /* Constructors and destructors:*/
 
-void HistogramDisplay_Init(struct HistogramDisplay* const me);
-
+void HistogramDisplay_Init(struct HistogramDisplay* me, struct TMDQueue_with_Observable_s* const pTMDQueue_observable);
 //void HistogramDisplay_Cleanup(struct HistogramDisplay* const me);
 
 /* Operations */

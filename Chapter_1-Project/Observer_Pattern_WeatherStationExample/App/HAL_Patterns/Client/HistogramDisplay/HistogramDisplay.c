@@ -17,7 +17,7 @@
 
 #include <stdlib.h>
 
-static struct HistogramDisplay{
+ struct HistogramDisplay{
     struct TMDQueue_with_Observable_s* itsTMDQueue_observable;
     struct TimeMarkedData* my_tmd;
     LCD_Handler_Type* my_lcd;
@@ -27,12 +27,15 @@ static struct HistogramDisplay{
 static void HistogramDisplay_updateHistogram(struct TimeMarkedData *tmd);
 
 
-void HistogramDisplay_Init(struct HistogramDisplay* const me){
+void HistogramDisplay_Init(struct HistogramDisplay* me, struct TMDQueue_with_Observable_s* const pTMDQueue_observable){
     me->itsTMDQueue_observable = Null_Ptr;
     me->my_lcd = Null_Ptr;
 
     me->my_tmd = (struct TimeMarkedData*)malloc(sizeof(struct TimeMarkedData));
     TimeMarkedData_Init(me->my_tmd);
+
+    HistogramDisplay_setItsTMDQueue(me, pTMDQueue_observable);
+
     me->my_Observer = Observer_Create(HistogramDisplay_updateHistogram);
     me->itsTMDQueue_observable->my_Observable->Subscribe(me->my_Observer);
 }
@@ -101,7 +104,6 @@ void HistogramDisplay_setItsLCD(struct HistogramDisplay* const me, LCD_Handler_T
 }
 
 struct HistogramDisplay* HistogramDisplay_GetHandler(void){
-    HistogramDisplay_Init(&my_HistogramDisplay);
     return &my_HistogramDisplay;
 }
 

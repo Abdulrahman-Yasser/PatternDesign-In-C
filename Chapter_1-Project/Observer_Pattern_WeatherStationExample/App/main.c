@@ -10,8 +10,7 @@ void Board_init(void);
 int main(){
     Board_init();
 
-    struct TestingStruct *mine;
-    mine= Testing_Create();
+    struct TestingStruct *mine = Testing_Create();
 
     /* Histogram client */
 
@@ -21,7 +20,6 @@ int main(){
 
         /* Publishing to the server */
         WeatherStation_Publish();
-
     }
 
 }

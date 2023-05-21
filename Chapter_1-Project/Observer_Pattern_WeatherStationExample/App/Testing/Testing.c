@@ -10,7 +10,6 @@
 #include "Testing.h"
 
 
-
 struct TestingStruct{
     struct TMDQueue_with_Observable_s *itsTMDQueue;
     struct FireDisplay *itsFireDisplay;
@@ -19,7 +18,7 @@ struct TestingStruct{
 
 struct TestingStruct *Testing_Create(void){
     myTestingStruct.itsTMDQueue = weatherData_Queue_Create();
-    myTestingStruct.itsFireDisplay = FireDisplay_GetHandler(myTestingStruct.itsTMDQueue);
+    myTestingStruct.itsFireDisplay = FireDisplay_GetHandler();
     myTestingStruct.itsHistogramDisplay = HistogramDisplay_GetHandler();
 
     if(&myTestingStruct != Null_Ptr){
@@ -40,8 +39,8 @@ void Testing_Init_Relations(void){
    FireDisplay_setItsBUZZER( myTestingStruct.itsFireDisplay, fireDisplay_Buzzer);
 
    DigitalInterface_Type* fireDisplay_Led;
-   fireDisplay_Buzzer = Digital_Interface_Create(DIO_Channel3_B);
-   FireDisplay_setItsBUZZER( myTestingStruct.itsFireDisplay, fireDisplay_Buzzer);
+   fireDisplay_Led = Digital_Interface_Create(DIO_Channel3_B);
+   FireDisplay_setItsLED(myTestingStruct.itsFireDisplay, fireDisplay_Led);
 
    LCD_Handler_Type *FireDisplay_LCD;
    FireDisplay_LCD = LCD_Create(LCD_Interface_I2C, 0);
@@ -50,11 +49,11 @@ void Testing_Init_Relations(void){
    /* initializing the HistogramDisplay */
    HistogramDisplay_setItsTMDQueue(myTestingStruct.itsHistogramDisplay, myTestingStruct.itsTMDQueue);
 
-   HistogramDisplay_setItsLCD(myTestingStruct.itsFireDisplay, FireDisplay_LCD);
+   HistogramDisplay_setItsLCD(myTestingStruct.itsHistogramDisplay, FireDisplay_LCD);
 }
 
 
 
 void PublishData_To_Observers(struct TMDQueue_with_Observable_s *me){
-    WeatherStation_Push();
+    WeatherStation_Publish();
 }

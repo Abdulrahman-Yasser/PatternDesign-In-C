@@ -11,6 +11,7 @@
 #include "../../Observer/Observer.h"
 #include "../../Observable/Observable.h"
 
+
 static struct FireDisplay{
     struct TMDQueue_with_Observable_s* itsTMDQueue_observable;
     LCD_Handler_Type* my_lcd;
@@ -90,11 +91,7 @@ void FireDisplay_setItsLED(struct FireDisplay* const me, DigitalInterface_Type* 
     me->my_Led = p_LED_Handler;
 }
 
-struct FireDisplay * FireDisplay_GetHandler(struct TMDQueue_with_Observable_s* pTMDQueue_observable){
-    if(&my_FireDisplay != Null_Ptr && pTMDQueue_observable != Null_Ptr)
-    {
-        FireDisplay_Init(&my_FireDisplay, pTMDQueue_observable);
-    }
+struct FireDisplay * FireDisplay_GetHandler(void){
     return &my_FireDisplay;
 }
 
