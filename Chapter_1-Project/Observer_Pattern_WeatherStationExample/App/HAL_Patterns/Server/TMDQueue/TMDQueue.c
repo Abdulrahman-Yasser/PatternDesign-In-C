@@ -8,6 +8,9 @@
 #include "TMDQueue.h"
 #include "../../Observable/Observable.h"
 #include "../../Observer/Observer.h"
+#include <stdlib.h>
+#include "../TimeMarkedData/TimeMarkedData.h"
+
 
 static void initRelations(TMDQueue* const me);
 static void cleanUpRelations(TMDQueue* const me);

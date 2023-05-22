@@ -24,6 +24,7 @@
 /* class HistogramDisplay */
 
 struct HistogramDisplay;
+struct TMDQueue_with_Observable_s;
 
 #define HISTOGRAM_LCD_ID HistogramDisplay_LCD_ID
 

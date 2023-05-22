@@ -12,6 +12,7 @@
 #include "../ObserverPattern_Cfg.h"
 #include "../Observer/Observer.h"
 
+
 typedef struct{
     int nSubscribers;
     NotificationHandle *itsNotificationHandler;
@@ -21,6 +22,8 @@ typedef struct{
 }Observable_Type;
 
 Observable_Type* Observable_Create(void);
+
+
 
 void Observable_Destroy(Observable_Type* me);
 

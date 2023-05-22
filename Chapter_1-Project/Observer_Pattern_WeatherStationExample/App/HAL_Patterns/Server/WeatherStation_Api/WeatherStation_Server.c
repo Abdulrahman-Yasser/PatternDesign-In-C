@@ -13,7 +13,7 @@
 #include "../General_HAL/RTC_I2C_DS1307/Static/inc/RTC_I2C_DS1307.h"
 #include "../General_SpecificDrivers/TemperatureDriver_WeatherStation/TempratureDriver_WeatherStation.h"
 
-void WeatherStation_Publish(void){
+void WeatherStation_Publish(struct TMDQueue_with_Observable_s* me){
     struct TimeMarkedData tmd;
     tmd.temperature_value = TempDriver_WeatherStation_Read();
     tmd.date = RTC_DS1307_getDate();
@@ -21,11 +21,11 @@ void WeatherStation_Publish(void){
     /*maybe an error here that iam passing a local variable.
      *it shouldn't be an error because it's return by value.
      *it  but just in case i faced one  */
-    weatherData_Queue_Push(&tmd);
+    TMDQueue_with_Observable_Push(me, &tmd);
 }
 
-uint8 WeatherStation_IsEmpty(void){
-    uint8 x = WeatherData_Queue_IsEmpty();
+uint8 WeatherStation_IsEmpty(struct TMDQueue_with_Observable_s* me){
+    uint8 x = TMDQueue_with_Observable_IsEmpty(me);
     return x;
 }
 

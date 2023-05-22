@@ -12,6 +12,9 @@
 #include "../General_HAL/LCD/Static/inc/LCD.h"
 #include "../General_HAL/Digital_Intrface/Static/inc/Digital_Interface.h"
 
+#include "../../Server/TimeMarkedData/TimeMarkedData_DataType.h"
+
+struct TMDQueue_with_Observable_s;
 struct FireDisplay;
 
 

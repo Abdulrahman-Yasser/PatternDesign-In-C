@@ -10,24 +10,28 @@
 #ifndef APP_HAL_PATTERNS_SERVER_WEATHERDATA_QUEUE_H_
 #define APP_HAL_PATTERNS_SERVER_WEATHERDATA_QUEUE_H_
 
-#include "../../General_Common/DataStructure/Queue/static/inc/Queue.h"
-#include "../../General_Common/Compiler.h"
-#include "../../General_HAL/RTC_I2C_DS1307/Static/inc/RTC_I2C_DS1307_Types.h"
+#include "../../General_Common/Std_Types.h"
+#include "../../Observer/Observer.h"
+
+struct TimeMarkedData;
+struct TMDQueue_with_Observable_s;
+
+struct TMDQueue_with_Observable_s* TMDQueue_with_Observable_GetHandler(void);
+void TMDQueue_with_Observable_Init(struct TMDQueue_with_Observable_s* me);
+
+struct TimeMarkedData TMDQueue_with_Observable_Pop(struct TMDQueue_with_Observable_s* me);
+
+void TMDQueue_with_Observable_Push(struct TMDQueue_with_Observable_s* me, struct TimeMarkedData* tmd);
 
 
+uint8 TMDQueue_with_Observable_IsEmpty(struct TMDQueue_with_Observable_s* me);
 
-struct TMDQueue_with_Observable_s* weatherData_Queue_Create(void);
+uint8 TMDQueue_with_Observable_IsFull(struct TMDQueue_with_Observable_s* me);
 
-struct TimeMarkedData weatherData_Queue_Pop(void);
+void TMDQueue_with_Observable_Destroy(struct TMDQueue_with_Observable_s* me);
 
-void WeatherData_Queue_Push(struct TimeMarkedData* tmd);
+void TMDQueue_with_Observable_UnSubscribe(struct TMDQueue_with_Observable_s* me, Observer *o);
+void TMDQueue_with_Observable_Subscribe(struct TMDQueue_with_Observable_s* me, Observer *o);
 
-uint8 WeatherData_Queue_GetSize(void);
-
-uint8 WeatherData_Queue_IsEmpty(void);
-
-uint8 WeatherData_Queue_IsFull(void);
-
-void WeatherData_Queue_Destroy(void);
 
 #endif /* APP_HAL_PATTERNS_SERVER_WEATHERDATA_QUEUE_H_ */

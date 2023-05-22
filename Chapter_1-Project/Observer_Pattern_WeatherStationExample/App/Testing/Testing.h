@@ -20,8 +20,10 @@
 struct TestingStruct;
 
 
-struct TestingStruct *Testing_Create(void);
-void Testing_Init_Relations(void);
+struct TestingStruct *Testing_GetHandler(void);
+void Testing_Init_Relations(struct TestingStruct *me);
+
+struct TMDQueue_with_Observable_s *Testing_Get_ItsTMDQueue_with_Observable(struct TestingStruct *me);
 
 void PublishData_To_Observers(struct TMDQueue_with_Observable_s *me);
 

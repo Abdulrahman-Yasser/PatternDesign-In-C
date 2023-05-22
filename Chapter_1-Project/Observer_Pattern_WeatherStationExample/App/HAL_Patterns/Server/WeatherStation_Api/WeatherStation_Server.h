@@ -12,9 +12,9 @@
 
 #include "../General_SpecificDrivers/TemperatureDriver_WeatherStation/TempratureDriver_WeatherStation.h"
 
-void WeatherStation_Publish(void);
+void WeatherStation_Publish(struct TMDQueue_with_Observable_s* me);
 
-uint8 WeatherStation_IsEmpty(void);
+uint8 WeatherStation_IsEmpty(struct TMDQueue_with_Observable_s* me);
 
 
 #endif /* APP_HAL_PATTERNS_SERVER_WEATHERSTATION_WEATHERSTATION_SERVER_H_ */

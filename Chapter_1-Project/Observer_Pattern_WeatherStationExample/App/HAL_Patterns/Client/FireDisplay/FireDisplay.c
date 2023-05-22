@@ -33,7 +33,7 @@ void FireDisplay_Init(struct FireDisplay* const me, struct TMDQueue_with_Observa
     FireDisplay_setItsTMDQueue(me, pTMDQueue_observable);
 
     me->my_Observer = Observer_Create(FireDisplay_updateFireDisplay);
-    me->itsTMDQueue_observable->my_Observable->Subscribe(me->my_Observer);
+    TMDQueue_with_Observable_Subscribe(me->itsTMDQueue_observable, me->my_Observer);
 }
 
 

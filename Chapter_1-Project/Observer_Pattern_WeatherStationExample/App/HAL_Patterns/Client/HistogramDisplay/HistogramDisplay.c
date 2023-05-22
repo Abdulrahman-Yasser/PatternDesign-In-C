@@ -37,7 +37,7 @@ void HistogramDisplay_Init(struct HistogramDisplay* me, struct TMDQueue_with_Obs
     HistogramDisplay_setItsTMDQueue(me, pTMDQueue_observable);
 
     me->my_Observer = Observer_Create(HistogramDisplay_updateHistogram);
-    me->itsTMDQueue_observable->my_Observable->Subscribe(me->my_Observer);
+    TMDQueue_with_Observable_Subscribe(me->itsTMDQueue_observable, me->my_Observer);
 }
 
 //void HistogramDisplay_Cleanup(struct HistogramDisplay* const me){
