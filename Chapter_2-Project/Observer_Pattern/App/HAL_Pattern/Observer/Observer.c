@@ -12,6 +12,7 @@ Observer* Observer_Create(Update_t fun){
     Observer* me;
     me = (Observer*)malloc(sizeof(Observer));
     me->UpdateFuncPtr = fun;
+    return me;
 }
 
 void Observer_Destroy(Observer* me){

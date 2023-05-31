@@ -13,8 +13,8 @@
 #include "../../General_Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
 #include "../../General_Mcal/DIO/Static/inc/DIO_Types.h"
 
-#include "../../Observable/Observable.h"
-#include "../../Observer/Observer.h"
+#include "../Observable/Observable.h"
+#include "../Observer/Observer.h"
 
 typedef struct DigitalObservableSensor_struct DigitalObservableSensor_Type;
 

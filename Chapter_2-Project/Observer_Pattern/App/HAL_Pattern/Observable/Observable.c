@@ -5,8 +5,7 @@
  *      Author: Abdu
  */
 
-#include <App/HAL_Patterns/Observable/Observable.h>
-
+#include "Observable.h"
 #include "../../General_Common/Compiler.h"
 #include "../ObserverPattern_Cfg.h"
 #include <stdlib.h>

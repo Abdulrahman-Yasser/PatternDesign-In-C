@@ -19,14 +19,11 @@
 
 static void DigSens_PrivateSubscribe(Observable_Type* my_Observable,Observer* o);
 static void DigSens_PrivateUnSubscribe(Observable_Type* my_Observable,Observer* o);
-static void DigSens_PrivateNotify(Observable_Type* my_Observable);
-static uint8 getLastValue_byObservable(Observable_Type* my_Observable);
+static void DigSens_PrivateNotify(Observable_Type* my_Observable,uint8 data);
 static void DigitalObservableSensor_InitRelations(DigitalObservableSensor_Type* me);
+static uint8 GetValueFunction_Digital(DigitalObservableSensor_Type* const me);
 
 
-static uint8 getLastValue_byObservable(Observable_Type* my_Observable){
-
-}
 
 
 static void DigitalObservableSensor_InitRelations(DigitalObservableSensor_Type* me){
@@ -80,12 +77,10 @@ static void DigSens_PrivateUnSubscribe(Observable_Type* my_Observable, Observer*
     }
 }
 
-static void DigSens_PrivateNotify(Observable_Type* my_Observable){
+static void DigSens_PrivateNotify(Observable_Type* my_Observable,uint8 data){
     int i;
-    uint8 data;
-    data = getLastValue_byObservable(my_Observable);
     for(i = 0; i < my_Observable->nSubscribers; i++){
-        my_Observable->itsNotificationHandler->FunPtr();
+        my_Observable->itsNotificationHandler->FunPtr(data);
     }
 }
 
@@ -104,8 +99,10 @@ void DigitalObservableSensor_Destroy( DigitalObservableSensor_Type* const me){
 }
 
 
-static SENSOR_READ_TYPE GetValueFunction_Digital(Sensor_Type* const me){
-    return Dio_ReadChannel(me->Sensor_ID);
+static uint8 GetValueFunction_Digital(DigitalObservableSensor_Type* const me){
+    uint8 data = Dio_ReadChannel(me->Sensor_Data_Pins);
+    DigSens_PrivateNotify(me->my_observable, data);
+    return data;
 }
 
 

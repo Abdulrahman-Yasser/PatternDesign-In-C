@@ -5,8 +5,8 @@
  *      Author: Abdu
  */
 
-#include <App/HAL_Patterns/Observable/NotificationHandler/NotificationHandler.h>
-
+#include "NotificationHandler.h"
+#include <stdlib.h>
 #include "../../General_Common/Compiler.h"
 
 void NotificationHandle_Init(NotificationHandle*  me){
@@ -30,6 +30,7 @@ NotificationHandle * NotificationHandle_Create(void){
     if(me != Null_Ptr){
         NotificationHandle_Init(me);
     }
+    return me;
 }
 
 void NotificationHandle_Destroy(NotificationHandle* const me){

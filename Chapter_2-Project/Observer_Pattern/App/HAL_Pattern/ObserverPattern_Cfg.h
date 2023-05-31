@@ -9,9 +9,8 @@
 #define APP_HAL_PATTERNS_OBSERVERPATTERN_CFG_H_
 
 #include "Std_Types.h"
-#include "Server/TimeMarkedData/TimeMarkedData_DataType.h"
 
 // to update temperature, date and time
-typedef void (*Update_t)(struct TimeMarkedData*);
+typedef void (*Update_t)(uint8 data);
 
 #endif /* APP_HAL_PATTERNS_OBSERVERPATTERN_CFG_H_ */
