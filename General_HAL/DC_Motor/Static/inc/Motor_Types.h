@@ -13,7 +13,7 @@
 
 
 typedef enum {
-    Motor_Direction_FORWARD, Motor_Direction_BACKWARD, Motor_Direction_RIGHT, Motor_Direction_LEFT
+    Motor_Direction_CLOCKWISE, Motor_Direction_ANTICLOCKWISE
 }Motor_Direction_Type;
 
 typedef enum {
@@ -31,6 +31,8 @@ typedef enum {
 
 typedef struct{
     uint8 Motor_ID;
+    Motor_Speed_Type Motor_Speed;
+    Motor_Direction_Type Motor_Direction;
 }Motor_HandlerType;
 
 

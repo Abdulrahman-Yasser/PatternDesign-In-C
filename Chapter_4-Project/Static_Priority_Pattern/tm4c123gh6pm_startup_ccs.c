@@ -41,7 +41,9 @@ static void IntDefaultHandler(void);
 //
 //*****************************************************************************
 extern void _c_int00(void);
-
+extern void xPortPendSVHandler(void);
+extern void vPortSVCHandler(void);
+extern void xPortSysTickHandler(void);
 //*****************************************************************************
 //
 // Linker variable that marks the top of the stack.
@@ -117,11 +119,11 @@ void (* const g_pfnVectors[])(void) =
     0,                                      // Reserved
     0,                                      // Reserved
     0,                                      // Reserved
-    IntDefaultHandler,                      // SVCall handler
+    vPortSVCHandler,                      // SVCall handler
     IntDefaultHandler,                      // Debug monitor handler
     0,                                      // Reserved
-    IntDefaultHandler,                      // The PendSV handler
-    IntDefaultHandler,                      // The SysTick handler
+    xPortPendSVHandler,                      // The PendSV handler
+    xPortSysTickHandler,                      // The SysTick handler
     DIO_A_handler,                      // GPIO Port A
     DIO_B_handler,                      // GPIO Port B
     DIO_C_handler,                      // GPIO Port C
