@@ -24,4 +24,26 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>General_Common</name>
+			<type>2</type>
+			<location>F:/PatternDesign-In-C/General_Common</location>
+		</link>
+		<link>
+			<name>General_HAL</name>
+			<type>2</type>
+			<location>F:/PatternDesign-In-C/General_HAL</location>
+		</link>
+		<link>
+			<name>General_Mcal</name>
+			<type>2</type>
+			<location>F:/PatternDesign-In-C/General_Mcal</location>
+		</link>
+		<link>
+			<name>General_SpecificDrivers</name>
+			<type>2</type>
+			<location>F:/PatternDesign-In-C/General_SpecificDrivers</location>
+		</link>
+	</linkedResources>
 </projectDescription>
