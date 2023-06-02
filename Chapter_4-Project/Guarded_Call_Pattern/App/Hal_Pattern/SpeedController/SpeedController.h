@@ -1,0 +1,15 @@
+/*
+ * SpeedController.h
+ *
+ *  Created on: Jun 2, 2023
+ *      Author: Abdu
+ */
+
+#ifndef APP_HAL_PATTERN_SPEEDCONTROLLER_SPEEDCONTROLLER_H_
+#define APP_HAL_PATTERN_SPEEDCONTROLLER_SPEEDCONTROLLER_H_
+
+
+
+
+
+#endif /* APP_HAL_PATTERN_SPEEDCONTROLLER_SPEEDCONTROLLER_H_ */
