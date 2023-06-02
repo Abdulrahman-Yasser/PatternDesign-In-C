@@ -17,7 +17,7 @@ struct RobotArm{
 
 struct RobotArm* RobotArm_Create(void);
 
-void RobotArm_moveTo(struct RobotArm* me, uint32 x, uint32 y, uint32 z);
+uint8 RobotArm_moveTo(struct RobotArm* me, uint32 x, uint32 y, uint32 z);
 
 
 #endif /* APP_HAL_PATTERN_ROBOTARM_ROBOTARM_H_ */

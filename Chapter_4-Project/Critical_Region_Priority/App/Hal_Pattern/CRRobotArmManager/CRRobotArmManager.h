@@ -28,9 +28,9 @@ void CRRobotArmManager_Init(CRRobotArmManager* const me);
 void CRRobotArmManager_Cleanup(CRRobotArmManager* const me);
 
 /* Operations */
-void CRRobotArmManager_motorZero(CRRobotArmManager* const me);
+void CRRobotArmManager_motorZero(void* p_pvparameter);
 
-void CRRobotArmManager_moveRobotArm(CRRobotArmManager* const me);
+void CRRobotArmManager_moveRobotArm(void* p_pvparameter);
 
 struct CRDisplay* CRRobotArmManager_getItsCRDisplay(const CRRobotArmManager* const me);
 
@@ -45,6 +45,8 @@ struct UserInput* CRRobotArmManager_getItsUserInput(const CRRobotArmManager* con
 void CRRobotArmManager_setItsUserInput(CRRobotArmManager* const me, struct UserInput* p_UserInput);
 
 CRRobotArmManager * CRRobotArmManager_Create(void);
+
+void CRRobotTaskHandlerInit(CRRobotArmManager* const me);
 
 void CRRobotArmManager_Destroy(CRRobotArmManager* const me);
 

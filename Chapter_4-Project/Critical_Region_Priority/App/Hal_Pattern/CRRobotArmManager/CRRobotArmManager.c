@@ -24,45 +24,59 @@ void CRRobotArmManager_Init(CRRobotArmManager* const me){
 void CRRobotArmManager_Cleanup(CRRobotArmManager* const me);
 
 /* Operations */
-void CRRobotArmManager_motorZero(CRRobotArmManager* const me){
+void CRRobotArmManager_motorZero(void* p_pvparameter){
     uint8 success;
-    vTaskSuspendAll();
-    success = RobotArm_moveTo(me->itsRobotArm, 0, 0, 0);
-    xTaskResumeAll();
-    CRDisplay_printMsg(me->itsCRDisplay,"Cannot zero!");
+    CRRobotArmManager* const me = p_pvparameter;
+    TickType_t CRMotorZero = xTaskGetTickCount();
+    while(1){
+        vTaskDelayUntil(&CRMotorZero, 1000);
+        vTaskSuspendAll();
+        success = RobotArm_moveTo(me->itsRobotArm, 0, 0, 0);
+        xTaskResumeAll();
+        if(success){
+            CRDisplay_printMsg(me->itsCRDisplay,"It Is zero!");
+        }else{
+            CRDisplay_printMsg(me->itsCRDisplay,"Cannot zero!");
+        }
+    }
 }
 
-void CRRobotArmManager_moveRobotArm(CRRobotArmManager* const me){
+void CRRobotArmManager_moveRobotArm(void* p_pvparameter){
     /* local stack variable declarations */
     uint8 x, y, z, success = 1;
+    CRRobotArmManager* const me = p_pvparameter;
+    TickType_t CRMoveRobot = xTaskGetTickCount();
+    while(1){
+        vTaskDelayUntil(&CRMoveRobot, 1000);
+        /* noncritical region code */
 
-    /* noncritical region code */
+        /* note that the function below has its
+        own critical region and so cannot be
+        called inside of the critical region
+        of this function
+        */
 
-    /* note that the function below has its
-    own critical region and so cannot be
-    called inside of the critical region
-    of this function
-    */
+        x = UserInput_getX(me->itsUserInput);
+        y = UserInput_getY(me->itsUserInput);
+        z = UserInput_getZ(me->itsUserInput);
 
-    x = UserInput_getX(me->itsUserInput);
-    y = UserInput_getY(me->itsUserInput);
-    z = UserInput_getZ(me->itsUserInput);
+        /* critical region begins */
 
-    /* critical region begins */
+        vTaskSuspendAll();
 
-    vTaskSuspendAll();
+        /* critical region code */
 
-    /* critical region code */
+        success = RobotArm_moveTo(me->itsRobotArm,x,y,z);
 
-    success = RobotArm_moveTo(me->itsRobotArm,x,y,z);
+        /* critical region ends */
 
-    /* critical region ends */
+        xTaskResumeAll();
 
-    xTaskResumeAll();
+        /* more noncritical region code */
 
-    /* more noncritical region code */
-
-    CRDisplay_printInt(me->itsCRDisplay, "Result is ", success);
+        CRDisplay_printMsg(me->itsCRDisplay, "Result is ");
+        CRDisplay_printMsg(me->itsCRDisplay, int_to_string(success) );
+    }
 }
 
 struct CRDisplay* CRRobotArmManager_getItsCRDisplay(const CRRobotArmManager* const me){
@@ -96,6 +110,18 @@ CRRobotArmManager * CRRobotArmManager_Create(void){
         CRRobotArmManager_Init(me);
     }
     return me;
+}
+
+void CRRobotTaskHandlerInit(CRRobotArmManager* const me){
+
+    TaskHandle_t MoveTheRobotTaskHandler;
+    xTaskCreate(CRRobotArmManager_moveRobotArm, "Moving", 128, me, 2, &MoveTheRobotTaskHandler);
+
+    TaskHandle_t ZeroTheRobotTaskHandler;
+    xTaskCreate(CRRobotArmManager_motorZero, "Zero", 128, me, 3, &ZeroTheRobotTaskHandler);
+
+    TaskHandle_t ChangingTheValuesTaskHandler;
+    xTaskCreate(UserInput_Set_xyz, "UserInput", 128, me->itsUserInput, 3, &ChangingTheValuesTaskHandler);
 }
 
 void CRRobotArmManager_Destroy(CRRobotArmManager* const me){

@@ -7,6 +7,8 @@
 
 #include "UserInput.h"
 #include <stdlib.h>
+#include "FreeRTOS.h"
+#include "task.h"
 
 struct UserInput{
     uint8 x;
@@ -22,6 +24,26 @@ void getUserInputs(struct UserInput* me){
      * */
     me->y = ((( rand() % 100) / 10) * 10);
 }
+
+void UserInput_Set_xyz(void* p_pvparameter){
+    struct UserInput* me = p_pvparameter;
+    TickType_t UserInputSetting = xTaskGetTickCount();
+    while(1){
+        vTaskDelayUntil(&UserInputSetting, 1000);
+        me->x = rand() % 2;
+        me->y = ( ( (rand() % 100) / 10 ) * 10);
+    }
+}
+
+struct UserInput* UserInput_Create(void){
+    struct UserInput* me;
+    me = (struct UserInput*)malloc(sizeof(struct UserInput));
+    me->x = 0;
+    me->y = 0;
+    me->z = 0;
+    return me;
+}
+
 
 uint8 UserInput_getX ( struct UserInput* me){
     return me->x;
