@@ -4,8 +4,8 @@
 - [Chapter 1 : What is Embedded programming ](Chapter_1-Project/)<details><summary>Patterns Details</summary>that file contains Client-Server Pattern, Push-Pop Pattern and Observer Pattern.</details>
 - [Chapter 2 : Embedded Programming with The Harmony TM for Embedded RealTime Process](Chapter_1-Project/)<details><summary>Patterns Details</summary>that file contains Client-Server Pattern, Push-Pop Pattern and Observer Pattern.</details>
 - [Chapter 3 : Design Patterns for Accessing Hardware](Chapter_2-Project/)<details><summary>Patterns Details</summary>that file contains Interrupt, Polling, Adapter, Proxy, Debouncing, Mediator and Observer Patterns in form of HAL Driver that kinda interact directly with the Hardware.</details>
-- [Chapter 4 : Design Patterns for Embedding Concurrency and Resource Management](Chapter_3-Project/)
-- [Chapter 5 : Design Patterns for State Machines](Chapter_4-Project/)
+- [Chapter 4 : Design Patterns for Embedding Concurrency and Resource Management](Chapter_4-Project/)<details><summary>Patterns Details</summary>that file contains Static Priority Pattern, Critical Region Pattern, Guarded Call Pattern, Queuing Pattern, Rendezvous Pattern, Simultaneous Locking Pattern and Ordered Locking Pattern in form of HAL Driver that kinda interact directly with the Hardware or interact with hardware through General_Hal_Layer.</details>
+- [Chapter 5 : Design Patterns for State Machines](Chapter_4-Project)
 - [Chapter 6 : Safety and Reliability Pattern](Chapter_5-Project/)
 
 ## Some tested drivers to make sure that it works fine : 
