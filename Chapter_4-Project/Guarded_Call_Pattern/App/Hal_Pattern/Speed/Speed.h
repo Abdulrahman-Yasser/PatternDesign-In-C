@@ -11,8 +11,15 @@
 
 #include "../General_Common/Std_Types.h"
 
-uint8 getSpeed(void);
-void setSpeed(uint8 s);
+struct speed{
+    uint8 my_speed;
+};
+
+
+struct speed* Speed_Create(void);
+
+uint8 getSpeed(struct speed* me);
+void setSpeed(struct speed* me, uint8 s);
 
 
 
