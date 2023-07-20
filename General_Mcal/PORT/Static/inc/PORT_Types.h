@@ -1,7 +1,7 @@
 #ifndef PORT_TYPES_H
 #define PORT_TYPES_H
 
-#include "../../General_Common/Std_Types.h"
+#include "../General_Common/Std_Types.h"
 
 typedef enum{
     Port_Pin_A0, Port_Pin_A1, Port_Pin_A2, Port_Pin_A3, Port_Pin_A4, Port_Pin_A5, Port_Pin_A6, Port_Pin_A7,

@@ -48,3 +48,11 @@ void FlightDataDisplay_setItsKinematicData(struct FlightDataDisplay* const me, s
     me->itsKinematicData = p_KinematicData;
 }
 
+void FlightDataDisplay_run(void* mine){
+    struct FlightDataDisplay *me = mine;
+    TickType_t FD_Delay = xTaskGetTickCount();
+    while(1){
+        vTaskDelayUntil(&FD_Delay, 1000);
+        FlightDataDisplay_showFlightData(me);
+    }
+}

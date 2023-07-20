@@ -23,5 +23,5 @@ const SysTick_Config My_SysTick =
 {
      SysTick_Interrupt_Enable,
      SysTick_ClkSrc_SysClk,
-     SYSTICK_INITIAL_RELOAD_VALUE
+     SYSTICK_INITIAL_RELOAD_VALUE_IN_ms
 };

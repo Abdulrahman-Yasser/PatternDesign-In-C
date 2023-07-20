@@ -1,5 +1,5 @@
 
-#include "../../General_Common/Mcu_Hw.h"
+#include "../General_Common/Mcu_Hw.h"
 
 #include "../inc/WDT.h"
 #include "../inc/WDT_Types.h"

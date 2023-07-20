@@ -16,8 +16,8 @@
 
 #include "../inc/IntCtrl_Cfg.h"
 #include "../../Static/inc/IntCtrl_Types.h"
-#include "../../General_Common/Platform_Types.h"
-#include "../../General_Common/Std_Types.h"
+#include "../General_Common/Platform_Types.h"
+#include "../General_Common/Std_Types.h"
 
 
 
@@ -33,9 +33,9 @@ const IntCtrl_Container_t Initialized_Interrupt_Container =
  .Prio_Group_System=IntCtrl_Prio_Group_8_SubGroup_0,
  .container_ptr={
          {Memory_Management, 0x5, IntCtrl_Disable},      {Bus_Fault, 0x5, IntCtrl_Disable},
-         {Usage_Fault, 0x5, IntCtrl_Disable},            {SVCall     , 0x5, IntCtrl_Disable},
-         {Debug_Monitor     , 0x5, IntCtrl_Disable},     {PendSV      , 0x5, IntCtrl_Disable},
-         {SysTick      , 0x5, IntCtrl_Disable},
+         {Usage_Fault, 0x5, IntCtrl_Disable},            {SVCall     , 0x5, IntCtrl_Enable},
+         {Debug_Monitor     , 0x5, IntCtrl_Disable},     {PendSV      , 0x5, IntCtrl_Enable},
+         {SysTick      , 0x5, IntCtrl_Enable},
          {GPIO_Port_A, 0x03, IntCtrl_Disable},            {GPIO_Port_B, 0x5, IntCtrl_Disable},
          {GPIO_Port_C, 0x5, IntCtrl_Disable},            {GPIO_Port_D, 0x5, IntCtrl_Disable},
          {GPIO_Port_E, 0x5, IntCtrl_Disable},            {UART_0     , 0x5, IntCtrl_Disable},

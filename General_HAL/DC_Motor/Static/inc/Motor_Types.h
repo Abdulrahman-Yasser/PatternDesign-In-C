@@ -8,8 +8,8 @@
 #ifndef HAL_DC_MOTOR_STATIC_INC_MOTOR_TYPES_H_
 #define HAL_DC_MOTOR_STATIC_INC_MOTOR_TYPES_H_
 
-#include "../../General_Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
-#include "../../General_Mcal/PWM/Dynamic/inc/PWM_Cfg.h"
+#include "../General_Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
+#include "../General_Mcal/PWM/Dynamic/inc/PWM_Cfg.h"
 
 
 typedef enum {

@@ -10,9 +10,10 @@
 
 
 
-#include "../../General_HAL/Sensor/Static/inc/Senosr.h"
-#include "../../General_HAL/Sensor/Dynamic/inc/Sensor_Cfg.h"
+#include "../General_HAL/Sensor/Static/inc/Senosr.h"
+#include "../General_HAL/Sensor/Dynamic/inc/Sensor_Cfg.h"
 
+static Sensor_Type *TempHandler = Null_Ptr;
 
 
 void TempDriver_WeatherStation_Init(void);

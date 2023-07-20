@@ -7,8 +7,8 @@
 
 
 #include "../inc/RTC_I2C_DS3231.h"
-#include "../../General_Mcal/I2C/Static/Inc/I2C_Types.h"
-#include "../../General_Mcal/I2C/Static/Inc/I2C.h"
+#include "../General_Mcal/I2C/Static/Inc/I2C_Types.h"
+#include "../General_Mcal/I2C/Static/Inc/I2C.h"
 
 #define RTC_DS3231_I2C_Channel              (I2C_ChannelType)I2C_NUM_0
 #define RTC_DS3231_I2C_Slave_Address        0x0e

@@ -1,5 +1,5 @@
 /*
- * KinematicData.c
+ * kinematicData.c
  *
  *  Created on: Jun 2, 2023
  *      Author: Abdu
@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 
-#include "KinematicData.h"
+#include "kinematicData.h"
 
 
 

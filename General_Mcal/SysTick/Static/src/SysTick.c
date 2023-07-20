@@ -16,8 +16,9 @@
 
 #include "../../Static/inc/SysTick.h"
 
-#include "../../General_Common/Mcu_Hw.h"
+#include "../General_Common/Mcu_Hw.h"
 
+#include "../General_Common/CPU_resources.h"
  /**********************************************************************************************************************
  *  LOCAL MACROS CONSTANT\FUNCTION
  *********************************************************************************************************************/
@@ -91,8 +92,12 @@ void SysTick_Stop(void){
 * \Parameters (out): None
 * \Return value:   : None
 *******************************************************************************/
-void SysTick_Reload(SysTick_ReLoadType ReLoad){
-    SYSTICK_RELOAD_REG = ReLoad;
+void SysTick_Reload_ms(SysTick_ReLoadType ReLoad){
+    volatile uint32 i;
+    i = SYSTICK_CTRL_REG;
+    SYSTICK_CTRL_REG = 0;
+    SYSTICK_RELOAD_REG = (ReLoad * 1000) - 1;
+    SYSTICK_CTRL_REG = i;
 }
 
 /******************************************************************************
@@ -119,7 +124,7 @@ void SysTick_SetCallBack(void (*PointerToFunction) (void)){
 * \Parameters (out): None
 * \Return value:   : None
 *******************************************************************************/
-void SysTick_Handler(void)
+extern void SysTick_Handler(void)
 {
     if(SysTick_CallBack_PtrToFunc != ((void*)0) )
     {

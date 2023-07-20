@@ -16,14 +16,24 @@ struct DirectionController* DirectionController_Create(void){
 }
 
 void DirectionController_manageDirection(struct DirectionController* const me){
+    uint8 d = (rand()%2);
+    setDirection(&(me->ownShipDirection), d);
     kinematicData_setDirection(me->itsKinematicData, me->ownShipDirection);
 }
 
-struct KinematicData* DirectionController_getItsKinematicData(struct  DirectionController* const me){
+struct kinematicData* DirectionController_getItsKinematicData(struct  DirectionController* const me){
     return me->itsKinematicData;
 }
 
-void DirectionController_setItsKinematicData(struct DirectionController* const me, struct KinematicData* p_KinematicData){
+void DirectionController_setItsKinematicData(struct DirectionController* const me, struct kinematicData* p_KinematicData){
     me->itsKinematicData = p_KinematicData;
 }
 
+void DirectionController_run(void* mine){
+    struct DirectionController* me = mine;
+    TickType_t DC_Delay = xTaskGetTickCount();
+    while(1){
+        vTaskDelayUntil(&DC_Delay, 1000);
+        DirectionController_manageDirection(me);
+    }
+}

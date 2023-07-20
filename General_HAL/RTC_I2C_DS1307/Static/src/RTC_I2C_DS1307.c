@@ -6,8 +6,8 @@
  */
 
 
-#include "../../General_Mcal/I2C/Static/Inc/I2C_Types.h"
-#include "../../General_Mcal/I2C/Static/Inc/I2C.h"
+#include "../General_Mcal/I2C/Static/Inc/I2C_Types.h"
+#include "../General_Mcal/I2C/Static/Inc/I2C.h"
 #include "../inc/RTC_I2C_DS1307.h"
 #include "../../Dynamic/inc/RTC_I2C_DS1307_Cfg.h"
 

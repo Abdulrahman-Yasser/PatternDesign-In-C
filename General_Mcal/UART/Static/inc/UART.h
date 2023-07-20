@@ -17,7 +17,7 @@
 
 #include "UART_Types.h"
 
-#include "../../General_Common/Std_Types.h"
+#include "../General_Common/Std_Types.h"
 
 #define UART_CONFIGURED_PREDEF_NUMBER  3
 

@@ -8,7 +8,7 @@
 #ifndef RTC_I2C_DS3231_STATIC_INC_RTC_I2C_DS3231_TYPES_H_
 #define RTC_I2C_DS3231_STATIC_INC_RTC_I2C_DS3231_TYPES_H_
 
-#include "../../General_Common/Platform_Types.h"
+#include "../General_Common/Platform_Types.h"
 
 typedef struct{
     uint8 seconds;

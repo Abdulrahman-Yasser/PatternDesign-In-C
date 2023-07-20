@@ -14,6 +14,10 @@
 
 #include "Testing_I2C_2/Testing_I2C_2.h"
 
+#include "Testing_PLL/Testing_PLL.h"
+
+#include "Testing_SysTick/Testing_SysTick.h"
+
 
 #include "Testing_DS1037/Testing_DS1307.h"
 

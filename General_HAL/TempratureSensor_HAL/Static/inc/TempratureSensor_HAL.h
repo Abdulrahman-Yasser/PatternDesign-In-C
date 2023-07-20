@@ -8,7 +8,7 @@
 #ifndef TEMPRATURESENSOR_HAL_INC_TEMPRATURESENSOR_HAL_H_
 #define TEMPRATURESENSOR_HAL_INC_TEMPRATURESENSOR_HAL_H_
 
-#include "../../General_Mcal/DIO/Static/inc/DIO_Types.h"
+#include "../General_Mcal/DIO/Static/inc/DIO_Types.h"
 
 
 

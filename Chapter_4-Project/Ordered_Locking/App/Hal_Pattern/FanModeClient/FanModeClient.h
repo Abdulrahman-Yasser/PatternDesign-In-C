@@ -1,0 +1,13 @@
+/*
+ * FanModeClient.h
+ *
+ *  Created on: Jul 7, 2023
+ *      Author: Abdu
+ */
+
+#ifndef APP_HAL_PATTERN_FANMODECLIENT_FANMODECLIENT_H_
+#define APP_HAL_PATTERN_FANMODECLIENT_FANMODECLIENT_H_
+
+
+
+#endif /* APP_HAL_PATTERN_FANMODECLIENT_FANMODECLIENT_H_ */

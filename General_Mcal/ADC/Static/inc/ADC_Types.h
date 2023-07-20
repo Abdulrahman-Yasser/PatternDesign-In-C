@@ -16,8 +16,8 @@
  *  INCLUDES
  *********************************************************************************************************************/
 
-#include "../../General_Common/Std_Types.h"
-#include "../../General_Common/DataStructure/Normal_Queue/static/inc/Normal_Queue.h"
+#include "../General_Common/Std_Types.h"
+#include "../General_Common/DataStructure/Normal_Queue/static/inc/Normal_Queue.h"
 
 
 #define ADC_VDDA_AS_REFRENCE        0x00

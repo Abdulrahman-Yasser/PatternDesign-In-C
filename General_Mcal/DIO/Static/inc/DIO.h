@@ -15,7 +15,7 @@
  *  INCLUDES
  *********************************************************************************************************************/
 
-#include "../../General_Common/Std_Types.h"
+#include "../General_Common/Std_Types.h"
 #include "DIO_Types.h"
 
 

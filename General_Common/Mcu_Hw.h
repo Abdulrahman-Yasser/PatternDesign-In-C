@@ -759,9 +759,12 @@ WatchDog Timer Registers
 //*****************************************************************************
 
 #define SYSCTL_RCGCPWM_R        0x400FE640
+#define SYSCTL_RIS_REG          0x400FE050
+#define SYSCTL_RCC_REG          0x400FE060
 #define SYSCTL_RCC_REG_PWM      0x400FE060
+#define SYSCTL_RCC2_REG         0x400FE070
 #define SYSCTL_RCC2_REG_PWM     0x400FE070
-#define SYSCTL_RCGCADC_BASE   0x400FE638
+#define SYSCTL_RCGCADC_BASE     0x400FE638
 
 #define SYSCTL_RCGCI2C          (*((volatile uint32 *)0x400FE620))
 #define SYSCTL_RCGCUART         (*((volatile uint32 *)0x400FE618))

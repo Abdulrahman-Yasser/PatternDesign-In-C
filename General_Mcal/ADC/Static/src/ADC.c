@@ -18,9 +18,9 @@
 #include "../../Dynamic/inc/ADC_Cfg.h"
 #include <stdlib.h>
 
-#include "../../General_Common/Std_Types.h"
-#include "../../General_Common/Mcu_Hw.h"
-#include "../../General_Common/DataStructure/Normal_Queue/static/inc/Normal_Queue.h"
+#include "../General_Common/Std_Types.h"
+#include "../General_Common/Mcu_Hw.h"
+#include "../General_Common/DataStructure/Normal_Queue/static/inc/Normal_Queue.h"
 
 /**********************************************************************************************************************
  *  STATIC GLOBAL VARIABLES

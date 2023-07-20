@@ -1,5 +1,5 @@
 /*
- * KinematicData.h
+ * kinematicData.h
  *
  *  Created on: Jun 2, 2023
  *      Author: Abdu

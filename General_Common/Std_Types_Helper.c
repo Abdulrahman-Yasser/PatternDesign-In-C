@@ -8,6 +8,7 @@
 
 #include "Std_Types.h"
 #include <stdlib.h>
+#include "CPU_resources.h"
 
 void WriteUsingBB(uint32* Ptr, uint32 Value){
     uint8 i;
@@ -22,8 +23,9 @@ void WriteUsingBB(uint32* Ptr, uint32 Value){
 }
 
 void Delay_ms(unsigned long long n){
-    volatile unsigned long long  count = 0;
-    while(count++ < (762 * n) );
+    volatile unsigned long long  count = 0, i;
+    n = n * 762 ;
+    while(count++ < n );
 }
 
 char* int_to_string(uint32 var){

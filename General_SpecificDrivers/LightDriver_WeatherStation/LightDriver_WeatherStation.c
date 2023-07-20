@@ -7,6 +7,7 @@
 
 #include "LightDriver_WeatherStation.h"
 
+
 void LightDriver_WeatherStation_Init(void){
     LightHandler = Sensor_Create(LIGHT_ID, Sensor_Interface_Digital);
 }

@@ -8,7 +8,7 @@
 #ifndef General_Mcal_PWM_DYNAMIC_INC_PWM_TYPES_H_
 #define General_Mcal_PWM_DYNAMIC_INC_PWM_TYPES_H_
 
-#include "../../General_Common/Std_Types.h"
+#include "../General_Common/Std_Types.h"
 
 typedef enum{
     PWM_CONTMODE_DOWN, PWM_COUNTMODE_UP_DOWN

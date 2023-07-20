@@ -31,7 +31,9 @@ void SysTick_Start(void);
 
 void SysTick_Stop(void);
 
-void SysTick_Reload(SysTick_ReLoadType ReLoad);
+void SysTick_Reload_ms(SysTick_ReLoadType ReLoad);
+
+extern void SysTick_Handler(void);
 
 void SysTick_SetCallBack(void (*PointerToFunction) (void));
 

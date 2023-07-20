@@ -8,10 +8,10 @@
 #ifndef HAL_SENSOR_STATIC_INC_SENSOR_TYPES_H_
 #define HAL_SENSOR_STATIC_INC_SENSOR_TYPES_H_
 
-#include "../../General_Common/Platform_Types.h"
+#include "../General_Common/Platform_Types.h"
 
-#include "../../General_Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
-#include "../../General_Mcal/ADC/Dynamic/inc/ADC_Cfg.h"
+#include "../General_Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
+#include "../General_Mcal/ADC/Dynamic/inc/ADC_Cfg.h"
 
 typedef uint32 SENSOR_READ_TYPE;
 

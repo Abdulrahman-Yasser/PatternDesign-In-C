@@ -11,7 +11,7 @@
 #ifndef GPT_TYPES_H
 #define GPT_TYPES_H
 
-#include "../../General_Common/Std_Types.h"
+#include "../General_Common/Std_Types.h"
 
 #define Gpt_InterruptOverFlow       0
 #define Gpt_InterruptCaptureMatch   1

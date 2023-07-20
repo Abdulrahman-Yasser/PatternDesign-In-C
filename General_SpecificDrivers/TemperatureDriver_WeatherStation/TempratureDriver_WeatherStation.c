@@ -7,7 +7,6 @@
 
 #include "TempratureDriver_WeatherStation.h"
 
-static Sensor_Type *TempHandler = Null_Ptr;
 
 
 void TempDriver_WeatherStation_Init(void){

@@ -8,8 +8,8 @@
 #ifndef APP_SPECIFICDRIVERS_SMOKEDRIVER_WEATHERSTATION_SMOKEDRIVER_WEATHERSTATION_H_
 #define APP_SPECIFICDRIVERS_SMOKEDRIVER_WEATHERSTATION_SMOKEDRIVER_WEATHERSTATION_H_
 
-#include "../../General_HAL/Sensor/Static/inc/Senosr.h"
-#include "../../General_HAL/Sensor/Dynamic/inc/Sensor_Cfg.h"
+#include "../General_HAL/Sensor/Static/inc/Senosr.h"
+#include "../General_HAL/Sensor/Dynamic/inc/Sensor_Cfg.h"
 
 static Sensor_Type *SmokeHandler = Null_Ptr;
 

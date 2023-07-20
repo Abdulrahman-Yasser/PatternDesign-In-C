@@ -9,8 +9,8 @@
 #define HAL_LCD_STATIC_INC_MP3_H_
 
 #include "../inc/MP3_Types.h"
-#include "../../General_Common/Compiler.h"
-#include "../../General_Common/Platform_Types.h"
+#include "../General_Common/Compiler.h"
+#include "../General_Common/Platform_Types.h"
 
 
 

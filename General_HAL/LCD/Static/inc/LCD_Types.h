@@ -10,8 +10,8 @@
 
 
 
-#include "../../General_Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
-#include "../../General_Mcal/I2C/Dynamic/inc/I2C_Cfg.h"
+#include "../General_Mcal/DIO/Dynamic/inc/DIO_Cfg.h"
+#include "../General_Mcal/I2C/Dynamic/inc/I2C_Cfg.h"
 
 typedef sint8 LCD_CHAR_Type;
 

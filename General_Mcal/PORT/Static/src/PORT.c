@@ -13,8 +13,8 @@
  /**********************************************************************************************************************
   *  INCLUDES
   *********************************************************************************************************************/
-#include "../../General_Common/Std_Types.h"
-#include "../../General_Common/Mcu_Hw.h"
+#include "../General_Common/Std_Types.h"
+#include "../General_Common/Mcu_Hw.h"
 
 #include "../../Dynamic/inc/PORT_Cfg.h"
 

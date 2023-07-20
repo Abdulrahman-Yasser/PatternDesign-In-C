@@ -10,8 +10,8 @@
 #include "../../Dynamic/inc/Motor_Cfg.h"
 #include <stdlib.h>
 
-#include "../../General_Mcal/DIO/Static/inc/DIO.h"
-#include "../../General_Mcal/PWM/Static/inc/PWM.h"
+#include "../General_Mcal/DIO/Static/inc/DIO.h"
+#include "../General_Mcal/PWM/Static/inc/PWM.h"
 
 static void Motor_Init(Motor_HandlerType* me, uint8 Motor_ID);
 static void Motor_CleanUp(Motor_HandlerType* me);

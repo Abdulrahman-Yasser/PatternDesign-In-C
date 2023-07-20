@@ -16,7 +16,7 @@
  *  INCLUDES
  *********************************************************************************************************************/
 
-#include "../../General_Common/Std_Types.h"
+#include "../General_Common/Std_Types.h"
 #include "../../Dynamic/inc/IntCtrl_Cfg.h"
 
 #include "IntCtrl_Types.h"

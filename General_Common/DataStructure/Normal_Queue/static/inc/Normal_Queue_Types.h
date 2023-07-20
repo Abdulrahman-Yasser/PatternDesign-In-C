@@ -8,7 +8,7 @@
 #ifndef DATASTRUCTURE_NORMAL_QUEUE_STATIC_INC_NORMAL_QUEUE_TYPES_H_
 #define DATASTRUCTURE_NORMAL_QUEUE_STATIC_INC_NORMAL_QUEUE_TYPES_H_
 
-#include "../../General_Common/Std_Types.h"
+#include "../General_Common/Std_Types.h"
 #include "../../dynamic/inc/Normal_Queue_Cfg.h"
 
 

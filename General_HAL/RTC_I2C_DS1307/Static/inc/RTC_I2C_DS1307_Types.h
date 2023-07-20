@@ -8,7 +8,7 @@
 #ifndef RTC_I2C_DS1307_STATIC_INC_RTC_I2C_DS1307_TYPES_H_
 #define RTC_I2C_DS1307_STATIC_INC_RTC_I2C_DS1307_TYPES_H_
 
-#include "../../General_Common/Platform_Types.h"
+#include "../General_Common/Platform_Types.h"
 
 #define RTC_DS1307_USED_24_MODE     0
 #define RTC_DS1307_USED_12_MODE     1

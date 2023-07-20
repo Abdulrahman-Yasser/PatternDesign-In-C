@@ -8,8 +8,8 @@
 #ifndef HAL_LCD_STATIC_INC_MP3_TYPES_H_
 #define HAL_LCD_STATIC_INC_MP3_TYPES_H_
 
-#include "../../General_Mcal/DIO/Static/inc/DIO_Types.h"
-#include "../../General_Common/Platform_Types.h"
+#include "../General_Mcal/DIO/Static/inc/DIO_Types.h"
+#include "../General_Common/Platform_Types.h"
 
 
 

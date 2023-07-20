@@ -8,7 +8,7 @@
 #include "../inc/LCD.h"
 #include "../../Dynamic/inc/LCD_Cfg.h"
 
-#include "../../General_Mcal/DIO/Static/inc/DIO.h"
+#include "../General_Mcal/DIO/Static/inc/DIO.h"
 #include <stdlib.h>
 
 #define LCD_SLAVE_ADDRESS 0x27

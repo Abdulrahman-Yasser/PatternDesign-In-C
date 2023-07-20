@@ -12,9 +12,9 @@
 /**********************************************************************************************************************
  *  INCLUDES
  *********************************************************************************************************************/
-#include "../../General_Common/Std_Types.h"
-#include "../../General_Common/CPU_resources.h"
-#include "../../General_Common/Mcu_Hw.h"
+#include "../General_Common/Std_Types.h"
+#include "../General_Common/CPU_resources.h"
+#include "../General_Common/Mcu_Hw.h"
 
 
 #include "../inc/GPT.h"

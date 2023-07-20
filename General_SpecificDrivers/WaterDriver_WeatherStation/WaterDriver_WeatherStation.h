@@ -9,8 +9,8 @@
 #define APP_SPECIFICDRIVERS_WATERDRIVER_WEATHERSTATION_INC_WATERDRIVER_WEATHERSTATION_H_
 
 
-#include "../../General_HAL/Sensor/Static/inc/Senosr.h"
-#include "../../General_HAL/Sensor/Dynamic/inc/Sensor_Cfg.h"
+#include "../General_HAL/Sensor/Static/inc/Senosr.h"
+#include "../General_HAL/Sensor/Dynamic/inc/Sensor_Cfg.h"
 
 
 static Sensor_Type *WaterS_Handler = Null_Ptr;

@@ -9,7 +9,7 @@
 #define HAL_LCD_DYNAMIC_INC_LCD_CFG_H_
 
 #include "../../Static/inc/LCD_Types.h"
-#include "../../General_Mcal/I2C/Dynamic/Inc/I2C_Cfg.h"
+#include "../General_Mcal/I2C/Dynamic/Inc/I2C_Cfg.h"
 
 #define LCD_I2C_CONFIGURED_NUMBER   1
 #define LCD_DIO_CONFIGURED_NUMBER   0
