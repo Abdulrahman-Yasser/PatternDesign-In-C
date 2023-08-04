@@ -29,6 +29,9 @@
 
 #define Disable_Interrupts()     __asm("  CPSID I")
 
+#define Wait_For_Interrupt()   __asm("WFI ")
+
+
 void IntCtrl_Init(void) ;
 
 void IntCtrl_DisableInterrupt(IntCtrl_InterruptType_t InterruptID) ;

@@ -59,10 +59,22 @@ volatile uint32* GetTimerAddress(Gpt_ChannelType TimerAddress);
 uint8 calculate_MaxBits(uint32 val);
 void WriteUsingBB(uint32* TimerPtr, uint32 Value);
 uint32 calculate_BitGuarding(uint32 val);
+uint8 Gpt_GetArrayID(Gpt_ChannelType Channel);
+
 
 /**********************************************************************************************************************
  *  LOCAL FUNCTIONS
  *********************************************************************************************************************/
+
+uint8 Gpt_GetArrayID(Gpt_ChannelType Channel){
+    uint8 i;
+    for ( i = 0; i < TIMERS_NUMBERS; i++){
+        if (GPT_ConfigPtr_Container[i].GptChannelId == Channel){
+            return i;
+        }
+    }
+    return 0;
+}
 
 uint8 calculate_MaxBits(uint32 val){
     uint8 i = 0;
@@ -140,7 +152,8 @@ volatile uint32* GetTimerAddress(Gpt_ChannelType TimerAddress){
     return i;
 }
 
-void __attribute__((weak)) App_Function(void){
+
+void __attribute__((weak)) GPT_CallBack_Function(void){
     while(1);
 }
 
@@ -167,7 +180,7 @@ void Gpt_Init(void){
     volatile uint32* TimerPtr;
     uint8 i;
     uint32 frequency = 0;
-    *(volatile uint32*)(SYSCTL_RCGCTIMER_REG) |= (1 << 0);
+     *(volatile uint32*)(SYSCTL_RCGCTIMER_REG) |= (1 << 0);
 
     for(i = 0; i < TIMERS_NUMBERS; i++){
         if(GPT_ConfigPtr_Container[i].ChannelMode == Gpt_Mode_NotUsed){
@@ -177,14 +190,14 @@ void Gpt_Init(void){
 
         if( (RCG_clock & (1 << GPT_ConfigPtr_Container[i].GptChannelId) )== 0){
             REG_ORING_VALUE_NO_CASTING(SYSCTL_RCGCTIMER_REG, 1 << (GPT_ConfigPtr_Container[i].GptChannelId % 6));
-            RCG_clock |= 1 <<  1 << (GPT_ConfigPtr_Container[i].GptChannelId % 6);
+            RCG_clock |= 1 << (GPT_ConfigPtr_Container[i].GptChannelId % 6);
         }
 
         G_BitUsedGuarding[GPT_ConfigPtr_Container[i].GptChannelId] = calculate_BitGuarding( GPT_ConfigPtr_Container[i].GptChannelTickValueMax );
 
         if(GPT_ConfigPtr_Container[i].PreScalingType != Gpt_Prescale_NotUsed){
             /* in case we are using any type of preScaling we will save those values. */
-            frequency = (uint16)((CPU_CLOCK * GPT_ConfigPtr_Container[i].GptChannelTickFrequency ));
+            frequency = (uint16)(( GPT_ConfigPtr_Container[i].GptChannelTickFrequency ));
             G_BitShiftingGuarding[GPT_ConfigPtr_Container[i].GptChannelId] = calculate_BitGuarding(frequency);
             G_BitShifting[GPT_ConfigPtr_Container[i].GptChannelId] = calculate_MaxBits(frequency);
 
@@ -206,8 +219,8 @@ void Gpt_Init(void){
             REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_CFG_REG_OFFSET),2);
             /* Work as OneShot Mode */
             REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_TAMR_REG_OFFSET),0);
-            /* Counting Up */
-            REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_TAMR_REG_OFFSET),4);
+            /* Counting Down */
+            REG_CLR_PERIPH_BB_PTR(((uint8*)TimerPtr +GPTM_TAMR_REG_OFFSET),4);
             /* Write the PreScale value */
             if(GPT_ConfigPtr_Container[i].PreScalingType == Gpt_Prescale_Hardware){
                 WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAPR_REG_OFFSET),(uint8)frequency);
@@ -221,7 +234,7 @@ void Gpt_Init(void){
             /* Work as a Periodic Mode */
             REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_TAMR_REG_OFFSET),1);
             /* Counting Up */
-            REG_SET_PEIPTH_BB_PTR(((uint8*)TimerPtr +GPTM_TAMR_REG_OFFSET),4);
+            REG_CLR_PERIPH_BB_PTR(((uint8*)TimerPtr +GPTM_TAMR_REG_OFFSET),4);
             /* Write the PreScale value */
             if(GPT_ConfigPtr_Container[i].PreScalingType == Gpt_Prescale_Hardware){
                 WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAPR_REG_OFFSET),(uint8)frequency);
@@ -396,6 +409,34 @@ void Gpt_Init(void){
 
 
 
+/******************************************************************************
+* \Syntax          : void Gpt_CallBackFunction(void (*PointerToFunction) (void))
+* \Description     : The function Set the callBackFunction for the timer
+*
+* \Sync\Async      : Synchronous
+* \Reentrancy      : Reentrant
+* \Parameters (in) : Pointer to the function that ill be called
+* \Parameters (out): None
+* \Return value:   : None
+*
+*******************************************************************************/
+void Gpt_SetCallBackFunction(Gpt_ChannelType Channel, void (*PointerToFunction) (void), Gpt_InterruptType my_interrupt){
+    if(my_interrupt == Gpt_InterruptMatch){
+        GPT_ConfigPtr_Container[Channel].GptNotificationCallBack_Match = PointerToFunction;
+    }else if(my_interrupt == Gpt_InterruptOverFlow){
+        GPT_ConfigPtr_Container[Channel].GptNotificationCallBack_OverFlowEvent = PointerToFunction;
+    }
+}
+
+
+void Gpt_SetLoadValue_for_A_B(Gpt_ChannelType Channel, uint32 value){
+    volatile uint32* TimerPtr;
+    TimerPtr = GetTimerAddress(Channel);
+    GPT_ConfigPtr_Container[Channel].GptChannelTickValueMax = value;
+    G_BitUsedGuarding[GPT_ConfigPtr_Container[Channel].GptChannelId] = calculate_BitGuarding( GPT_ConfigPtr_Container[Channel].GptChannelTickValueMax );
+    WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TBILR_REG_OFFSET), GPT_ConfigPtr_Container[Channel].GptChannelTickValueMax - 1);
+    WriteUsingBB((uint32*)((uint8*)TimerPtr + GPTM_TAILR_REG_OFFSET), GPT_ConfigPtr_Container[Channel].GptChannelTickValueMax - 1);
+}
 /******************************************************************************
 * \Syntax          : void Gpt_DisableNotification(Gpt_ChannelType Channel)
 * \Description     : The function Disable all ISRs in a timer Channel

@@ -26,6 +26,10 @@
 
 void Gpt_Init(void);
 
+void Gpt_SetCallBackFunction(Gpt_ChannelType Channel, void (*PointerToFunction) (void), Gpt_InterruptType my_interrupt);
+
+void Gpt_SetLoadValue_for_A_B(Gpt_ChannelType Channel, uint32 value);
+
 void Gpt_DisableNotification(Gpt_ChannelType Channel);
 
 void Gpt_EnableNotification(Gpt_ChannelType Channel);

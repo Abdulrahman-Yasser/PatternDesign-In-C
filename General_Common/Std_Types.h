@@ -20,5 +20,6 @@ typedef enum{
 
 #define RETURN_ERROR    0x00U       /* There is Error */
 #define RETURN_FINE     0x01U       /* There is No Error */
+#define RETURN_NORMAL     0x01U       /* There is No Error */
 
  #endif

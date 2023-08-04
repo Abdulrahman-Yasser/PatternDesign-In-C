@@ -18,6 +18,7 @@
 
 #include "../../Static/inc/GPT_Types.h"
 
+#include "../General_Common/CPU_resources.h"
  /**********************************************************************************************************************
   *  GLOBAL CONSTANT MACROS
   *********************************************************************************************************************/
@@ -29,12 +30,30 @@
 
 
 #define MY_TIMER0_CHANNEL               (Gpt_ChannelType)Gpt_Channel_Normal_0
-#define MY_TIMER0_FREQUENCY             (uint32)15       //15us
+#define MY_TIMER0_FREQUENCY             (uint32)CPU_CLOCK
 #define MY_TIMER0_PRESCALING_TYPE       Gpt_Prescale_Hardware
-#define MY_TIMER0_WAIT_PERIOD           (Gpt_ValueType)60000
+#define MY_TIMER0_WAIT_PERIOD           (Gpt_ValueType)1000
 #define MY_TIMER0_MODE                  (Gpt_ModeType)Gpt_Mode_Periodic_A
 #define MY_TIMER0_INTERRUPT             ((1 << Gpt_InterruptOverFlow))
-#define MY_TIMER0_ISR_CALLBACK          App_Function
+#define MY_TIMER0_ISR_CALLBACK          GPT_CallBack_Function
+
+#define MY_TIMER1_CHANNEL               (Gpt_ChannelType)Gpt_Channel_Normal_1
+#define MY_TIMER1_FREQUENCY             (uint32)CPU_CLOCK
+#define MY_TIMER1_PRESCALING_TYPE       Gpt_Prescale_Hardware
+#define MY_TIMER1_WAIT_PERIOD           (Gpt_ValueType)1000
+#define MY_TIMER1_MODE                  (Gpt_ModeType)Gpt_Mode_Periodic_A
+#define MY_TIMER1_INTERRUPT             ((1 << Gpt_InterruptOverFlow))
+#define MY_TIMER1_ISR_CALLBACK          GPT_CallBack_Function
+
+
+#define MY_TIMER2_CHANNEL               (Gpt_ChannelType)Gpt_Channel_Normal_2
+#define MY_TIMER2_FREQUENCY             (uint32)CPU_CLOCK
+#define MY_TIMER2_PRESCALING_TYPE       Gpt_Prescale_Hardware
+#define MY_TIMER2_WAIT_PERIOD           (Gpt_ValueType)1000
+#define MY_TIMER2_MODE                  (Gpt_ModeType)Gpt_Mode_Periodic_A
+#define MY_TIMER2_INTERRUPT             ((1 << Gpt_InterruptOverFlow))
+#define MY_TIMER2_ISR_CALLBACK          GPT_CallBack_Function
+
 
 
 #define MY_DEFAULT_CHANNEL              Gpt_Channel_Normal_0
@@ -55,30 +74,30 @@
 
 
 #if GPT_PREDEF_TIMER_100US_32BIT == Enable
-#define GPT_PREDEF_TIMER_100US_32BIT_FUN_OVERFLOW           App_Function
-#define GPT_PREDEF_TIMER_100US_32BIT_FUN_MATCH              App_Function
+#define GPT_PREDEF_TIMER_100US_32BIT_FUN_OVERFLOW           GPT_CallBack_Function
+#define GPT_PREDEF_TIMER_100US_32BIT_FUN_MATCH              GPT_CallBack_Function
 #endif
 
 #if GPT_PREDEF_TIMER_60US_16BIT == Enable
-#define GPT_PREDEF_TIMER_60US_16BIT_FUN_OVERFLOW             App_Function
-#define GPT_PREDEF_TIMER_60US_16BIT_FUN_MATCH                App_Function
+#define GPT_PREDEF_TIMER_60US_16BIT_FUN_OVERFLOW             GPT_CallBack_Function
+#define GPT_PREDEF_TIMER_60US_16BIT_FUN_MATCH                GPT_CallBack_Function
 #endif
 
 #if GPT_PREDEF_TIMER_40US_24BIT == Enable
-#define GPT_PREDEF_TIMER_40US_24BIT_FUN_OVERFLOW             App_Function
-#define GPT_PREDEF_TIMER_40US_24BIT_FUN_MATCH                App_Function
+#define GPT_PREDEF_TIMER_40US_24BIT_FUN_OVERFLOW             GPT_CallBack_Function
+#define GPT_PREDEF_TIMER_40US_24BIT_FUN_MATCH                GPT_CallBack_Function
 #endif
 
 #if GPT_PREDEF_TIMER_20US_32BIT == Enable
-#define GPT_PREDEF_TIMER_20US_32BIT_FUN_OVERFLOW             App_Function
-#define GPT_PREDEF_TIMER_20US_32BIT_FUN_MATCH                App_Function
+#define GPT_PREDEF_TIMER_20US_32BIT_FUN_OVERFLOW             GPT_CallBack_Function
+#define GPT_PREDEF_TIMER_20US_32BIT_FUN_MATCH                GPT_CallBack_Function
 #endif
 
 /**********************************************************************************************************************
   *  GLOBAL DATA PROTOTYPES
   *********************************************************************************************************************/
-extern void App_Function(void);
-extern const Gpt_ConfigType GPT_ConfigPtr_Container[TIMERS_NUMBERS];
+extern void GPT_CallBack_Function(void);
+extern Gpt_ConfigType GPT_ConfigPtr_Container[TIMERS_NUMBERS];
 #endif
 
 /**********************************************************************************************************************
