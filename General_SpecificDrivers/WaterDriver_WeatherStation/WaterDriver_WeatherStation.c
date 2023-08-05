@@ -9,14 +9,14 @@
 #include "WaterDriver_WeatherStation.h"
 
 void WaterDriver_WeatherStation_Init(void){
-    WaterS_Handler = Sensor_Create(WATER_ID, Sensor_Interface_Digital);
+    WaterS_Handler = Sensor_Create(WATER_ID, Sensor_Interface_Analog);
 }
 
 
 int WaterDriver_WeatherStation_Read(void){
     int x;
     x = WaterS_Handler->GetValue(WaterS_Handler);
-    return x;
+    return ((x * 500 )/ 4096);
 }
 
 

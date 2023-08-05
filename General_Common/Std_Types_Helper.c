@@ -30,7 +30,7 @@ void Delay_ms(unsigned long long n){
 
 char* int_to_string(uint32 var){
     char* s;
-    uint8 i = 1, j = 0;
+    sint8 i = 0, j = 0;
     uint32 temp = var;
 
     do{
@@ -40,11 +40,12 @@ char* int_to_string(uint32 var){
 
     s = (char*)malloc(sizeof(char) * (i + 1));
 
-    while(i > j){
-        s[j] = (var % 10) + '0';
+    s[i] = '\0';
+    i--;
+    while(i >= j){
+        s[i] = (var % 10) + '0';
         var = var / 10;
-        j++;
+        i--;
     }
-    s[j] = '\0';
     return s;
 }

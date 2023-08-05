@@ -48,6 +48,7 @@
 									<listOptionValue builtIn="false" value="&quot;F:\PatternDesign-In-C\General_Common&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;F:\PatternDesign-In-C\General_HAL&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;F:\PatternDesign-In-C\General_Mcal&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\PatternDesign-In-C\General_SpecificDrivers&quot;"/>
 								</option>
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_20.2.compilerID.DEBUGGING_MODEL.956692906" name="Debugging model" superClass="com.ti.ccstudio.buildDefinitions.TMS470_20.2.compilerID.DEBUGGING_MODEL" value="com.ti.ccstudio.buildDefinitions.TMS470_20.2.compilerID.DEBUGGING_MODEL.SYMDEBUG__DWARF" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.ti.ccstudio.buildDefinitions.TMS470_20.2.compilerID.DIAG_WARNING.921843535" name="Treat diagnostic &lt;id&gt; as warning (--diag_warning, -pdsw)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_20.2.compilerID.DIAG_WARNING" valueType="stringList">
@@ -83,10 +84,11 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="New folder|General_HAL|General_Common|General_Mcal" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="General_SpecificDrivers|New folder|General_HAL|General_Common|General_Mcal" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="General_Common"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="General_HAL"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="General_Mcal"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="General_SpecificDrivers"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

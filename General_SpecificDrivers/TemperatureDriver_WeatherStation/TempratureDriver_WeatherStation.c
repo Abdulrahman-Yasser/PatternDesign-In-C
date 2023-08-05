@@ -10,14 +10,14 @@
 
 
 void TempDriver_WeatherStation_Init(void){
-    TempHandler = Sensor_Create(TEMPERATURE_ID, Sensor_Interface_Digital);
+    TempHandler = Sensor_Create(TEMPERATURE_ID, Sensor_Interface_Analog);
 }
 
 
 uint32 TempDriver_WeatherStation_Read(void){
     uint32 x;
     x = TempHandler->GetValue(TempHandler);
-    x = x * 330 / 4096;
+    x = ((x * 330) / 4096) ;
     return x;
 }
 

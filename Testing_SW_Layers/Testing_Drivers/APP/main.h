@@ -25,4 +25,10 @@
 
 #include "Testing_DIO_ISR/Testing_DIO.h"
 
+#include "Testing_HAL_Temp_Smoke_Water_Humanity_LCD_Buzzer_LED/Testing_HAL_1.h"
+
+#include "Testing_LCD_and_ADC/Testing_LCD_and_ADC.h"
+
+#include "Testing_LCD_and_SpecificDriverTemp/Testing_LCD_and_SpecificDriverTemp.h"
+
 #endif /* APP_MAIN_H_ */
