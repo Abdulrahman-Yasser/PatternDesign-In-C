@@ -37,7 +37,7 @@
 
 
 
-#define I2C_LCD_CHANNEL_NUMBER      I2C_NUM_3
+#define I2C_LCD_CHANNEL_NUMBER      I2C_NUM_1
 #define I2C_RTC_CHANNEL_NUMBER      I2C_NUM_1
 
 

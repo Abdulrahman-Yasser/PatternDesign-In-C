@@ -182,7 +182,7 @@ Std_BoolReturnType LCD_I2C_Write_Cmd_Function(LCD_Handler_Type* const me, uint8 
     I2C_Push_to_Transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, data_t[2], 0);
     I2C_Push_to_Transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, data_t[3], 0);
 
-    my_return = I2C_MasterPoke_to_transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, LCD_SLAVE_ADDRESS, 0, 4);
+    I2C_MasterPoke_to_transmit(Lcd_I2C_Config[me->LCD_ID].LCD_I2C_Channel, LCD_SLAVE_ADDRESS, 0, 4);
     Delay_ms(1);
     return my_return;
 }
