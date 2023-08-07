@@ -22,6 +22,7 @@
 
 #define TESTING_ADC_Channel                 (ADC_Module_Num_Type)ADC_Module_0
 #define TESTING_ADC_SS_NUM                  (ADC_SS_NumType)ADC_SS_3
+#define TESTING_ADC_Pin                     (ADC_Channel_Num_Type)ADC_Channel_AIN0
 
 
 void Testing_ADC_Test(void);

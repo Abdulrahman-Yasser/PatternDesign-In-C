@@ -48,5 +48,23 @@ void Delay_ms(unsigned long long n);
 
 char* int_to_string(uint32 var);
 
+void selectionSort(sint32 arr[], uint8 n);
+
+#define swapPointers(x,y) { *x = *x + *y; *y = *x - *y; *x = *x - *y; }
+
+#define selectionSortWithType(arr,n,the_type) {\
+    the_type i, j, min_idx;\
+    for (i = 0; i < n-1; i++)\
+    {\
+        min_idx = i;\
+        for (j = i+1; j < n; j++)\
+          if ( *(arr + j) > *(arr + min_idx) )\
+            min_idx = j;\
+           if(min_idx != i){\
+               swapPointers((arr +min_idx) , (arr + i));\
+           }\
+    }\
+}
+
 
 #endif

@@ -53,6 +53,7 @@ typedef struct Sensor_Analog_Container Sensor_Analog_Container_Type;
 struct Sensor_Analog_Container{
     ADC_Module_Num_Type ADC_Num;
     ADC_SS_NumType      sampleSequencer_Num;
+    ADC_Channel_Num_Type Sensor_Pin;
 };
 
 

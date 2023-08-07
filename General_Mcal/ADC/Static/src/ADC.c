@@ -30,6 +30,11 @@ static uint8 ADC_ModulesUsed_RcggSaver = 0;
 
 static ADC_ValueGroup_Type *my_ADC_Buffers[8];
 
+static sint8 ADC_SensorID_BasedOnSS[4][8] = {{-1,-1,-1,-1,-1,-1,-1,-1},
+                                             {-1,-1,-1,-1,-1,-1,-1,-1},
+                                             {-1,-1,-1,-1,-1,-1,-1,-1},
+                                             {-1,-1,-1,-1,-1,-1,-1,-1}
+                                            };
 /**********************************************************************************************************************
  *  STATIC FUNCTIONS
  *********************************************************************************************************************/
@@ -47,7 +52,8 @@ static inline uint32 ADC_Get_Base(ADC_Module_Num_Type ADC_Num){
  *********************************************************************************************************************/
 
 void ADC_Init(void){
-    uint8 i ;
+    uint8 i, j, z;
+    uint8 ADC_SensorID_BasedOnSS_position[4] = {0,0,0,0};
     volatile uint32 base, register_check;
 
     /* First, we initialize the configured Sequence Samples */
@@ -139,6 +145,13 @@ void ADC_Init(void){
                 REG_ORING_ONE_BIT_CASTING_POINTED(base + ADC_SSCTLn_OFFSET + (ADC_CH_Container[i].sampleSequencer_Num * 0x20) , (ADC_CH_Container[i].UsedChannel_Num * 4) + 3);
             }
         }
+        /* This line is a bit pain in the head ... so in case i forgot.
+         * Each sampleSequencer will contain many inputs.
+         * Each sampleSequencer will have an array that contains the Analog pins that is connected to the sampleSequencer.
+         * that's why we will have 4 pointers each one for each SampleSequencer just to fill the array, (just in case the user entered AIN to ss3 then AIN to ss0) */
+        ADC_SensorID_BasedOnSS[ADC_CH_Container[i].sampleSequencer_Num][ADC_SensorID_BasedOnSS_position[ADC_CH_Container[i].sampleSequencer_Num]] = ADC_CH_Container[i].UsedChannel_Num;
+        ADC_SensorID_BasedOnSS_position[ADC_CH_Container[i].sampleSequencer_Num]++;
+
         /* in case it has Differential Input */
         if( ADC_CH_Container[i].Channel_Differential_in_CTL_R == Enable_EnumType ){
             REG_ORING_ONE_BIT_CASTING_POINTED(base + ADC_SSCTLn_OFFSET + (ADC_CH_Container[i].sampleSequencer_Num * 0x20) ,  (ADC_CH_Container[i].UsedChannel_Num*4));
@@ -191,8 +204,14 @@ void ADC_Init(void){
     /* If interrupt is used, change (ADCIM) */
     REG_WRITE_CASTING_POINTED(base +  ADC_SAC_OFFSET, my_ADC1_Averging_Sample);
 
-
-
+    /* we are done with initialization.
+     * Now it's time to sort our ADC_SensorID_BasedOnSS.
+     * ADC_SensorID_BasedOnSS contains the Analog pins for each sample sequencer.
+     * it will be a lot easier for other functions that that array to be sorted.
+     * ascending  order */
+//    for(z = 0; z < 4; z++){
+//        selectionSortWithType(&ADC_SensorID_BasedOnSS[z][0], 8, sint8);
+//    }
 
 }
 
@@ -264,7 +283,7 @@ void ADC_ReadingOperation(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSe
     REG_ORING_ONE_BIT_CASTING_POINTED(base + ADC_ISC_OFFSET , mySampleSequencer);
 }
 
-uint32 ADC_ReadOneValue(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencer){
+uint32 ADC_ReadOneValue(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequencer, ADC_Channel_Num_Type myAnalogPin){
 //    uint32 base, RegisterCheck;
 //    uint16 data;
 //
@@ -280,7 +299,17 @@ uint32 ADC_ReadOneValue(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequ
 //
 //    return NormalQueue_Static_remove(my_ADC_Buffers[mySampleSequencer + (ADC_Num * 4)] );
     volatile uint32 base, RegisterCheck;
-    volatile uint16 data;
+    volatile uint16 data, finalData;
+
+    uint8 i, j = 0;
+    for(i = 0; i < 8; i++){
+        if(ADC_SensorID_BasedOnSS[mySampleSequencer][i] == myAnalogPin){
+            break;
+        }
+        if(i == 7){
+            return -1;
+        }
+    }
 
 
     base = ADC_Get_Base(ADC_Num);
@@ -288,7 +317,6 @@ uint32 ADC_ReadOneValue(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequ
     if(my_ADC_Buffers[mySampleSequencer + (ADC_Num*4)] == Null_Ptr){
         return 0;
     }
-
     ADC_StartConversion(ADC_Num, mySampleSequencer);
     /* the sample finished it's conversion ? */
     do{
@@ -298,12 +326,16 @@ uint32 ADC_ReadOneValue(ADC_Module_Num_Type ADC_Num, ADC_SS_NumType mySampleSequ
     /* read the FIFO till the EMPTY FIFO flag set high */
     do{
         REG_READ_CASTING_POINTED(data, base + ADC_SSFIFOn_OFFSET + (mySampleSequencer*0x20) );
+        if(i == j){
+            finalData = data;
+        }
+        j++;
         REG_READ_CASTING_POINTED(RegisterCheck, base + ADC_SSFSTATn_OFFSET + (mySampleSequencer*0x20) );
-    }while(! (RegisterCheck & (1 << 8) ) );
+    }while( !(RegisterCheck & (1 << 8) ) );
 
     REG_ORING_ONE_BIT_CASTING_POINTED(base + ADC_ISC_OFFSET , mySampleSequencer);
 
-    return data;
+    return finalData;
 }
 
 

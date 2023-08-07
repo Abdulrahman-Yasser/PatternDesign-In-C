@@ -23,7 +23,7 @@ static void Testing_ADC_Loop(void){
     while(1){
         ADC_ReadingOperation(TESTING_ADC_Channel, TESTING_ADC_SS_NUM);
         ADC_ReadGroup(TESTING_ADC_Channel, TESTING_ADC_SS_NUM, my_ADCBuffer);
-        x = ADC_ReadOneValue(TESTING_ADC_Channel, TESTING_ADC_SS_NUM);
+        x = ADC_ReadOneValue(TESTING_ADC_Channel, TESTING_ADC_SS_NUM, TESTING_ADC_Pin);
     }
 }
 

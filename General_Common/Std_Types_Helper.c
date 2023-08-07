@@ -5,7 +5,7 @@
  *      Author: Abdu
  */
 
-
+#include "Platform_Types.h"
 #include "Std_Types.h"
 #include <stdlib.h>
 #include "CPU_resources.h"
@@ -21,6 +21,9 @@ void WriteUsingBB(uint32* Ptr, uint32 Value){
     }
 
 }
+
+
+
 
 void Delay_ms(unsigned long long n){
     volatile unsigned long long  count = 0, i;

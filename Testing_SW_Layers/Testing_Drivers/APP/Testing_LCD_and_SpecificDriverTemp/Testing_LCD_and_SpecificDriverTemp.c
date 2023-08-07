@@ -42,7 +42,7 @@ void Testing_LCD_and_SpecificDriverTemp_loop(void){
         myLcd->LCD_Write_Data(myLcd, q);
         myLcd->LCD_Write_Data(myLcd, "  ");
         free(q);
-        Delay_ms(1000);
+        Delay_ms(2000);
 
 
         val = SmokeDriver_WeatherStation_Read();
@@ -52,7 +52,7 @@ void Testing_LCD_and_SpecificDriverTemp_loop(void){
         myLcd->LCD_Write_Data(myLcd, q);
         myLcd->LCD_Write_Data(myLcd, "  ");
         free(q);
-        Delay_ms(1000);
+        Delay_ms(2000);
 
         val = WaterDriver_WeatherStation_Read();
         myLcd->LCD_Write_Cmd(myLcd, LCD_I2C_SET_DDRAM_ADDRESS(1, 0));
@@ -61,7 +61,7 @@ void Testing_LCD_and_SpecificDriverTemp_loop(void){
         myLcd->LCD_Write_Data(myLcd, q);
         myLcd->LCD_Write_Data(myLcd, "  ");
         free(q);
-        Delay_ms(1000);
+        Delay_ms(2000);
     }
 }
 
