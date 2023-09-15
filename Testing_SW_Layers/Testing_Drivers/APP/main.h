@@ -8,6 +8,8 @@
 #ifndef APP_MAIN_H_
 #define APP_MAIN_H_
 
+#include "Testing_LCD_and_ADC/Testing_LCD_and_ADC.h"
+
 #include "Testing_LCD/Testing_LCD.h"
 
 #include "Testing_I2C/Testing_I2C.h"
@@ -27,8 +29,10 @@
 
 #include "Testing_HAL_Temp_Smoke_Water_Humanity_LCD_Buzzer_LED/Testing_HAL_1.h"
 
-#include "Testing_LCD_and_ADC/Testing_LCD_and_ADC.h"
+#include "Testing_Keypad_LCD/Testing_Keypad_LCD.h"
 
 #include "Testing_LCD_and_SpecificDriverTemp/Testing_LCD_and_SpecificDriverTemp.h"
+
+#include "Testing_SevenSegment/Testing_SevenSegment.h"
 
 #endif /* APP_MAIN_H_ */

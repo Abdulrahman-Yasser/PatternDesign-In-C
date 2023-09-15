@@ -17,7 +17,7 @@
 #define DUPLICATED_IDS 2
 
 typedef struct{
-    uint8 nIDLists[20];
+    uint8 nIDLists[20]; 
     uint8 nIDs;
     SemaphoreHandle_t itsMutex;
 }ResourceList;

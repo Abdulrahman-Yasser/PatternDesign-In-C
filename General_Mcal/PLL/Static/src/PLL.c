@@ -9,7 +9,7 @@
 #include "../inc/PLL_Types.h"
 #include "../../Dynamic/inc/PLL_Cfg.h"
 #include "../General_Common/Mcu_Hw.h"
-#include "../General_Common/Std_Types.h"
+#include "../General_Common/Platform_Types.h"
 #include "../General_Common/CPU_resources.h"
 
 #define RCC2_USERCC2_MASK   31

@@ -23,13 +23,23 @@ void WriteUsingBB(uint32* Ptr, uint32 Value){
 }
 
 
-
-
+#ifndef PLL_STATIC_INC_PLL_H_
 void Delay_ms(unsigned long long n){
     volatile unsigned long long  count = 0, i;
-    n = n * 762 ;
+    n = n * 76 * 1000 ;
     while(count++ < n );
 }
+#else
+void Delay_ms(unsigned long long n){
+    volatile unsigned long long  count = 0;
+    if(CPU_CLOCK > 13){
+        n = n  * 77 * (CPU_CLOCK);
+    }else{
+        n = n  * 77 * (CPU_CLOCK);
+    }
+    while(count++ < n );
+}
+#endif
 
 char* int_to_string(uint32 var){
     char* s;
