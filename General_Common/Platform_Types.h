@@ -44,7 +44,7 @@ typedef enum{
 void WriteUsingBB(uint32* Ptr, uint32 Value);
 
 /* For delays in ms */
-void Delay_ms(unsigned long long n);
+void Delay_ms(unsigned long long const n);
 
 char* int_to_string(uint32 var);
 
