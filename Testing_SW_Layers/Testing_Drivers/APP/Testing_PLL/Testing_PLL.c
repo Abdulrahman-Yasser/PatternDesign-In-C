@@ -26,7 +26,7 @@ void Testing_PLL(void){
 void TestingPLL_Loop(void){
     while(1){
         Dio_FlipChannel(DIO_Channel1_F);
-        Delay_ms(1000);
+        Delay_ms(100);
     }
 }
 

@@ -31,14 +31,13 @@ void Delay_ms(unsigned long long n){
 }
 #else
 */
-void Delay_ms(unsigned long long n){
+void Delay_ms(unsigned long long const n){
     volatile unsigned long long  count = 0;
-    if(CPU_CLOCK > 13){
-        n = n  * 77 * (CPU_CLOCK);
-    }else{
-        n = n  * 77 * (CPU_CLOCK);
-    }
-    while(count++ < n );
+    int i;
+	for(i = 0; i++; i < CPU_CLOCK){
+		count = n  * 77;
+		while(count--);
+	}
 }
 //#endif
 
