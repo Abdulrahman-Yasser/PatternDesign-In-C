@@ -8,16 +8,16 @@
 #ifndef APP_TESTING_KEYPAD_LCD_TESTING_KEYPAD_LCD_H_
 #define APP_TESTING_KEYPAD_LCD_TESTING_KEYPAD_LCD_H_
 
-#include "../../General_Mcal/PLL/Static/inc/PLL.h"
-#include "../../General_Mcal/DIO/Static/inc/DIO.h"
-#include "../../General_Mcal/PORT/Static/inc/PORT.h"
-#include "../../General_Mcal/I2C/Static/inc/I2C.h"
-#include "../../General_Mcal/GPT/Static/inc/GPT.h"
-#include "../../General_Mcal/IntCtrl/Static/inc/IntCtrl.h"
+#include "MCAL_Layer/PLL/Static/inc/PLL.h"
+#include "MCAL_Layer/DIO/Static/inc/DIO.h"
+#include "MCAL_Layer/PORT/Static/inc/PORT.h"
+#include "MCAL_Layer/I2C/Static/inc/I2C.h"
+#include "MCAL_Layer/GPT/Static/inc/GPT.h"
+#include "MCAL_Layer/IntCtrl/Static/inc/IntCtrl.h"
 
 
-#include "../General_HAL/Keypad/Static/inc/keypad.h"
-#include "../General_HAL/LCD/Static/inc/LCD.h"
+#include "HAL_Layer/Keypad/Static/inc/keypad.h"
+#include "HAL_Layer/LCD/Static/inc/LCD.h"
 
 void Testing_Keypad_LCD_Init(void);
 void Testing_Keypad_LCD_Loop(void);

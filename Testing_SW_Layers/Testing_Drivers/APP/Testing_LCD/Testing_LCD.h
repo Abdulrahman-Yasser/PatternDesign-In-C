@@ -8,14 +8,14 @@
 #ifndef APP_TESTING_LCD_TESTING_LCD_H_
 #define APP_TESTING_LCD_TESTING_LCD_H_
 
-#include "../../General_HAL/LCD/Dynamic/inc/LCD_Cfg.h"
-#include "../../General_HAL/LCD/Static/inc/LCD.h"
+#include "HAL_Layer/LCD/Dynamic/inc/LCD_Cfg.h"
+#include "HAL_Layer/LCD/Static/inc/LCD.h"
 
-#include "../../General_Mcal/DIO/Static/inc/DIO.h"
-#include "../../General_Mcal/PORT/Static/inc/PORT.h"
-#include "../../General_Mcal/I2C/Static/inc/I2C.h"
-#include "../../General_Mcal/GPT/Static/inc/GPT.h"
-#include "../../General_Mcal/IntCtrl/Static/inc/IntCtrl.h"
+#include "MCAL_Layer/DIO/Static/inc/DIO.h"
+#include "MCAL_Layer/PORT/Static/inc/PORT.h"
+#include "MCAL_Layer/I2C/Static/inc/I2C.h"
+#include "MCAL_Layer/GPT/Static/inc/GPT.h"
+#include "MCAL_Layer/IntCtrl/Static/inc/IntCtrl.h"
 
 
 void TestingLCD_Initializations(void);

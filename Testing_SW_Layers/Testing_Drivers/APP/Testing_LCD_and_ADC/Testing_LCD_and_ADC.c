@@ -6,7 +6,7 @@
  */
 
 #include "Testing_LCD_and_ADC.h"
-#include "../General_HAL/Sensor/Dynamic/inc/Sensor_Cfg.h"
+#include "HAL_Layer/Sensor/Dynamic/inc/Sensor_Cfg.h"
 #include <stdlib.h>
 
 

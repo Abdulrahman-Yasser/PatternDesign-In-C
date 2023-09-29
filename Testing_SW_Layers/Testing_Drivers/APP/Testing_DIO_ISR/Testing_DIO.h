@@ -10,14 +10,14 @@
 
 
 
-#include "../../General_Mcal/DIO/Dynamic/Inc/DIO_Cfg.h"
-#include "../../General_Mcal/PORT/Dynamic/inc/PORT_Cfg.h"
-#include "../../General_Mcal/IntCtrl/Dynamic/inc/IntCtrl_Cfg.h"
+#include "MCAL_Layer/DIO/Dynamic/inc/DIO_Cfg.h"
+#include "MCAL_Layer/PORT/Dynamic/inc/PORT_Cfg.h"
+#include "MCAL_Layer/IntCtrl/Dynamic/inc/IntCtrl_Cfg.h"
 
 
-#include "../../General_Mcal/DIO/Static/Inc/DIO.h"
-#include "../../General_Mcal/PORT/Static/inc/PORT.h"
-#include "../../General_Mcal/IntCtrl/Static/inc/IntCtrl.h"
+#include "MCAL_Layer/DIO/Static/inc/DIO.h"
+#include "MCAL_Layer/PORT/Static/inc/PORT.h"
+#include "MCAL_Layer/IntCtrl/Static/inc/IntCtrl.h"
 
 
 #define TESTING_DIO_Button_1_Channel                (DIO_ChannelType)DIO_Channel0_F

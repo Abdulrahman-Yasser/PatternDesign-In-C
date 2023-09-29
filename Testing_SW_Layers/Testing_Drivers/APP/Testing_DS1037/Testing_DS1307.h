@@ -14,12 +14,12 @@
  * Make sure to change the CFG files for your own connection based on what SHIT you are doing
  */
 
-#include "../../General_Mcal/DIO/Static/inc/DIO.h"
-#include "../../General_Mcal/I2C/Static/inc/I2C.h"
-#include "../../General_Mcal/PORT/Static/inc/PORT.h"
-#include "../../General_Mcal/IntCtrl/Static/inc/IntCtrl.h"
+#include "MCAL_Layer/DIO/Static/inc/DIO.h"
+#include "MCAL_Layer/I2C/Static/inc/I2C.h"
+#include "MCAL_Layer/PORT/Static/inc/PORT.h"
+#include "MCAL_Layer/IntCtrl/Static/inc/IntCtrl.h"
 
-#include "../../General_HAL/RTC_I2C_DS1307/Static/inc/RTC_I2C_DS1307.h"
+#include "HAL_Layer/RTC_I2C_DS1307/Static/inc/RTC_I2C_DS1307.h"
 
 void Testing_DS1307(void);
 

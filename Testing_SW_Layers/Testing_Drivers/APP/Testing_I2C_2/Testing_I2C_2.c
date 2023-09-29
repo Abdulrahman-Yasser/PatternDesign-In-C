@@ -9,7 +9,7 @@
  * Works fine, Tested
  */
 
-#include <APP/Testing_I2C_2/Testing_I2C_2.h>
+#include "Testing_I2C_2.h"
 
 static void Testing_I2C_2_Init();
 static void Testing_I2C_2_Write_1_byte(uint8 data, uint8 slave_mem_address);

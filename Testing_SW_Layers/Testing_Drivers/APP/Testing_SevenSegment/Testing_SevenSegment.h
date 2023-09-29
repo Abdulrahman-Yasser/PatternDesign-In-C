@@ -9,10 +9,10 @@
 #define APP_TESTING_SEVENSEGMENT_TESTING_SEVENSEGMENT_H_
 
 
-#include "../General_Mcal/PLL/Static/inc/PLL.h"
-#include "../General_Mcal/PORT/Static/inc/PORT.h"
+#include "MCAL_Layer/PLL/Static/inc/PLL.h"
+#include "MCAL_Layer/PORT/Static/inc/PORT.h"
 
-#include "../General_HAL/SevenSegment/Static/inc/SevenSegment.h"
+#include "HAL_Layer/SevenSegment/Static/inc/SevenSegment.h"
 
 void Testing_SevenSegment_loop(void);
 void Testing_SevenSegment_Init(void);
