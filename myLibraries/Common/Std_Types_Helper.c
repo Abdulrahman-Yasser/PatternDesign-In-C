@@ -34,7 +34,7 @@ void Delay_ms(unsigned long long n){
 void Delay_ms(unsigned long long const n){
     volatile unsigned long long  count = 0;
     int i;
-	for(i = 0; i++; i < CPU_CLOCK){
+	for(i = 0; i < CPU_CLOCK; i++){
 		count = n  * 77;
 		while(count--);
 	}
