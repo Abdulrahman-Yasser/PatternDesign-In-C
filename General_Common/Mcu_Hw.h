@@ -712,10 +712,33 @@ WatchDog Timer Registers
 #define I2C_PC_REG_OFFSET           0xFC4
 
 
+//*****************************************************************************
+//
+// SSI registers (SSI)
+//
+//*****************************************************************************
+
+#define SSI0_BASE_ADDERSS       0x40008000
+#define SSI1_BASE_ADDERSS       0x40009000
+#define SSI2_BASE_ADDERSS       0x4000A000
+#define SSI3_BASE_ADDERSS       0x4000B000
+
+#define SSI_CR0_OFFSET     0x000
+#define SSI_CR1_OFFSET     0x004
+#define SSI_DR_OFFSET      0x008
+#define SSI_SR_OFFSET      0x00C
+#define SSI_CPSR_OFFSET    0x010
+#define SSI_IM_OFFSET      0x014
+#define SSI_RIS_OFFSET     0x018
+#define SSI_MIS_OFFSET     0x01C
+#define SSI_ICR_OFFSET     0x020
+#define SSI_DMACTL_OFFSET  0x024
+#define SSI_CC_OFFSET      0xFC8
+
 
 //*****************************************************************************
 //
-// UART registers (PWM)
+// PWM registers (PWM)
 //
 //*****************************************************************************
 
