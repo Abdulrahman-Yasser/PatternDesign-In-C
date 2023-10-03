@@ -81,10 +81,14 @@ const Port_ConfigType ConfigPtr[configured_pins] =
   {Port_Pin_A6, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},  // SCL        RTC
   {Port_Pin_A7, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_OpenDrain, Port_PinOutputCurrent_2ma},  // SDA  RTC
 
-  {Port_Pin_B0, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},      // Motor Pin
-  {Port_Pin_B1, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},      // Buzzer Pin
-  {Port_Pin_B2, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},      // Sensor Pin
-  {Port_Pin_B6, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_M0PWMn, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},      // Motor PWM
+//  {Port_Pin_B0, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},      // Motor Pin
+//  {Port_Pin_B1, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},      // Buzzer Pin
+//  {Port_Pin_B2, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_DIO, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},      // Sensor Pin
+//  {Port_Pin_B6, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_M0PWMn, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},      // Motor PWM
+  {Port_Pin_B4, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_SSIn, Port_PinInternal_PullUp, Port_PinOutputCurrent_2ma},      // SSI2 Clk
+  {Port_Pin_B5, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_SSIn, Port_PinInternal_PullUp, Port_PinOutputCurrent_2ma},      // SSI2 FSS
+  {Port_Pin_B6, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_SSIn, Port_PinInternal_PullUp, Port_PinOutputCurrent_2ma},      // SSI2 Rx
+  {Port_Pin_B7, Port_PinLevel_LOW, Port_PinDir_OUT, Port_PinMode_SSIn, Port_PinInternal_PullUp, Port_PinOutputCurrent_2ma},   // SSI2 Tx
 
   {Port_Pin_D0, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_HW, Port_PinOutputCurrent_2ma},  // SCL        LCD
   {Port_Pin_D1, Port_PinLevel_HIGH, Port_PinDir_OUT, Port_PinMode_I2Cn, Port_PinInternal_OpenDrain, Port_PinOutputCurrent_2ma}, // SDA  LCD

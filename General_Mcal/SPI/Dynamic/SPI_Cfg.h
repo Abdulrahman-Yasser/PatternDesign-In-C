@@ -10,9 +10,8 @@
 
 #include "../Static/SPI_Types.h"
 
-#define SPI_CONFIGURED_NUMBER 2
+#define SSI_CONFIGURED_NUMBER 1
 
-extern const SpiConfig_t Spi_Container[SPI_CONFIGURED_NUMBER];
-
+SsiConfig_t* SPI_getConfig(void);
 
 #endif /* SPI_DYNAMIC_SPI_CFG_H_ */

@@ -15,10 +15,42 @@
 #define SSI_IM_RT   (1 << 1)
 #define SSI_IM_POR  (1 << 0)
 
+#define SSI_BSY_FLAGG 4
+#define SSI_RFF_FLAGG 3
+#define SSI_RNE_FLAGG 2
+#define SSI_TNF_FLAGG 1
+#define SSI_TFE_FLAGG 0
+#define SSI_CR1_SSE_bitOFFSET 1
+
+/* CR0 register */
+#define SSI_SerialClockPolarity_Offset 6
+#define SSI_ProtocolMode_Offset 4
+#define SSI_DataSize_Offset 0
+
+
 typedef enum{
-    SSI_Mode_not_available, SSI_Mode_SPI,
-    SSI_Mode_TISS, SSI_Mode_MicroWire
-}SSI_Mode_t;
+    SSI_Channel_0,
+    SSI_Channel_1,
+    SSI_Channel_2,
+    SSI_Channel_3,
+    SSI_Channel_NotUsed
+}SSI_Channel_t;
+
+typedef enum{
+    Tx_IM, Rx_IM, Rx_TimeOut, Rx_OverRun
+}SSI_Interrupt_Type;
+
+typedef enum{
+    SSI_Protocol_SPI,
+    SSI_Protocol_TISS,
+    SSI_Protocol_MicroWire,
+    SSI_Protocol_not_available
+}SSI_ProtocolMode_t;
+
+typedef enum{
+    SSI_Master, SSI_SLAVE_OUTPUT_EN = 4, SSI_SLAVE_OUTPUT_DIS = 0xc
+}SSI_SlaveMaster_t;
+
 
 typedef enum{
     SSI_EOT, SSI_HALF_FIFO
@@ -35,15 +67,17 @@ typedef enum{
 }SSI_DMA_t;
 
 typedef struct{
-    uint8 ClkLevelInIdleState;
+    SSI_Channel_t channelNumber;
+    Std_BoolReturnType ClockPolarity;
     uint8 DataSize;
-    SSI_Mode_t Mode;
+    SSI_ProtocolMode_t protocolMode;
     SSI_InterruptMode_t Interrupt;
     SSI_ClockSrc_t ClkSrc;
-    uint8 BaudRate;
+    uint32 BaudRate;
     SSI_DMA_t DMA_State;
+    SSI_SlaveMaster_t SlaveOrMaster;
     uint8 InterruptMask;
-}SpiConfig_t;
+}SsiConfig_t;
 
 
 

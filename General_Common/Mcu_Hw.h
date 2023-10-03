@@ -791,6 +791,7 @@ WatchDog Timer Registers
 
 #define SYSCTL_RCGCI2C          (*((volatile uint32 *)0x400FE620))
 #define SYSCTL_RCGCUART         (*((volatile uint32 *)0x400FE618))
+#define SYSCTL_RCGCSSI          (*((volatile uint32 *)0x400FE61C))
 
 //*****************************************************************************
 //

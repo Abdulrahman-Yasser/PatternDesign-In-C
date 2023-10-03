@@ -18,8 +18,9 @@
 #ifndef COMMON_CPU_RESOURCES_H_
 #define COMMON_CPU_RESOURCES_H_
 /* may be 10 */
-#define CPU_CLOCK       (uint16)20U
+#define CPU_CLOCK           (uint16)20U
 #define CLOCK_BEFORE_PLL    (uint16)16U
+#define CPU_PIOSC_CLOCK     (uint16)16U
 
 #define EXTERNAL_VOLTAGE_SOURCE     5
 #define INTERNAL_VOLTAGE_SOURCE     3.3

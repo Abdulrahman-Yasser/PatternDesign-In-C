@@ -35,4 +35,6 @@
 
 #include "Testing_SevenSegment/Testing_SevenSegment.h"
 
+#include "Testing_SPI/Testing_SPI.h"
+
 #endif /* APP_MAIN_H_ */

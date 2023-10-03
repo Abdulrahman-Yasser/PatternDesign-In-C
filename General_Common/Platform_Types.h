@@ -40,6 +40,7 @@ typedef enum{
     E_FALSE, E_TRUE
 }Std_BoolReturnType;
 
+
 /* For using the bit-band region */
 void WriteUsingBB(uint32* Ptr, uint32 Value);
 
