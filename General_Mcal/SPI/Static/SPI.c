@@ -89,15 +89,15 @@ void Spi_Init(SsiConfig_t const* const Config){
         if(SCR_Value == 255){
             while(1);
         }
-        REG_ORING_CASTING_POINTED(SSI_bases[Config[i].channelNumber] + SSI_CR0_OFFSET, SCR_Value - 1 << 8);
-        REG_ORING_CASTING_POINTED(SSI_bases[Config[i].channelNumber] + SSI_CPSR_OFFSET, CPSDVSR);
+        REG_ORING_CASTING_POINTED(SSI_bases[Config[i].channelNumber] + SSI_CR0_OFFSET, (CPSDVSR - 1) << 8);
+        REG_ORING_CASTING_POINTED(SSI_bases[Config[i].channelNumber] + SSI_CPSR_OFFSET, SCR_Value );
 
         /**
          * 6 - configure the clockPhase, ProtocolMode and DataSize
          */
         REG_ORING_CASTING_POINTED(SSI_bases[Config[i].channelNumber] + SSI_CR0_OFFSET, Config[i].ClockPolarity << SSI_SerialClockPolarity_Offset
                                                                                      | Config[i].protocolMode << SSI_ProtocolMode_Offset
-                                                                                     | Config[i].DataSize << SSI_DataSize_Offset);
+                                                                                     | (Config[i].DataSize - 1) << SSI_DataSize_Offset);
         if(Config[i].ClockPolarity == E_TRUE){
             /*
              * Need to set GPIO SSInclk pin into pull-up register
@@ -122,13 +122,28 @@ void Spi_Init(SsiConfig_t const* const Config){
     }
 }
 
+void Spi_Transmit_polling(SSI_Channel_t const ssi_channel, uint16 const *data, uint8 dataLength){
+    volatile uint8 status;
+    uint16 dataFrame = 1;
+    uint8 i;
+    REG_READ_CASTING_POINTED(status, SSI_bases[ssi_channel] + SSI_CR0_OFFSET);
+    status = status & 0x0f;
+    while(status--){
+        dataFrame = ( dataFrame << 1 ) | 1;
+    }
+    for(i = 0; i < dataLength; i++){
+        Spi_Transmit_one_package(ssi_channel, data[i] & dataFrame);
+    }
+}
+
+
 void Spi_Transmit_one_package(SSI_Channel_t const ssi_channel, uint16 const data){
     volatile uint8 status;
     do{
         REG_READ_CASTING_POINTED(status, SSI_bases[ssi_channel] + SSI_SR_OFFSET);
-    }while(status & (1 << SSI_BSY_FLAGG));
-
-    REG_ORING_CASTING_POINTED(SSI_bases[ssi_channel] + SSI_DR_OFFSET, data );
+    }while( (status & (1 << SSI_BSY_FLAGG)) & !(status & (1 << SSI_TNF_FLAGG) ) );
+    /* if the transmit FIFO is not full and the flag is not busy, break the loop */
+    REG_WRITE_CASTING_POINTED(SSI_bases[ssi_channel] + SSI_DR_OFFSET, data );
 }
 
 uint16 Spi_RegisterReceive(SSI_Channel_t const ssi_channel){
@@ -168,7 +183,7 @@ extern void SPI_0_handler(void){
     case SSI_IM_POR:
         break;
     default:
-
+        break;
     }
 
 }

@@ -12,6 +12,8 @@
 
 #define SSI_CONFIGURED_NUMBER 1
 
-SsiConfig_t* SPI_getConfig(void);
+extern const SsiConfig_t Ssi_Container[SSI_CONFIGURED_NUMBER] ;
+
+const SsiConfig_t* SPI_getConfig(void);
 
 #endif /* SPI_DYNAMIC_SPI_CFG_H_ */

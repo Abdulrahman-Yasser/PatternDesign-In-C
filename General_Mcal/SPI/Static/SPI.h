@@ -13,6 +13,8 @@
 
 void Spi_Init(SsiConfig_t const* const Config);
 
+void Spi_Transmit_polling(SSI_Channel_t const ssi_channel, uint16 const *data, uint8 dataLength);
+
 void Spi_Transmit_one_package(SSI_Channel_t const ssi_channel, uint16 const data);
 
 uint16 Spi_RegisterReceive(SSI_Channel_t ssi_channel);
