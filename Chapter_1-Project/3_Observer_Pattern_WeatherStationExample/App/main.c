@@ -4,7 +4,7 @@
  * main.c
  */
 #include "main.h"
-
+#include "HAL_Patterns/Server/TMDQueue_with_Observable/TMDQueue_with_Observable.h"
 void Board_init(void);
 
 
@@ -28,7 +28,7 @@ int main(){
 
     Observer* my_Observer;
 
-
+    my_Observer = Observer_Create(myLED_Response);
     int i = 0;
 
     while(1){
@@ -43,9 +43,11 @@ int main(){
          */
         i++;
 
+        TMDQueue_with_Observable_Subscribe(Testing_Get_ItsTMDQueue_with_Observable(mine), my_Observer);
+
         switch(i){
         case 1:
-            my_Observer = Observer_Create(myLED_Response);
+            TMDQueue_with_Observable_Subscribe(Testing_Get_ItsTMDQueue_with_Observable(mine), my_Observer);
             break;
         case 2:
         case 3:
@@ -53,7 +55,7 @@ int main(){
         case 5:
             break;
         case 6:
-            Observer_Destroy(my_Observer);
+            TMDQueue_with_Observable_UnSubscribe(Testing_Get_ItsTMDQueue_with_Observable(mine), my_Observer);
             break;
         case 7:
         case 8:

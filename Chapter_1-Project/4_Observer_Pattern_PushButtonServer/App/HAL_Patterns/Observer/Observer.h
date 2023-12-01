@@ -10,11 +10,8 @@
 
 
 
-#include "../ObserverPattern_Cfg.h"
+#include "Observer_datatype.h"
 
-typedef struct{
-    Update_t UpdateFuncPtr;
-}Observer;
 
 
 Observer* Observer_Create(Update_t fun);

@@ -33,17 +33,10 @@ void FireDisplay_Init(struct FireDisplay* const me, struct TMDQueue_with_Observa
     FireDisplay_setItsTMDQueue(me, pTMDQueue_observable);
 
     me->my_Observer = Observer_Create(FireDisplay_updateFireDisplay);
-    TMDQueue_with_Observable_Subscribe(me->itsTMDQueue_observable, me->my_Observer);
+    TMDQueue_with_Observable_Subscribe(pTMDQueue_observable, me->my_Observer);
 }
 
 
-/* Operations */
-
-/* only cares about the temperature and Time */
-
-void FireDisplay_getValue(struct FireDisplay* me, struct TimeMarkedData *tmd){
-    me->temperature_value = tmd->temperature_value;
-}
 
 /*
  * The update function that will be passed through the observer to the observable.
@@ -54,12 +47,11 @@ void FireDisplay_getValue(struct FireDisplay* me, struct TimeMarkedData *tmd){
  */
 static void FireDisplay_updateFireDisplay(struct TimeMarkedData *tmd){
     /* Put what you need to update */
-    FireDisplay_getValue(&my_FireDisplay, tmd);
     if(my_FireDisplay.itsTMDQueue_observable == Null_Ptr || my_FireDisplay.my_lcd == Null_Ptr){
         return;
     }
     my_FireDisplay.my_lcd->LCD_Write_Cmd(my_FireDisplay.my_lcd, LCD_I2C_SET_DDRAM_ADDRESS(1, 8));
-    if(my_FireDisplay.temperature_value > 60){
+    if(tmd->temperature_value > 60){
         my_FireDisplay.my_lcd->LCD_Write_Data(my_FireDisplay.my_lcd, "FIRE !");
         my_FireDisplay.my_Buzzer->Write_High(my_FireDisplay.my_Buzzer);
         my_FireDisplay.my_Led->Write_High(my_FireDisplay.my_Led);
