@@ -12,8 +12,10 @@ This pattern is a good choice when we need the clients to be served once the dat
 
 ## Project Description
 The project is nothing but 
-- A server (Observable) which publishes a button state.
-- A clients (Observer) which subscripe to the button state, [Buzzer, RED led, BLUE led, GREEN led].
+- A server (Observable) which publishes a Temperature data and RTC time and date (data werapped up in a typedef called timeMarkeddata).
+- A clients (Observer) which subscripe to the tmd data , [Histogram Display, FireDisplay].
+- Fire display controls the pixels from (1,10) till (1,16) in the LCD, Controls Buzzer and LED to turn on in case the temperature higher than the threshold
+- Histogram Display puts the subscriped data on the LCD.
 - Each client attach a specific function when it subscripes to the server.
 - The server then reads the data, run each client's function and passes the published data in it.
 
