@@ -12,21 +12,18 @@
 #include "HAL_Layer/LCD/Static/inc/LCD.h"
 #include "HAL_Layer/Digital_Intrface/Static/inc/Digital_Interface.h"
 
+#include "../../Observer/Observer.h"
 #include "../../Server/TimeMarkedData/TimeMarkedData_DataType.h"
 
 struct TMDQueue_with_Observable_s;
 struct FireDisplay;
 
 
-void FireDisplay_Init(struct FireDisplay* const me, struct TMDQueue_with_Observable_s* pTMDQueue_observable);
+void FireDisplay_Init(struct FireDisplay* const me);
 
 void FireDisplay_Cleanup(struct FireDisplay* const me);
 
 /* Operations */
-
-void FireDisplay_getValue(struct FireDisplay* me, struct TimeMarkedData *tmd);
-
-struct TMDQueue* FireDisplay_getItsTMDQueue(const struct FireDisplay* const me);
 
 void FireDisplay_setItsLCD(struct FireDisplay* const me, LCD_Handler_Type *p_LCD_Handler);
 
@@ -34,12 +31,10 @@ void FireDisplay_setItsBUZZER(struct FireDisplay* const me, DigitalInterface_Typ
 
 void FireDisplay_setItsLED(struct FireDisplay* const me, DigitalInterface_Type* p_LED_Handler);
 
-void FireDisplay_setItsTMDQueue(struct FireDisplay* const me, struct TMDQueue_with_Observable_s *p_TMDQueue);
-
+Observer* FireDisplay_getObserver(void);
 
 struct FireDisplay * FireDisplay_GetHandler(void);
 
-//void FireDisplay_Destroy(FireDisplay* const me);
 
 
 

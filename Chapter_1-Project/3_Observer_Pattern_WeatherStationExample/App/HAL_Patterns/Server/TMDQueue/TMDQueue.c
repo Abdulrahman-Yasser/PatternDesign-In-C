@@ -16,20 +16,11 @@ static void initRelations(TMDQueue* const me);
 static void cleanUpRelations(TMDQueue* const me);
 
 
-//void PrivateSubscribe(TMDQueue *me, Observer *o);
-//void PrivateUnSubscribe(TMDQueue *me, Observer *o);
-//void PrivaateNotify(TMDQueue *me);
-
 
 void TMDQueue_Init(TMDQueue* const me) {
     me->head = 0;
     me->size = 0;
-    /* Setting the buffer into zeros */
     initRelations(me);
-//    me->my_Observable = Observable_Create();
-//    me->my_Observable->Subscribe = PrivateSubscribe;
-//    me->my_Observable->unSubscribe = PrivateUnSubscribe;
-//    me->my_Observable->Notify = PrivaateNotify;
 }
 
 
@@ -56,9 +47,9 @@ void TMDQueue_Insert(TMDQueue* const me, const struct TimeMarkedData tmd){
     and we don't have to remove as long as the Head pointer is changed at every insertion
     */
 
-    me->Buffer[me->head] = tmd;
     me->head = TMDQueue_getNextIndex(me, me->head);
-    if (me->size < TMD_QUEUE_SIZE)
+    me->Buffer[me->head] = tmd;
+    if (me->size < TMD_QUEUE_SIZE-1)
         ++me->size;
 }
 
@@ -69,11 +60,21 @@ uint8 TMDQueue_IsEmpty(TMDQueue* const me){
     return (me->size == 0);
 }
 
+uint8 TMDQueue_isFull(TMDQueue* const me){
+    return (me->size == TMD_QUEUE_SIZE);
+}
+
 // we don't decrease the size !!!!
 struct TimeMarkedData TMDQueue_remove(TMDQueue* const me, uint8 index){
     struct TimeMarkedData tmd;
+    if(me->size == 0){
+        return tmd;
+    }
     if (!TMDQueue_IsEmpty(me) && (index < TMD_QUEUE_SIZE) && (index < me->size)) {
         tmd = me->Buffer[index];
+    }
+    if(me->size > 0){
+        me->size--;
     }
     return tmd;
 }

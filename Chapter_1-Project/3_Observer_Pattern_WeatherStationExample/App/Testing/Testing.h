@@ -11,7 +11,7 @@
 
 /* Server : */
 #include "../HAL_Patterns/Server/WeatherStation_Api/WeatherStation_Server.h"
-
+#include "../HAL_Patterns/Server/TMDQueue_with_Observable/TMDQueue_with_Observable.h"
 /* Client : */
 #include "../HAL_Patterns/Client/FireDisplay/FireDisplay.h"
 #include "../HAL_Patterns/Client/HistogramDisplay/HistogramDisplay.h"

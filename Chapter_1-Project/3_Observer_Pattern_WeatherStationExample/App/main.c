@@ -8,64 +8,50 @@
 void Board_init(void);
 
 
-void myLED_Response( struct TimeMarkedData* tmd){
-    static DigitalInterface_Type *myLED;
-    myLED = Digital_Interface_Create(DIO_Channel1_F);
-    if(tmd->temperature_value > 20){
-        myLED->Write_High(myLED);
-    }else{
-        myLED->Write_Low(myLED);
-    }
-}
+struct TMDQueue_with_Observable_s *myTMDQueue_Observable;
+
+struct FireDisplay *myFireDisplay;
+
+struct HistogramDisplay *myHistogramDisplay;
 
 
 int main(){
     Board_init();
 
-    struct TestingStruct *mine = Testing_GetHandler();
-    Testing_Init_Relations(mine);
+    /* Initialization */
+    myTMDQueue_Observable = TMDQueue_with_Observable_GetHandler();
+    TMDQueue_with_Observable_Init(myTMDQueue_Observable);
+
+
+    myFireDisplay = FireDisplay_GetHandler();
+    FireDisplay_Init(myFireDisplay);
+
+    DigitalInterface_Type* myBuzzer = Digital_Interface_Create(DIO_Channel1_B);
+    DigitalInterface_Type* myLED = Digital_Interface_Create(DIO_Channel2_B);
+    LCD_Handler_Type* myLCD = LCD_Create(LCD_Interface_I2C, 0);
+
+    FireDisplay_setItsBUZZER(myFireDisplay, myBuzzer);
+    FireDisplay_setItsLCD(myFireDisplay, myLCD);
+    FireDisplay_setItsLED(myFireDisplay, myLED);
+
+    myHistogramDisplay = HistogramDisplay_GetHandler();
+    HistogramDisplay_Init(myHistogramDisplay);
+
+    HistogramDisplay_setItsLCD(myHistogramDisplay, myLCD);
+
+    /* Connecting observers with observables */
+
+    TMDQueue_with_Observable_Subscribe(myTMDQueue_Observable, FireDisplay_getObserver());
+    TMDQueue_with_Observable_Subscribe(myTMDQueue_Observable, HistogramDisplay_getObserver());
+
     /* Histogram client */
-
-    Observer* my_Observer;
-
-    my_Observer = Observer_Create(myLED_Response);
-    int i = 0;
 
     while(1){
         Delay_ms(1000);
 
         /* Publishing to the server */
-        WeatherStation_Publish(Testing_Get_ItsTMDQueue_with_Observable(mine));
+        WeatherStation_Publish(myTMDQueue_Observable);
 
-
-        /*
-         * Real-time Subscribing and Un-Subscribing for the TMD Queue
-         */
-        i++;
-
-        TMDQueue_with_Observable_Subscribe(Testing_Get_ItsTMDQueue_with_Observable(mine), my_Observer);
-
-        switch(i){
-        case 1:
-            TMDQueue_with_Observable_Subscribe(Testing_Get_ItsTMDQueue_with_Observable(mine), my_Observer);
-            break;
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-            break;
-        case 6:
-            TMDQueue_with_Observable_UnSubscribe(Testing_Get_ItsTMDQueue_with_Observable(mine), my_Observer);
-            break;
-        case 7:
-        case 8:
-        case 9:
-        case 10:
-            break;
-        default:
-            i = 0;
-            break;
-        }
     }
 
 }

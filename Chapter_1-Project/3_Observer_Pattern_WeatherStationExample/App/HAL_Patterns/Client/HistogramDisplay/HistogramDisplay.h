@@ -10,7 +10,7 @@
 
 #include "HAL_Layer/LCD/Static/inc/LCD_Types.h"
 #include "../../Observer/Observer.h"
-#include "../../Server/TMDQueue_with_Observable/TMDQueue_with_Observable.h"
+
 /*
  * here i've used singelton pattern. I have only one instance of HistogramDiplay which i can get
  * it's handler using HistogramDisplay_Create(). But i can't destroy it, because once i destroy
@@ -24,19 +24,16 @@
 /* class HistogramDisplay */
 
 struct HistogramDisplay;
-struct TMDQueue_with_Observable_s;
 
 #define HISTOGRAM_LCD_ID HistogramDisplay_LCD_ID
 
 
 /* Constructors and destructors:*/
 
-void HistogramDisplay_Init(struct HistogramDisplay* me, struct TMDQueue_with_Observable_s* const pTMDQueue_observable);
-//void HistogramDisplay_Cleanup(struct HistogramDisplay* const me);
+void HistogramDisplay_Init(struct HistogramDisplay* me);
+
 
 /* Operations */
-
-void HistogramDisplay_getValue(struct TimeMarkedData *tmd);
 
 /*
  * this is the function that will be passed to the observer's void function pointer.
@@ -47,15 +44,12 @@ void HistogramDisplay_getValue(struct TimeMarkedData *tmd);
  */
 //void HistogramDisplay_updateHistogram(void);
 
-struct TMDQueue_with_Observable_s* HistogramDisplay_getItsTMDQueue(const struct HistogramDisplay* const me);
-
 void HistogramDisplay_setItsLCD(struct HistogramDisplay* const me, LCD_Handler_Type *p_LCD_Handler);
 
-void HistogramDisplay_setItsTMDQueue(struct HistogramDisplay* const me, struct TMDQueue_with_Observable_s* p_TMDQueue);
+Observer* HistogramDisplay_getObserver(void);
 
 struct HistogramDisplay * HistogramDisplay_GetHandler(void);
 
-//void HistogramDisplay_Destroy(struct HistogramDisplay* const me);
 
 
 

@@ -18,7 +18,6 @@ typedef struct {
     uint8 head;
     uint8 size;
     struct TimeMarkedData Buffer[TMD_QUEUE_SIZE];
-//    Observable_Type *my_Observable;
 }TMDQueue;
 
 

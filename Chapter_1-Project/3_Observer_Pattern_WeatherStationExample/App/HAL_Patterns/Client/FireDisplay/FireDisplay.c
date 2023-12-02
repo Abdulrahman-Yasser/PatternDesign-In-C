@@ -4,7 +4,7 @@
  *  Created on: May 20, 2023
  *      Author: Abdu
  */
-#include <App/HAL_Patterns/Server/TMDQueue_with_Observable/TMDQueue_with_Observable.h>
+
 #include "FireDisplay.h"
 #include <stdlib.h>
 
@@ -13,7 +13,6 @@
 
 
 static struct FireDisplay{
-    struct TMDQueue_with_Observable_s* itsTMDQueue_observable;
     LCD_Handler_Type* my_lcd;
     DigitalInterface_Type* my_Buzzer;
     DigitalInterface_Type* my_Led;
@@ -24,18 +23,18 @@ static struct FireDisplay{
 static void FireDisplay_updateFireDisplay(struct TimeMarkedData *tmd);
 
 
-void FireDisplay_Init(struct FireDisplay* const me, struct TMDQueue_with_Observable_s* pTMDQueue_observable){
+void FireDisplay_Init(struct FireDisplay* const me){
     me->my_lcd = Null_Ptr;
     me->temperature_value = 0;
     me->my_Buzzer = Null_Ptr;
     me->my_Led = Null_Ptr;
 
-    FireDisplay_setItsTMDQueue(me, pTMDQueue_observable);
-
     me->my_Observer = Observer_Create(FireDisplay_updateFireDisplay);
-    TMDQueue_with_Observable_Subscribe(pTMDQueue_observable, me->my_Observer);
 }
 
+Observer* FireDisplay_getObserver(void){
+    return my_FireDisplay.my_Observer;
+}
 
 
 /*
@@ -47,10 +46,10 @@ void FireDisplay_Init(struct FireDisplay* const me, struct TMDQueue_with_Observa
  */
 static void FireDisplay_updateFireDisplay(struct TimeMarkedData *tmd){
     /* Put what you need to update */
-    if(my_FireDisplay.itsTMDQueue_observable == Null_Ptr || my_FireDisplay.my_lcd == Null_Ptr){
+    if(my_FireDisplay.my_lcd == Null_Ptr){
         return;
     }
-    my_FireDisplay.my_lcd->LCD_Write_Cmd(my_FireDisplay.my_lcd, LCD_I2C_SET_DDRAM_ADDRESS(1, 8));
+    my_FireDisplay.my_lcd->LCD_Write_Cmd(my_FireDisplay.my_lcd, LCD_I2C_SET_DDRAM_ADDRESS(1, 10));
     if(tmd->temperature_value > 60){
         my_FireDisplay.my_lcd->LCD_Write_Data(my_FireDisplay.my_lcd, "FIRE !");
         my_FireDisplay.my_Buzzer->Write_High(my_FireDisplay.my_Buzzer);
@@ -61,14 +60,6 @@ static void FireDisplay_updateFireDisplay(struct TimeMarkedData *tmd){
         my_FireDisplay.my_Buzzer->Write_Low(my_FireDisplay.my_Buzzer);
         my_FireDisplay.my_Led->Write_Low(my_FireDisplay.my_Led);
     }
-}
-
-struct TMDQueue* FireDisplay_getItsTMDQueue(const struct FireDisplay* const me){
-    return (struct TMDQueue*)me->itsTMDQueue_observable;
-}
-
-void FireDisplay_setItsTMDQueue(struct FireDisplay* const me, struct TMDQueue_with_Observable_s *p_TMDQueue){
-    me->itsTMDQueue_observable = p_TMDQueue;
 }
 
 void FireDisplay_setItsLCD(struct FireDisplay* const me, LCD_Handler_Type *p_LCD_Handler){

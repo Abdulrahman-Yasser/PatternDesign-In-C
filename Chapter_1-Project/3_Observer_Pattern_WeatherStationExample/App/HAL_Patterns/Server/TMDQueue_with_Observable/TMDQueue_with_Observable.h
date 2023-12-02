@@ -12,11 +12,14 @@
 
 #include "Common/Std_Types.h"
 #include "../../Observer/Observer.h"
+#include "../../Observable/Observable.h"
 
 struct TimeMarkedData;
 struct TMDQueue_with_Observable_s;
 
 struct TMDQueue_with_Observable_s* TMDQueue_with_Observable_GetHandler(void);
+Observable_Type *TMDQueue_with_Observable_GetObservable(void);
+
 void TMDQueue_with_Observable_Init(struct TMDQueue_with_Observable_s* me);
 
 struct TimeMarkedData TMDQueue_with_Observable_Pop(struct TMDQueue_with_Observable_s* me);
@@ -31,6 +34,7 @@ uint8 TMDQueue_with_Observable_IsFull(struct TMDQueue_with_Observable_s* me);
 void TMDQueue_with_Observable_Destroy(struct TMDQueue_with_Observable_s* me);
 
 void TMDQueue_with_Observable_UnSubscribe(struct TMDQueue_with_Observable_s* me, Observer *o);
+
 void TMDQueue_with_Observable_Subscribe(struct TMDQueue_with_Observable_s* me, Observer *o);
 
 
