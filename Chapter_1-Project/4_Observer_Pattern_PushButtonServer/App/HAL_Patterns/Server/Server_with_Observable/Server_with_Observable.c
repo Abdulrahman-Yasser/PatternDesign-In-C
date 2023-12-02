@@ -90,12 +90,16 @@ static void PrivaateNotify(void){
     uint8 status;
     struct Server_with_Observable_s* Server_with_Observable = get_my_server();
     status = Server_with_Observable_Pop(Server_with_Observable);
+    if(Server_with_Observable->my_Observable->itsNotificationHandler == Null_Ptr || Server_with_Observable->my_Observable->nSubscribers == 0){
+        return;
+    }
     NotificationHandle* ptr = Server_with_Observable->my_Observable->itsNotificationHandler;
-    for(i = 0; i < Server_with_Observable->my_Observable->nSubscribers; i++){
-        ptr->FunPtr(status);
+    ptr->FunPtr(status);
+    for(i = 0; i < Server_with_Observable->my_Observable->nSubscribers - 1; i++){
         if(ptr->itsNotificationHandle != Null_Ptr){
             ptr = ptr->itsNotificationHandle;
         }
+        ptr->FunPtr(status);
     }
 }
 

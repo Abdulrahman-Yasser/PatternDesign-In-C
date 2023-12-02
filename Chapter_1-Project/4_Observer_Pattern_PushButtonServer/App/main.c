@@ -14,10 +14,9 @@
 
 void Board_init(void);
 
+static DigitalInterface_Type *myLED;
 
 void myLED_Response( uint8 status){
-    static DigitalInterface_Type *myLED;
-    myLED = Digital_Interface_Create(DIO_Channel3_F);
     if(status == 1){
         myLED->Write_High(myLED);
     }else if (status == 0){
@@ -28,6 +27,8 @@ void myLED_Response( uint8 status){
 
 int main(){
     Board_init();
+
+    myLED = Digital_Interface_Create(DIO_Channel3_F);
 
     struct Buzzer_s* my_buzzer_Client = Buzzer_GetHandler();
     struct LED_1_s* my_LED_1_Client = LED_1_GetHandler();
@@ -54,7 +55,7 @@ int main(){
         k++;
         if(k == 50){
             TheObservable->unSubscribe(DynamicObserver);
-            myLED_Response( 1);
+            myLED_Response( 0);
         }else if(k == 100){
             TheObservable->Subscribe(DynamicObserver);
             k = 0;
