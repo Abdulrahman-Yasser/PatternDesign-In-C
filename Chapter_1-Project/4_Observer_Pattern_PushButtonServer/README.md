@@ -1,7 +1,8 @@
 
 # Pattern 2 : observer pattern (my Eddition)
 
-Running the code -->  [![YouTube](https://img.shields.io/badge/-YouTube-red?style=flat&logo=YouTube&logoColor=white&link=https://www.youtube.com/@ElectroEngage)]([https://www.youtube.com/@ElectroEngage](https://youtu.be/cmF2gxy5X3Y))
+Running the code -->  [![YouTube](https://img.shields.io/badge/-YouTube-red?style=flat&logo=YouTube&logoColor=white&link=https://www.youtube.com/@ElectroEngage)]([https://www.youtube.com/@ElectroEngage](https://youtu.be/cmF2gxy5X3Y))<br>
+Article --> [![Linkedin](https://img.shields.io/badge/LinkedIn-%20-blue?logo=Linkedin&logoColor=blue&labelColor=black)](https://www.linkedin.com/pulse/observer-pattern-embedded-systems-abdulrahman-yasser-uerkf%3FtrackingId=88TioHn5TVqwjmQ%252FpXZN5g%253D%253D/?trackingId=88TioHn5TVqwjmQ%2FpXZN5g%3D%3D)
 > Observer is a behavioral design pattern that lets you define a subscription mechanism to notify multiple objects about any events that happen to the object they’re observing. according to Refactoring.Guru.
 
 > The observer pattern is a software design pattern in which an object, called the subject, maintains a list of its dependents, called observers, and notifies them automatically of state changes. according to angular.
