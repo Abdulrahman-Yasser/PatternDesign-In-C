@@ -1,25 +1,30 @@
 
-# Pattern 2 : observer pattern
+# Pattern 2 : observer pattern (my Eddition)
 
+> Observer is a behavioral design pattern that lets you define a subscription mechanism to notify multiple objects about any events that happen to the object they’re observing. according to Refactoring.Guru.
+
+> The observer pattern is a software design pattern in which an object, called the subject, maintains a list of its dependents, called observers, and notifies them automatically of state changes. according to angular.
+
+This pattern is a good choice when we need the clients to be served once the data arrives. which will consume time depending on each notification function for each client and the number of those clients and functions however, We can control the number of the clients to solve that problem. But still, it consumes time depending on the called functions.
 
 ## Project Description
-The project is an implementation of a weather station that reads the data (Light, Smoke, temperature) and publish it to several modules (LCD here).
-The project contains the following layers and each layer only access the layer below :
+The project is nothing but 
+- A server (Observable) which publishes a button state.
+- A clients (Observer) which subscripe to the button state, [Buzzer, RED led, BLUE led, GREEN led].
+- Each client attach a specific function when it subscripes to the server.
+- The server then reads the data, run each client's function and passes the published data in it.
 
-ImagePlaceHolder 
-
-The observer pattern addresses the concern of dynamically adding and removing clients of data or services, as well as optimizing the processing associated with updating those clients in a timely way
-
-ImagePlaceHolder
+![lkdPNG](https://github.com/Abdulrahman-Yasser/PatternDesign-In-C/assets/63866803/878c9328-cb4e-4ac8-b79e-f38d8c193ed5)
 
 ## Pattern efficiency
-<ul>
+
+<dl>
 <dt> Execution efficiency :</dt>
-<dd>the client needs to check frequently if there are a new data, but its kinda better than the classic Client-Server approach because it notify the client when the data comes. (Score = 8)
+<dd> the client needs to check frequently if there are a new data, but its kinda better than the classic Client-Server approach because it notify the client when the data comes. (Score = 8) </dd>
 <dt> Maintainability :</dt>
-<dd>The Push approach breaks the classic Client-Server architecture (the server knows about the client).It also will be harder to maintain if we had more clients. (Score = 4)
+<dd> The Push approach breaks the classic Client-Server architecture (the server knows about the client).It also will be harder to maintain if we had more clients. (Score = 4) </dd>
 <dt> Run-time flexibility :</dt>
-<dd>in the code I have written you can't link a client in real-time to simplify the code for better explanation</dd></ul>
+<dd> we can easily subscripe and unsubscripe to the server </dd> </dl>
 
 ## 🛠 Skills
 C, Embedded C, arm architecture
