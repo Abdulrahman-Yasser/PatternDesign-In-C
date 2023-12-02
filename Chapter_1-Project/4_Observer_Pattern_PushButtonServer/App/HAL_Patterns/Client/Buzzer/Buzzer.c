@@ -25,7 +25,7 @@ void my_Buzzer_Init(struct Buzzer_s* const me, Observable_Type* my_observable){
     me->my_buzzer = Digital_Interface_Create(DIO_Channel1_B);
 
     me->my_Observer = Observer_Create(Buzzer_update);
-    my_observable->Subscribe(me->my_Observer);
+    my_observable->Subscribe(my_observable, me->my_Observer);
 }
 
 

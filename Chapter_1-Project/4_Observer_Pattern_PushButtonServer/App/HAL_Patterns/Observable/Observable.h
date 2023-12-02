@@ -12,14 +12,14 @@
 #include "../ObserverPattern_Cfg.h"
 #include "../Observer/Observer.h"
 
-
-typedef struct{
+typedef struct Observable_Type_s Observable_Type;
+struct Observable_Type_s{
     int nSubscribers;
     NotificationHandle *itsNotificationHandler;
-    void (*Subscribe)(Observer* o);
-    void (*unSubscribe)(Observer* o);
-    void (*Notify)(void);
-}Observable_Type;
+    void (*Subscribe)(Observable_Type* me, Observer* o);
+    void (*unSubscribe)(Observable_Type* me, Observer* o);
+    void (*Notify)(Observable_Type* me, uint8);
+};
 
 Observable_Type* Observable_Create(void);
 

@@ -45,7 +45,7 @@ int main(){
 
     Observer* DynamicObserver = Observer_Create(myLED_Response);
     Observable_Type* TheObservable= Server_with_Observable_GetObservable(my_Button_Server);
-    TheObservable->Subscribe(DynamicObserver);
+    TheObservable->Subscribe(TheObservable, DynamicObserver);
 
     uint32 k = 0;
 
@@ -54,10 +54,10 @@ int main(){
         ButtonStatus_Publish(my_Button_Server);
         k++;
         if(k == 50){
-            TheObservable->unSubscribe(DynamicObserver);
+            TheObservable->unSubscribe(TheObservable, DynamicObserver);
             myLED_Response( 0);
         }else if(k == 100){
-            TheObservable->Subscribe(DynamicObserver);
+            TheObservable->Subscribe(TheObservable, DynamicObserver);
             k = 0;
         }
     }

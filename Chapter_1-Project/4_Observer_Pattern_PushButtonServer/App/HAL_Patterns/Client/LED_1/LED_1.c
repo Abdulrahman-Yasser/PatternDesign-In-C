@@ -25,7 +25,7 @@ void my_LED_1_Init(struct LED_1_s* const me, Observable_Type* my_observable){
     me->my_led = Digital_Interface_Create(DIO_Channel1_F);
 
     me->my_Observer = Observer_Create(LED_1_updateLED);
-    my_observable->Subscribe(me->my_Observer);
+    my_observable->Subscribe(my_observable, me->my_Observer);
 }
 
 
