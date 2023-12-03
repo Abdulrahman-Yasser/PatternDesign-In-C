@@ -43,8 +43,8 @@ void TMDQueue_Insert(TMDQueue* const me, const struct TimeMarkedData tmd){
     the queue size and then stops increasing. Insertion always takes place at the head.
     */
 
-    me->Buffer[me->head] = tmd;
     me->head = TMDQueue_getNextIndex(me, me->head);
+    me->Buffer[me->head] = tmd;
     if (me->size < TMD_QUEUE_SIZE)
         ++me->size;
 }
@@ -92,6 +92,5 @@ static void initRelations(TMDQueue* const me)
 }
 
 static void cleanUpRelations(TMDQueue* const me){
-    int iter = 0;
     /* doesn't really matter */
 }

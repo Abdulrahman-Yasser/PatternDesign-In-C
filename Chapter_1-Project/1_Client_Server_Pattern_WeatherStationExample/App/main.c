@@ -43,15 +43,13 @@ int main(){
 
         /* Client 2 is Reading from the server */
         FireDisplay_updateFireDisplay(&(p_TestBuilder->itsFireDisplay));
-
     }
-
 }
 
 void Board_init(void){
     Port_Init();
     I2C_init();
     ADC_Init();
-    RTC_DS1307_Init();
     TempDriver_WeatherStation_Init();
+    RTC_DS1307_Init();
 }

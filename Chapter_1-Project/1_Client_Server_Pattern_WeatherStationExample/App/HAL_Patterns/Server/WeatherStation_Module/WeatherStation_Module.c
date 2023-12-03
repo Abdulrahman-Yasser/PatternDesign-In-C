@@ -46,14 +46,6 @@ void WeatherStation_Module_acquireValue(WeatherStation_Module* const me) {
     TMDQueue_Insert(me->itsTMDQueue, tmd);
 }
 
-/* operation setLeadPair(int,int) */
-
-//void WeatherStation_Module_setLeadPair(WeatherStation_Module* const me, int l1, int l2)
-//{
-//    me->lead1 = l1;
-//    me->lead2 = l2;
-//}
-
 struct TMDQueue* WeatherStation_Module_getItsTMDQueue(const WeatherStation_Module* const me) {
     return (struct TMDQueue*)me->itsTMDQueue;
 }
