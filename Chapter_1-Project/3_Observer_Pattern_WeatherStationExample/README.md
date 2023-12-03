@@ -9,6 +9,7 @@ Article --> [![Linkedin](https://img.shields.io/badge/LinkedIn-%20-blue?logo=Lin
 
 This pattern is a good choice when we need the clients to be served once the data arrives. which will consume time depending on each notification function for each client and the number of those clients and functions however, We can control the number of the clients to solve that problem. But still, it consumes time depending on the called functions.
 
+![W (2)](https://github.com/Abdulrahman-Yasser/PatternDesign-In-C/assets/63866803/e5cd9541-6d85-4652-bab4-25f52c82761c)
 
 
 ## Project Description
