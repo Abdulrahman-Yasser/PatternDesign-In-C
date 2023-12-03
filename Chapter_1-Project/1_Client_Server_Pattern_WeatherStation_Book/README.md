@@ -2,7 +2,7 @@
 # Pattern 1 : classic Client-Server Pattern
 
 Code Works fine <br>
-Running the code -->  [![YouTube](https://img.shields.io/badge/-YouTube-red?style=flat&logo=YouTube&logoColor=white&link=https://www.youtube.com/@ElectroEngage)](https://youtu.be/jEViYmZrtyM)<br>
+Running the code -->  [![YouTube](https://img.shields.io/badge/-YouTube-red?style=flat&logo=YouTube&logoColor=white&link=https://www.youtube.com/@ElectroEngage)](https://youtube.com/shorts/wt3N9FLZ5nc)<br>
 
 ## Project Description
 The project is an implementation of a weather station that reads the data (Light, Smoke, temperature) and publish it to several modules (LCD here).
